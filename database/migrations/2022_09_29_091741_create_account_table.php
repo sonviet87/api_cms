@@ -19,10 +19,10 @@ return new class extends Migration
             $table->string('legal_name')->nullable();
             $table->string('industry')->nullable();
             $table->string('phone')->nullable();
-            $table->timestamp('adrress')->nullable();
+            $table->string('adrress')->nullable();
             $table->string('legal_address');
             $table->string('district')->nullable();
-            $table->integer('city')->nullable();
+            $table->string('city')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
         });

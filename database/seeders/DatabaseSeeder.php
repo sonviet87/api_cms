@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(AccountSeeder::class);
+        $this->call(ContractSeeder::class);
+        $this->call(SupplierSeeder::class);
       /*  \App\Models\User::factory()->create([
             'name' => 'admin',
             'email' => 'admin@gmail.com',
