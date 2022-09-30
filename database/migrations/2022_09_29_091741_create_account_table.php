@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('legal_name')->nullable();
             $table->string('industry')->nullable();
             $table->string('phone')->nullable();
-            $table->string('adrress')->nullable();
+            $table->string('address')->nullable();
             $table->string('legal_address');
             $table->string('district')->nullable();
             $table->string('city')->nullable();

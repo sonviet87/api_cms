@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\AccountService;
+
+use App\Services\ContractService;
 use Illuminate\Http\Request;
 
-class AccountController extends RestfulController
+class ContractController extends RestfulController
 {
-    protected $accountService;
+    protected $contractService;
 
-    public function __construct(AccountService $accountService)
+    public function __construct(ContractService $contractService)
     {
         parent::__construct();
-        $this->accountService = $accountService;
+        $this->contractService = $contractService;
 
     }
 
@@ -24,13 +25,13 @@ class AccountController extends RestfulController
     {
         try {
             $perPage = $request->input("per_page", 20);
-            $product = $this->accountService->getListPaginate($perPage);
+            $product = $this->contractService->getListPaginate($perPage);
             $product->appends($request->except(['page', '_token']));
             $paginator = $this->getPaginator($product);
             $pagingArr = $product->toArray();
             return $this->_response([
                 'pagination' => $paginator,
-                'account' => $pagingArr['data']
+                'contracts' => $pagingArr['data']
             ]);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
@@ -47,7 +48,7 @@ class AccountController extends RestfulController
         ]);
         try{
             $data = $request->all();
-            $result = $this->accountService->createNewAccount($data);
+            $result = $this->contractService->create($data);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
@@ -64,7 +65,7 @@ class AccountController extends RestfulController
      */
     public function show($id){
         try{
-            $result = $this->accountService->getAccountByID($id);
+            $result = $this->contractService->getByID($id);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
@@ -79,13 +80,12 @@ class AccountController extends RestfulController
      * @return mixed
      */
     public function update(Request $request, $id){
-
         $this->validate($request, [
             'name' => 'bail|required'
         ]);
         try{
             $data = $request->all();
-            $result = $this->accountService->update($id, $data);
+            $result = $this->contractService->update($id, $data);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
@@ -106,7 +106,7 @@ class AccountController extends RestfulController
         ]);
         try{
             $ids = $request->input('ids');
-            $result = $this->accountService->destroyAccountByIDs($ids);
+            $result = $this->contractService->destroyByIDs($ids);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }

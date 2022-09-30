@@ -4,7 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Contract extends Model 
+class Contract extends Model
 {
   use HasFactory;
     /**
@@ -12,7 +12,9 @@ class Contract extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [ ];
+    protected $fillable = [];
+
+    protected $guarded = [];
 
     protected $table = 'contract';
 

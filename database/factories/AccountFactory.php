@@ -21,14 +21,14 @@ class AccountFactory extends Factory
             'name' => fake()->name(),
             'legal_name' => fake()->name(),
             'industry' => fake()->sentence($nbWords = 2, $variableNbWords = true),
-            'industry' => fake()->phoneNumber(),
-            'adrress' => fake()->address(),
+            'phone' => fake()->phoneNumber(),
+            'address' => fake()->address(),
             'legal_address' => fake()->address(),
             'district' => fake()->state(),
             'city' => fake()->city(),
             'user_id' =>User::all()->random()->id
         ];
 
-        
+
     }
 }
