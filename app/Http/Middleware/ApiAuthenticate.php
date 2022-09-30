@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use App\Http\Controllers\RestfulController;
@@ -73,6 +74,7 @@ class ApiAuthenticate
         if (empty($guards)) {
             $guards = [null];
         }
+
         foreach ($guards as $guard) {
             if ($this->auth->guard($guard)->check()) {
                 return $this->auth->shouldUse($guard);
@@ -87,7 +89,7 @@ class ApiAuthenticate
         $token = str_replace('Bearer ', '', $request->header('Authorization'));
         // decode JWT
         $publicKey = file_get_contents(storage_path('oauth-public.key'));
-        $data = JWT::decode($token, $publicKey, array('RS256'));
+        $data = JWT::decode($token, new Key($publicKey, 'RS256'));
         $scopes = $data->scopes;
         if (empty($scopes)) {
             return false;
