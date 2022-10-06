@@ -135,9 +135,9 @@ class UserService extends BaseService
         return $user;
     }
 
-    public function getListPaginate($perPage = 20)
+    public function getListPaginate($perPage = 20, $filter = [])
     {
-        return $this->user->getListPaginate($perPage);
+        return $this->user->getListPaginate($perPage,$filter);
     }
 
     public function createNewUser($data)

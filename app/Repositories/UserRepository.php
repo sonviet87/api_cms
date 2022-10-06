@@ -49,8 +49,14 @@ class UserRepository implements UserInterface {
         $user->save();
         return $user;
     }
-    public function getListPaginate($perPage = 20){
-        return $this->model->orderBy('created_at', 'desc')->paginate($perPage);
+    public function getListPaginate($perPage = 20,$filter = []){
+        $query = $this->model;
+        if(!empty($filter)) {
+            if (isset($filter['username']) && $filter['username'] != 0) {
+                $query = $query->where('username', 'LIKE', "%{$filter['username']}%") ;
+            }
+        }
+        return $query->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function createNewUser($data){

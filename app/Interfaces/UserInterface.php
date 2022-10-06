@@ -33,7 +33,7 @@ interface UserInterface {
      * @param interger $perPage
      * @return mixed
      */
-    public function getListPaginate($perPage = 20);
+    public function getListPaginate($perPage = 20,$filter = []);
 
     /**
      * Create new user

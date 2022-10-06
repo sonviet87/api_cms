@@ -27,7 +27,11 @@ class UserController extends RestfulController
     public function index(Request $request){
         try{
             $perPage = $request->input("per_page", 20);
-            $users = $this->userService->getListPaginate($perPage);
+            $username = $request->input("username", '');
+            $filter = [
+                'username'  => $username,
+            ];
+            $users = $this->userService->getListPaginate($perPage,$filter);
             $users->appends($request->except(['page', '_token']));
             $paginator = $this->getPaginator($users);
             $pagingArr = $users->toArray();
@@ -45,14 +49,14 @@ class UserController extends RestfulController
     * @return array
     */
     public function register(Request $request){
-       
+
         $this->validate($request, [
             'name' => 'bail|required',
             'username' => 'bail|required|min:3|max:20|unique:users,username',
             'email' => 'bail|required|email|unique:users,email',
-            'password' => 'bail|required|min:6|max:20',        
+            'password' => 'bail|required|min:6|max:20',
         ]);
-       
+
         try{
             $requestData = $request->all();
             $user = $this->userService->registerByEmail($requestData);
@@ -115,7 +119,7 @@ class UserController extends RestfulController
     public function store(Request $request){
         $this->validate($request, [
             'name' => 'bail|required',
-            'username' => 'bail|min:6|max:20|unique:users,username',
+            'username' => 'bail|min:3|max:20|unique:users,username',
             'email' => 'bail|required|email|unique:users,email',
             'password' => 'bail|required|min:6|max:20',
             'role_id' => 'bail|required|exists:roles,id',
@@ -125,12 +129,14 @@ class UserController extends RestfulController
         ]);
         try{
             $data = $request->all();
+
             $result = $this->userService->createNewUser($data);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
             return $this->_success($result['message']);
         }catch(\Exception $e){
+
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
     }
