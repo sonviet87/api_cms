@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserCollection;
 use Illuminate\Http\Request;
 use App\Services\RoleService;
 use App\Services\UserService;
@@ -33,12 +34,15 @@ class UserController extends RestfulController
             ];
             $users = $this->userService->getListPaginate($perPage,$filter);
             $users->appends($request->except(['page', '_token']));
-            $paginator = $this->getPaginator($users);
+
+          /*  $paginator = $this->getPaginator($users);
             $pagingArr = $users->toArray();
             return $this->_response([
                 'pagination' => $paginator,
-                'users' => $pagingArr['data']
-            ]);
+                'users' => $pagingArr['data'],
+
+            ]);*/
+            return  new UserCollection($users);
         }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }

@@ -197,6 +197,7 @@ return [
         App\Providers\ResponseMacroServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
         Rap2hpoutre\LaravelLogViewer\LaravelLogViewerServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
 
     ],
 

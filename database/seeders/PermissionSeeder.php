@@ -2,6 +2,8 @@
 namespace Database\Seeders;
 use App\Constants\RolePermissionConst;
 use App\Constants\UserConst;
+
+use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,7 +16,7 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('permissions')->whereIn('user_role_id', [2, 3, 4])->delete();
+       /* DB::table('permissions')->whereIn('user_role_id', [2, 3, 4])->delete();
 
         DB::table('permissions')->insert([
             'user_role_id' => RolePermissionConst::ROLE_AGENCY,
@@ -29,7 +31,25 @@ class PermissionSeeder extends Seeder
             'type' => 'role',
             'controller' => 'Category',
             'action' => '["getAllPaginate"]',
-        ]);
+        ]);*/
+        $permissions = [
+            'role-list',
+            'role-create',
+            'role-edit',
+            'role-delete',
+            'user-list',
+            'user-create',
+            'user-edit',
+            'user-delete',
+            'account-list',
+            'account-create',
+            'account-edit',
+            'account-delete'
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission,'guard_name' => 'api']);
+        }
 
     }
 }

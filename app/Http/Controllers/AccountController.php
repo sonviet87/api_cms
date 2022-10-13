@@ -13,7 +13,7 @@ class AccountController extends RestfulController
     {
         parent::__construct();
         $this->accountService = $accountService;
-
+        $this->middleware(['role:admin','permission:account-list|account-create|account-edit|account-delete']);
     }
 
     /**

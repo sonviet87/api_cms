@@ -56,7 +56,7 @@ class UserRepository implements UserInterface {
                 $query = $query->where('username', 'LIKE', "%{$filter['username']}%") ;
             }
         }
-        return $query->orderBy('created_at', 'desc')->paginate($perPage);
+        return $query->with(['roles.permissions'])->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function createNewUser($data){
