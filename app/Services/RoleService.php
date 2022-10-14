@@ -1,20 +1,68 @@
 <?php
 namespace App\Services;
 
-use App\Constants\RolePermissionConst;
-use App\Constants\UserConst;
-use App\Helpers\CustomFunctions;
+use App\Interfaces\RoleInterface;
 use App\Interfaces\UserInterface;
 use App\Models\Permission;
 
 class RoleService extends BaseService {
     protected $user;
+    protected $role;
     function __construct(
-        UserInterface $user
+        UserInterface $user,
+        RoleInterface $role
     ){
         $this->user = $user;
+        $this->role = $role;
     }
 
+
+    public function getListPaginate($perPage = 20)
+    {
+        return $this->role->getListPaginate($perPage);
+    }
+
+    public function create($roleName,$permissions)
+    {
+
+        $role = $this->role->create($roleName,$permissions);
+        if (!$role) {
+            return $this->_result(false, 'Created failed');
+        }
+        return $this->_result(true, 'Created successfully');
+    }
+
+    public function getByID($id)
+    {
+        $user = $this->role->getByID($id);
+        if (!$user) {
+            return $this->_result(false, 'Not found!');
+        }
+        return $this->_result(true, '', $user);
+    }
+
+    public function update($id, $roleName,$permissions)
+    {
+        $role = $this->role->getByID($id);
+        if (!$role) {
+            return $this->_result(false, 'Not found!');
+        }
+
+        $result = $this->role->update($id, $roleName,$permissions);
+        if (!$result) {
+            return $this->_result(false, 'Updated failed');
+        }
+        return $this->_result(true, 'Updated successfully');
+    }
+
+    public function destroy($ids)
+    {
+        $check = $this->role->destroy($ids);
+        if (!$check) {
+            return $this->_result(false, 'Delete failed!');
+        }
+        return $this->_result(true, 'Delete successfuly');
+    }
     /**
      * Get Scopes by user
      * @param  collection $user
@@ -58,4 +106,6 @@ class RoleService extends BaseService {
         }
         return trim($result);
     }
+
+
 }

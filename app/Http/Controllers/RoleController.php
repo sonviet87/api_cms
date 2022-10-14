@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\AccountService;
+use App\Http\Resources\RoleCollection;
+use App\Services\RoleService;
 use Illuminate\Http\Request;
 
-class AccountController extends RestfulController
+class RoleController extends RestfulController
 {
-    protected $accountService;
+    protected $roleService;
 
-    public function __construct(AccountService $accountService)
+    public function __construct(RoleService $roleService)
     {
         parent::__construct();
-        $this->accountService = $accountService;
-        $this->middleware(['permission:account-list|account-create|account-edit|account-delete']);
+        $this->roleService = $roleService;
+        //$this->middleware(['role:admin','permission:account-list|account-create|account-edit|account-delete']);
     }
 
     /**
@@ -24,47 +25,37 @@ class AccountController extends RestfulController
     {
         try {
             $perPage = $request->input("per_page", 20);
-            $product = $this->accountService->getListPaginate($perPage);
-            $product->appends($request->except(['page', '_token']));
-            $paginator = $this->getPaginator($product);
-            $pagingArr = $product->toArray();
-            return $this->_response([
-                'pagination' => $paginator,
-                'account' => $pagingArr['data']
-            ]);
+            $roles = $this->roleService->getListPaginate($perPage);
+            return new RoleCollection($roles);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
     }
 
-    /**
-     * Create a Account
-     * @return mixed
-     */
     public function store(Request $request){
         $this->validate($request, [
-            'name' => 'bail|required',
+            'name' => 'required',
         ]);
         try{
             $data = $request->all();
-            $result = $this->accountService->createNewAccount($data);
+
+            $roleName = $data['name'];
+            $permissions = $data['permissions'];
+
+            $result = $this->roleService->create($roleName,$permissions);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
             return $this->_success($result['message']);
         }catch(\Exception $e){
+
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
     }
 
-    /**
-     * Get a account by id
-     * @param interger $id
-     * @return mixed
-     */
     public function show($id){
         try{
-            $result = $this->accountService->getAccountByID($id);
+            $result = $this->roleService->getByID($id);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
@@ -75,17 +66,18 @@ class AccountController extends RestfulController
     }
 
     /**
-     * Update a account by  id
+     * Update a role by id
      * @return mixed
      */
     public function update(Request $request, $id){
-
         $this->validate($request, [
-            'name' => 'bail|required'
+            'name' => 'required',
         ]);
         try{
             $data = $request->all();
-            $result = $this->accountService->update($id, $data);
+            $roleName = $data['name'];
+            $permissions = $data['permissions'];
+            $result = $this->roleService->update($id, $roleName,$permissions);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
@@ -96,7 +88,7 @@ class AccountController extends RestfulController
     }
 
     /**
-     * Delete a list of account by an array of  id
+     * Delete a list of roles by an array of role id
      * @param array $ids
      * @return mixed
      */
@@ -106,7 +98,7 @@ class AccountController extends RestfulController
         ]);
         try{
             $ids = $request->input('ids');
-            $result = $this->accountService->destroyAccountByIDs($ids);
+            $result = $this->roleService->destroy($ids);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
@@ -115,5 +107,6 @@ class AccountController extends RestfulController
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
     }
+
 
 }

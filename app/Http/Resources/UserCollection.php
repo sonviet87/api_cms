@@ -6,7 +6,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class UserCollection extends ResourceCollection
 {
-    public static $wrap = 'users';
+    //public static $wrap = 'users';
     /**
      * Transform the resource collection into an array.
      *
@@ -36,6 +36,8 @@ class UserCollection extends ResourceCollection
                     'id' => $page->id,
                     'name' => $page->name,
                     'email' => $page->email,
+                    'status' =>$page->status,
+                    'phone' =>$page->phone,
                     'roles' => $page->roles->transform(function ($item) {
                         return [
                             'name' => $item->name,

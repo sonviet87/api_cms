@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
         $permissions = Permission::pluck('id','id')->all();
 
         $role->syncPermissions($permissions);
-        $permissionsRole = [
+       /* $permissionsRole = [
             'role-list',
             'role-create',
             'role-edit',
@@ -46,9 +46,9 @@ class UserSeeder extends Seeder
             'account-create',
             'account-edit',
             'account-delete'
-        ];
+        ];*/
         $admin->assignRole([$role->name]);
-        $admin->givePermissionTo($permissionsRole);
+       // $admin->givePermissionTo($permissionsRole);
         User::insert([
             'name' => 'Quản lý',
             'username' =>'agency',
