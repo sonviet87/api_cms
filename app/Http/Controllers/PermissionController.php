@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\PermissionResource;
+use App\Http\Resources\PermissionCollection;
 use App\Services\PermissionService;
 use Illuminate\Http\Request;
 
@@ -25,7 +25,7 @@ class PermissionController extends RestfulController
     {
         try {
             $permissions = $this->permissionService->getList();
-            return new PermissionResource(($permissions));
+            return new PermissionCollection(($permissions));
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }

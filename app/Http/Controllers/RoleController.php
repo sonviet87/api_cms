@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\RoleCollection;
+use App\Http\Resources\RoleResource;
 use App\Services\RoleService;
 use Illuminate\Http\Request;
 
@@ -59,7 +60,7 @@ class RoleController extends RestfulController
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
-            return $this->_response($result['data']);
+            return new RoleResource($result['data']);
         }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }

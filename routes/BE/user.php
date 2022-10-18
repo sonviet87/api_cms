@@ -6,4 +6,7 @@ Route::post('users', 'UserController@store');
 Route::put('users/{id}', 'UserController@update');
 Route::delete('users', 'UserController@destroy');
 
+Route::get('user', 'UserController@getUser');
+
+
 

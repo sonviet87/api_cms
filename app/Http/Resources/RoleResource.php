@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PermissionResource extends JsonResource
+class RoleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,9 +14,20 @@ class PermissionResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+
+        return  [
             'id' => $this->id,
             'name' => $this->name,
+            'permissions' => PermissionResource::collection($this->permissions)
+        ];
+    }
+
+    public function with($request)
+    {
+        return [
+            'status' => true,
         ];
     }
 }
+
+

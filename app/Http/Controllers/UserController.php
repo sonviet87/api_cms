@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Services\RoleService;
 use App\Services\UserService;
@@ -156,7 +157,9 @@ class UserController extends RestfulController
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
-            return $this->_response($result['data']);
+            //return $this->_response($result['data']);
+
+            return new UserResource($result['data']);
         }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
@@ -170,7 +173,8 @@ class UserController extends RestfulController
         $this->validate($request, [
             'name' => 'bail|required',
             'email' => 'bail|required|email',
-            'password' => 'nullable|min:6|max:20'
+            'password' => 'nullable|min:6|max:20',
+            'role_id' => 'nullable|exists:roles,id',
         ]);
         try{
             $data = $request->all();
