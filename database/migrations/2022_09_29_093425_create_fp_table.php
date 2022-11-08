@@ -19,12 +19,16 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('account_id')->nullable();
             $table->unsignedBigInteger('contact_id')->nullable();
-            $table->string('type_deal')->nullable();
-            $table->string('expected_amount')->nullable();
-            $table->date('expected_close_date')->nullable();
-            $table->text('notes')->nullable();
-            $table->string('invoice_year')->nullable();
-            $table->integer('invoice')->nullable();
+            $table->string('shipping_charges')->nullable();
+            $table->string('guest_costs')->nullable();
+            $table->string('deployment_costs')->nullable();
+            $table->string('interest')->nullable();
+            $table->string('commission')->nullable();
+            $table->string('tax')->nullable();
+            $table->string('bids_cost')->nullable();
+            $table->string('status')->nullable();
+            $table->string('selling')->default(0);
+            $table->string('margin')->default(0);
             $table->timestamps();
         });
     }
