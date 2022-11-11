@@ -13,17 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('category_fp', function (Blueprint $table) {
+        Schema::create('fp_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('fp_id');
+            $table->unsignedBigInteger('supplier_id')->nullable();
             $table->integer('qty')->default(1);
             $table->string('price_buy')->nullable();
             $table->string('price_sell')->nullable();
             $table->string('profit')->nullable();
             $table->string('price_guest')->nullable();
             $table->string('price_bids')->nullable();
-            $table->unsignedBigInteger('supplier_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('category_fp');
+        Schema::dropIfExists('fp_details');
     }
 };

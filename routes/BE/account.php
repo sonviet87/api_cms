@@ -5,5 +5,6 @@ Route::get('accounts/{id}', 'AccountController@show');
 Route::post('accounts', 'AccountController@store');
 Route::put('accounts/{id}', 'AccountController@update');
 Route::delete('accounts', 'AccountController@destroy');
+Route::get('accounts/user/{id}', 'AccountController@getListContactByID');
 
 

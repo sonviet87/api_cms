@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('district')->nullable();
             $table->string('city')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

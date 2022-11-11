@@ -94,7 +94,7 @@ class UserRepository implements UserInterface {
     }
 
     public function destroyUsersByIDs($ids){
-        return $this->model->destroy($ids);
+        return $this->model->whereIn('id', $ids)->delete();
     }
 
     public function getBySimilarPhone($phone){

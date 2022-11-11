@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('status')->nullable();
             $table->string('selling')->default(0);
             $table->string('margin')->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

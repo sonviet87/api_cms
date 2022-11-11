@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('serial_number')->nullable();
             $table->string('time_start')->nullable();
             $table->integer('type_warranty')->default(1)->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

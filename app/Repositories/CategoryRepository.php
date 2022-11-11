@@ -35,7 +35,7 @@ class CategoryRepository implements CategoryInterface {
     }
 
     public function destroy($ids){
-        return $this->model->destroy($ids);
+        return $this->model->whereIn('id', $ids)->delete();
     }
 
 }

@@ -4,8 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-class Contact extends Model
+class FPDetail extends Model
 {
   use HasFactory, SoftDeletes;
     /**
@@ -17,15 +16,19 @@ class Contact extends Model
 
     protected $guarded = [];
 
-    protected $table = 'contact';
+    protected $table = "fp_details";
 
-    public function users(){
-        return $this->belongsTo(User::class,'user_id','id')->withTrashed();
-
+    public function fp()
+    {
+        return $this->belongsTo(FP::class);
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class)->withTrashed();;
     }
 
-    public function accounts(){
-        return $this->belongsTo(Account::class,'account_id','id')->withTrashed();
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class,'supplier_id')->withTrashed();;
     }
-
 }

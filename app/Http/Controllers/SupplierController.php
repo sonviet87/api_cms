@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\AccountCollection;
-use App\Http\Resources\ContactCollection;
-use App\Services\AccountService;
+
+use App\Http\Resources\SupplierCollection;
+use App\Services\SupplierService;
 use Illuminate\Http\Request;
 
-class AccountController extends RestfulController
+class SupplierController extends RestfulController
 {
-    protected $accountService;
+    protected $supplierService;
 
-    public function __construct(AccountService $accountService)
+    public function __construct(SupplierService $supplierService)
     {
         parent::__construct();
-        $this->accountService = $accountService;
-        $this->middleware(['permission:account-list|account-create|account-edit|account-delete']);
+        $this->supplierService = $supplierService;
+        //$this->middleware(['permission:account-list|account-create|account-edit|account-delete']);
     }
 
     /**
@@ -26,43 +26,25 @@ class AccountController extends RestfulController
     {
         try {
             $perPage = $request->input("per_page", 20);
-            $accounts = $this->accountService->getListPaginate($perPage);
-           // $accounts->appends($request->except(['page', '_token']));
-           // $paginator = $this->getPaginator($accounts);
-           // $pagingArr = $accounts->toArray();
-           /* return $this->_response([
-                'pagination' => $paginator,
-                'account' => $pagingArr['data']
-            ]);*/
-            return new AccountCollection($accounts);
+            $suppliers = $this->supplierService->getListPaginate($perPage);
+
+            return new SupplierCollection($suppliers);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
     }
-    /**
-     * Get contact by id
-     * @return mixed
-     */
-    public function getListContactByID(Request $request,$id)
-    {
-        try {
-            $contacts = $this->accountService->getListContactByID($id);
-            return new ContactCollection($contacts);
-        } catch (\Exception $e) {
-            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
-        }
-    }
+
     /**
      * Create a Account
      * @return mixed
      */
     public function store(Request $request){
         $this->validate($request, [
-            'name' => 'bail|required',
+            'company' => 'bail|required',
         ]);
         try{
             $data = $request->all();
-            $result = $this->accountService->createNewAccount($data);
+            $result = $this->supplierService->createNew($data);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
@@ -79,7 +61,7 @@ class AccountController extends RestfulController
      */
     public function show($id){
         try{
-            $result = $this->accountService->getAccountByID($id);
+            $result = $this->supplierService->getByID($id);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
@@ -96,11 +78,11 @@ class AccountController extends RestfulController
     public function update(Request $request, $id){
 
         $this->validate($request, [
-            'name' => 'bail|required'
+            'company' => 'bail|required'
         ]);
         try{
             $data = $request->all();
-            $result = $this->accountService->update($id, $data);
+            $result = $this->supplierService->update($id, $data);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
@@ -121,7 +103,7 @@ class AccountController extends RestfulController
         ]);
         try{
             $ids = $request->input('ids');
-            $result = $this->accountService->destroyAccountByIDs($ids);
+            $result = $this->supplierService->destroyByIDs($ids);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }

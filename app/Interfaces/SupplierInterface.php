@@ -1,7 +1,7 @@
 <?php
 namespace App\Interfaces;
 
-interface ContactInterface {
+interface SupplierInterface {
 
 
     /**
@@ -24,9 +24,6 @@ interface ContactInterface {
      * @return mixed
      */
     public function getByID($id);
-
-
-
 
     /**
      * Update a user by ID

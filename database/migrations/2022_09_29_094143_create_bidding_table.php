@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('project_name')->nullable();
             $table->string('code')->nullable();
             $table->unsignedBigInteger('fp_id')->nullable();
-           
+
             $table->string('price')->nullable();
             $table->string('bid_guarantee')->nullable();
             $table->string('bid_day')->nullable();
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->date('end_day')->nullable();
             $table->text('file_request')->nullable();
             $table->text('file_bid')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

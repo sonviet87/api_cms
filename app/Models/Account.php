@@ -3,10 +3,11 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Account extends Model
 {
-  use HasFactory;
+  use HasFactory, SoftDeletes;
     /**
      * The attributes that are mass assignable.
      *
@@ -18,4 +19,8 @@ class Account extends Model
 
     protected $table = 'account';
 
+    public function contacts()
+    {
+        return $this->belongsTo(Contact::class);
+    }
 }

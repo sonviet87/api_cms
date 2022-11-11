@@ -31,7 +31,11 @@ class AccountRepository implements AccountInterface {
     }
 
     public function destroy($ids){
-        return $this->model->destroy($ids);
+        return $this->model->whereIn('id', $ids)->delete();
     }
 
+    public function getListContactByID($id ){
+
+        return $this->model->find($id)->contacts;
+    }
 }

@@ -24,6 +24,7 @@ return new class extends Migration
             //$table->unsignedBigInteger('role_id')->nullable();
             $table->integer('status')->default(1)->nullable();
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

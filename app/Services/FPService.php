@@ -2,44 +2,40 @@
 
 namespace App\Services;
 
-use App\Interfaces\AccountInterface;
 
-class AccountService extends BaseService
+use App\Interfaces\FPInterface;
+
+class FPService extends BaseService
 {
-    protected $account;
+    protected $fp;
 
-    function __construct(AccountInterface $account)
+    function __construct(FPInterface $fp)
     {
-        $this->account = $account;
+        $this->fp = $fp;
     }
 
     public function getList()
     {
-        return $this->account->getList();
+        return $this->fp->getList();
     }
 
     public function getListPaginate($perPage = 20)
     {
-        return $this->account->getListPaginate($perPage);
+        return $this->fp->getListPaginate($perPage);
     }
 
-    public function getListContactByID($id)
+    public function createNew($data)
     {
-        return $this->account->getListContactByID($id);
-    }
-
-    public function createNewAccount($data)
-    {
-        $account = $this->account->create($data);
+        $account = $this->fp->create($data);
         if (!$account) {
             return $this->_result(false, 'Created failed');
         }
         return $this->_result(true, 'Created successfully');
     }
 
-    public function getAccountByID($id)
+    public function getByID($id)
     {
-        $account = $this->account->getByID($id);
+        $account = $this->fp->getByID($id);
         if (!$account) {
             return $this->_result(false, 'Not found!');
         }
@@ -48,22 +44,22 @@ class AccountService extends BaseService
 
     public function update($id, $data)
     {
-        $account = $this->account->getByID($id);
+        $account = $this->fp->getByID($id);
         if (!$account) {
             return $this->_result(false, 'Not found!');
         }
 
 
-        $result = $this->account->update($id, $data);
+        $result = $this->fp->update($id, $data);
         if (!$result) {
             return $this->_result(false, 'Updated failed');
         }
         return $this->_result(true, 'Updated successfully');
     }
 
-    public function destroyAccountByIDs($ids)
+    public function destroyByIDs($ids)
     {
-        $check = $this->account->destroy($ids);
+        $check = $this->fp->destroy($ids);
         if (!$check) {
             return $this->_result(false, 'Delete failed!');
         }

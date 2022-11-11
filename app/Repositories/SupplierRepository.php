@@ -1,14 +1,14 @@
 <?php
 namespace App\Repositories;
 
-use App\Interfaces\ContractInterface;
-use App\Models\Contract;
+use App\Interfaces\SupplierInterface;
+use App\Models\Supplier;
 
 
-class ContractRepository implements ContractInterface {
+class SupplierRepository implements SupplierInterface {
     protected $model;
-    function __construct(Contract $account){
-        $this->model = $account;
+    function __construct(Supplier $supplier){
+        $this->model = $supplier;
     }
 
     public function getList(){

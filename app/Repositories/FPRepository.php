@@ -1,14 +1,15 @@
 <?php
 namespace App\Repositories;
 
-use App\Interfaces\ContractInterface;
-use App\Models\Contract;
+use App\Interfaces\FPInterface;
+use App\Models\FP;
+use App\Models\Supplier;
 
 
-class ContractRepository implements ContractInterface {
+class FPRepository implements FPInterface {
     protected $model;
-    function __construct(Contract $account){
-        $this->model = $account;
+    function __construct(FP $fp){
+        $this->model = $fp;
     }
 
     public function getList(){
@@ -16,7 +17,7 @@ class ContractRepository implements ContractInterface {
     }
 
     public function getListPaginate($perPage = 20){
-        return $this->model->orderBy('created_at', 'desc')->paginate($perPage);
+        return $this->model->with(['user','account','contact'])->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function create($data){

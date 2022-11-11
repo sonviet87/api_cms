@@ -23,6 +23,8 @@ class ContactService extends BaseService
         return $this->contact->getListPaginate($perPage);
     }
 
+
+
     public function createNew($data)
     {
         $account = $this->contact->create($data);

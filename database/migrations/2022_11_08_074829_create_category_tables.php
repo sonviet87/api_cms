@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->text('descriptions')->nullable();
             $table->string('tax_percent')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

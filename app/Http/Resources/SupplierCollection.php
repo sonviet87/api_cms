@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class ContactCollection extends ResourceCollection
+class SupplierCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -18,16 +18,16 @@ class ContactCollection extends ResourceCollection
     {
 
         return $this->collection->transform(function ($page) {
+
                 return [
                     'id' => $page->id,
-                    'name' => $page->name,
+                    'company' => $page->company,
+                    'address' => $page->address,
+                    'mst' => $page->mst,
+                    'account' => $page->account,
                     'phone' => $page->phone,
                     'email' => $page->email,
-                    'created_at' => $page->created_at,
-                    'user' => $page->users?->name,
-                    'user_id' => $page->user_id,
-                    'account_id' => $page->account_id,
-                    'account' => $page->accounts?->name
+
                 ];
             });
 

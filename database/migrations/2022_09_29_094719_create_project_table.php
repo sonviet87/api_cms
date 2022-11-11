@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('company_receipt')->nullable();
             $table->text('BBNT')->nullable();
             $table->text('BBBG')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

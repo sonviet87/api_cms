@@ -20,6 +20,8 @@ class ContactRepository implements ContactInterface {
         return $this->model->with(['users','accounts'])->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
+
+
     public function create($data){
         return $this->model->create($data);
     }
@@ -33,7 +35,7 @@ class ContactRepository implements ContactInterface {
     }
 
     public function destroy($ids){
-        return $this->model->destroy($ids);
+        return $this->model->whereIn('id', $ids)->delete();
     }
 
 }
