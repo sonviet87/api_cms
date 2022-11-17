@@ -25,7 +25,11 @@ class AccountService extends BaseService
 
     public function getListContactByID($id)
     {
-        return $this->account->getListContactByID($id);
+        $contacts =  $this->account->getListContactByID($id);
+        if (!$contacts) {
+            return $this->_result(false, 'Không lấy được id');
+        }
+        return  $contacts;
     }
 
     public function createNewAccount($data)

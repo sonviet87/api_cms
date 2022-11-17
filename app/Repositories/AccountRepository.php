@@ -35,7 +35,10 @@ class AccountRepository implements AccountInterface {
     }
 
     public function getListContactByID($id ){
-
-        return $this->model->find($id)->contacts;
+        $account = $this->model->find($id);
+        if ( empty ($account) ) {
+            return ;
+        }
+        return $account->contacts;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Resources\SupplierCollection;
+use App\Http\Resources\SupplierListCollection;
 use App\Services\SupplierService;
 use Illuminate\Http\Request;
 
@@ -29,6 +30,21 @@ class SupplierController extends RestfulController
             $suppliers = $this->supplierService->getListPaginate($perPage);
 
             return new SupplierCollection($suppliers);
+        } catch (\Exception $e) {
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    /**
+     * Get all approved
+     * @return mixed
+     */
+    public function list(Request $request)
+    {
+        try {
+            $suppliers = $this->supplierService->getList();
+
+            return new SupplierListCollection($suppliers);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }

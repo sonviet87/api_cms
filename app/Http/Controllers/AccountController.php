@@ -47,6 +47,10 @@ class AccountController extends RestfulController
     {
         try {
             $contacts = $this->accountService->getListContactByID($id);
+
+            if(isset($contacts['status'])){
+                return $this->_error($contacts['message']);
+            }
             return new ContactCollection($contacts);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
