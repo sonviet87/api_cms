@@ -20,12 +20,18 @@ return new class extends Migration
             $table->unsignedBigInteger('account_id')->nullable();
             $table->unsignedBigInteger('contact_id')->nullable();
             $table->string('shipping_charges')->nullable();
+            $table->string('shipping_charges_percent')->nullable();
             $table->string('guest_costs')->nullable();
+            $table->string('guest_costs_percent')->nullable();
             $table->string('deployment_costs')->nullable();
+            $table->string('deployment_costs_percent')->nullable();
             $table->string('interest')->nullable();
+            $table->string('interest_percent')->nullable();
             $table->string('commission')->nullable();
+            $table->string('commission_percent')->nullable();
             $table->string('tax')->nullable();
             $table->string('bids_cost')->nullable();
+            $table->string('bids_cost_percent')->nullable();
             $table->string('status')->nullable();
             $table->string('selling')->default(0);
             $table->string('margin')->default(0);

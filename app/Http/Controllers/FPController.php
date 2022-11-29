@@ -43,7 +43,9 @@ class FPController extends RestfulController
      */
     public function store(Request $request){
         $this->validate($request, [
-            'company' => 'bail|required',
+            'name' => 'bail|required',
+            'account_id' => 'bail|required',
+            'contact_id' => 'bail|required',
         ]);
         try{
             $data = $request->all();
@@ -82,7 +84,9 @@ class FPController extends RestfulController
     public function update(Request $request, $id){
 
         $this->validate($request, [
-            'company' => 'bail|required'
+            'name' => 'bail|required',
+            'account_id' => 'bail|required',
+            'contact_id' => 'bail|required',
         ]);
         try{
             $data = $request->all();

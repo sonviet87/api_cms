@@ -29,7 +29,8 @@ class FPRepository implements FPInterface {
     }
 
     public function update($id, $data){
-        return $this->model->where('id', $id)->update($data);
+
+        return $this->model->find($id)->update($data);
     }
 
     public function destroy($ids){

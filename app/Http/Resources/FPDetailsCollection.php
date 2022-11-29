@@ -21,14 +21,16 @@ class FPDetailsCollection extends ResourceCollection
 
                 return [
                     'id' => $page->id,
-                    'category' => $page->category()->get(),
-                    'supplier' => $page->supplier()->get(),
+                    //'category' => $page->category()->get(),
+                    'category_id' => $page->category()->get()->first()->id,
+                    //'supplier' => $page->supplier()->get(),
+                    'supplier_id' => $page->supplier()->get()->first()->id,
                     'qty' => $page->qty,
                     'price_buy' => $page->price_buy,
                     'price_sell' => $page->price_sell,
                     'profit' => $page->profit,
-                    'price_guest' => $page->price_guest,
-                    'price_bids' => $page->price_bids,
+                    'total_sell' => $page->total_sell,
+                    'total_buy' => $page->total_buy,
 
                 ];
             });

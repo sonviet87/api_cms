@@ -3,15 +3,23 @@
 namespace App\Services;
 
 
+use App\Interfaces\FPDetailInterface;
 use App\Interfaces\FPInterface;
+use Carbon\Carbon;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class FPService extends BaseService
 {
     protected $fp;
+    protected $fpDetail;
 
-    function __construct(FPInterface $fp)
+    function __construct(FPInterface $fp,FPDetailInterface $fpDetail)
     {
         $this->fp = $fp;
+        $this->fpDetail = $fpDetail;
     }
 
     public function getList()
@@ -26,11 +34,49 @@ class FPService extends BaseService
 
     public function createNew($data)
     {
-        $account = $this->fp->create($data);
-        if (!$account) {
-            return $this->_result(false, 'Created failed');
+        DB::beginTransaction();
+        try {
+
+            $user = Auth::user();
+            $details= $data['details'];
+            $arrFPDetail= [];
+            $arrFP = Arr::except($data, ['details']);
+            $arrFP['user_id']= $user->id;
+            $arrFP['shipping_charges']= Str::replace(",","",$arrFP["shipping_charges"]);
+            $arrFP['guest_costs']= Str::replace(",","",$arrFP["guest_costs"]);
+            $arrFP['deployment_costs']= Str::replace(",","",$arrFP["deployment_costs"]);
+            $arrFP['bids_cost']= Str::replace(",","",$arrFP["bids_cost"]);
+            $arrFP['commission']= Str::replace(",","",$arrFP["commission"]);
+            $arrFP['interest']= Str::replace(",","",$arrFP["interest"]);
+            $arrFP['tax']= Str::replace(",","",$arrFP["tax"]);
+            $arrFP['bids_cost_percent']= Str::replace("%","",$arrFP["bids_cost_percent"]);
+            $arrFP['commission_percent']= Str::replace("%","",$arrFP["commission_percent"]);
+            $fp = $this->fp->create($arrFP);
+            //create order detail
+            foreach ($details as $key => $detail){
+
+                $arrFPDetail[$key]["fp_id"] = $fp->id;
+                $arrFPDetail[$key]["price_buy"] = Str::replace(",","",$detail["price_buy"]);
+                $arrFPDetail[$key]["price_sell"] = Str::replace(",","",$detail["price_sell"]);
+                $arrFPDetail[$key]["total_buy"] = Str::replace(",","",$detail["total_buy"]);
+                $arrFPDetail[$key]["total_sell"] = Str::replace(",","",$detail["total_sell"]);
+                $arrFPDetail[$key]["profit"] = Str::replace("%","",$detail["profit"]);
+                $arrFPDetail[$key]["qty"] = $detail["qty"];
+                $arrFPDetail[$key]["category_id"] = $detail["category_id"];
+                $arrFPDetail[$key]["supplier_id"] = $detail["supplier_id"];
+                $arrFPDetail[$key]["created_at"] = Carbon::now();
+            }
+
+            $this->fpDetail->create($arrFPDetail);
+            DB::commit();
+            return $this->_result(true, trans('Tạo phương án kinh doanh thành công'), [
+                'fp' => $fp
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->_result(false, $e->getMessage());
         }
-        return $this->_result(true, 'Created successfully');
+
     }
 
     public function getByID($id)
@@ -44,17 +90,60 @@ class FPService extends BaseService
 
     public function update($id, $data)
     {
-        $account = $this->fp->getByID($id);
-        if (!$account) {
+       /* $fpRS = $this->fp->getByID($id);
+        if (!$fpRS) {
             return $this->_result(false, 'Not found!');
-        }
+        }*/
 
 
-        $result = $this->fp->update($id, $data);
-        if (!$result) {
-            return $this->_result(false, 'Updated failed');
+//        $result = $this->fp->update($id, $data);
+//        if (!$result) {
+//            return $this->_result(false, 'Updated failed');
+//        }
+//        return $this->_result(true, 'Updated successfully');
+
+        DB::beginTransaction();
+        try {
+            $details= $data['details'];
+            $arrFPDetail= [];
+            $arrFP = Arr::except($data, ['details','created_at']);
+
+            $arrFP['shipping_charges']= Str::replace(",","",$arrFP["shipping_charges"]);
+            $arrFP['guest_costs']= Str::replace(",","",$arrFP["guest_costs"]);
+            $arrFP['deployment_costs']= Str::replace(",","",$arrFP["deployment_costs"]);
+            $arrFP['bids_cost']= Str::replace(",","",$arrFP["bids_cost"]);
+            $arrFP['commission']= Str::replace(",","",$arrFP["commission"]);
+            $arrFP['interest']= Str::replace(",","",$arrFP["interest"]);
+            $arrFP['tax']= Str::replace(",","",$arrFP["tax"]);
+            $arrFP['bids_cost_percent']= Str::replace("%","",$arrFP["bids_cost_percent"]);
+            $arrFP['commission_percent']= Str::replace("%","",$arrFP["commission_percent"]);
+
+            $fp = $this->fp->update($id,$arrFP);
+            //create order detail
+            foreach ($details as $key => $detail){
+                $arrFPDetail[$key]["fp_id"] = $id;
+                $arrFPDetail[$key]["price_buy"] = Str::replace(",","",$detail["price_buy"]);
+                $arrFPDetail[$key]["price_sell"] = Str::replace(",","",$detail["price_sell"]);
+                $arrFPDetail[$key]["total_buy"] = Str::replace(",","",$detail["total_buy"]);
+                $arrFPDetail[$key]["total_sell"] = Str::replace(",","",$detail["total_sell"]);
+                $arrFPDetail[$key]["profit"] = Str::replace("%","",$detail["profit"]);
+                $arrFPDetail[$key]["qty"] = $detail["qty"];
+                $arrFPDetail[$key]["category_id"] = $detail["category_id"];
+                $arrFPDetail[$key]["supplier_id"] = $detail["supplier_id"];
+                $arrFPDetail[$key]["created_at"] = Carbon::now();
+            }
+
+            $ids = $this->fpDetail->getIDS($id);
+            $this->fpDetail->destroy($ids);
+            $this->fpDetail->create($arrFPDetail);
+            DB::commit();
+            return $this->_result(true, trans('Cập nhật phương án kinh doanh thành công'), [
+                'fp' => $fp
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->_result(false, $e->getMessage());
         }
-        return $this->_result(true, 'Updated successfully');
     }
 
     public function destroyByIDs($ids)

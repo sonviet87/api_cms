@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('price_buy')->nullable();
             $table->string('price_sell')->nullable();
             $table->string('profit')->nullable();
-            $table->string('price_guest')->nullable();
-            $table->string('price_bids')->nullable();
+            $table->string('total_buy')->nullable();
+            $table->string('total_sell')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
