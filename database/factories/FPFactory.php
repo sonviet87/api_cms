@@ -25,6 +25,7 @@ class FPFactory extends Factory
             'contact_id' => Contact::all()->random()->id,
             'shipping_charges' => fake()->randomNumber(),
             'user_id' =>User::all()->random()->id,
+            'user_assign' =>User::all()->random()->id,
             'tax' => fake()->numberBetween(200000,300000),
             'status' => fake()->numberBetween(1,4)
         ];

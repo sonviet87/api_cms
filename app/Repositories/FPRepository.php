@@ -37,4 +37,9 @@ class FPRepository implements FPInterface {
         return $this->model->whereIn('id', $ids)->delete();
     }
 
+    public function updateStatus($id, $status){
+
+        return $this->model->find($id)->update(['status'=> $status]);
+    }
+
 }

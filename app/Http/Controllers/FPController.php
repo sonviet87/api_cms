@@ -121,4 +121,23 @@ class FPController extends RestfulController
         }
     }
 
+    public function updateStatus(Request $request){
+        $this->validate($request, [
+            'id' => 'required',
+            'status' => 'required',
+        ]);
+        try{
+            $id = $request->input('id');
+            $status = $request->input('status');
+            
+            $result = $this->fpService->updateStatus($id, $status);
+            if($result['status']==false){
+                return $this->_error($result['message']);
+            }
+            return $this->_success($result['message']);
+        }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
 }

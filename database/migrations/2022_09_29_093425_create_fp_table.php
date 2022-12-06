@@ -16,8 +16,10 @@ return new class extends Migration
         Schema::create('fp', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
+            $table->string('code')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('account_id')->nullable();
+            $table->unsignedBigInteger('user_assign')->nullable();
             $table->unsignedBigInteger('contact_id')->nullable();
             $table->string('shipping_charges')->nullable();
             $table->string('shipping_charges_percent')->nullable();
@@ -32,7 +34,7 @@ return new class extends Migration
             $table->string('tax')->nullable();
             $table->string('bids_cost')->nullable();
             $table->string('bids_cost_percent')->nullable();
-            $table->string('status')->nullable();
+            $table->string('status')->default(0);
             $table->string('selling')->default(0);
             $table->string('margin')->default(0);
             $table->softDeletes();

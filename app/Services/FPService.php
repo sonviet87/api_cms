@@ -36,7 +36,7 @@ class FPService extends BaseService
     {
         DB::beginTransaction();
         try {
-
+            
             $user = Auth::user();
             $details= $data['details'];
             $arrFPDetail= [];
@@ -51,7 +51,11 @@ class FPService extends BaseService
             $arrFP['tax']= Str::replace(",","",$arrFP["tax"]);
             $arrFP['bids_cost_percent']= Str::replace("%","",$arrFP["bids_cost_percent"]);
             $arrFP['commission_percent']= Str::replace("%","",$arrFP["commission_percent"]);
+           
             $fp = $this->fp->create($arrFP);
+            $fp->code = 'FP'.$fp->id;
+            $fp->save();
+           
             //create order detail
             foreach ($details as $key => $detail){
 
@@ -150,9 +154,20 @@ class FPService extends BaseService
     {
         $check = $this->fp->destroy($ids);
         if (!$check) {
-            return $this->_result(false, 'Delete failed!');
+            return $this->_result(false, 'Không thể xóa PAKD thành công');
         }
-        return $this->_result(true, 'Delete successfuly');
+        return $this->_result(true, 'Xóa PAKD thành công');
+    }
+
+    public function updateStatus($id, $status)
+    {
+
+        $check = $this->fp->updateStatus($id,$status);
+       
+        if (!$check) {
+            return $this->_result(false, 'Lỗi');
+        }
+        return $this->_result(true, 'Cập nhật thành công');
     }
 
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
-
+use App\Constants\FPConst;
 class FPCollection extends ResourceCollection
 {
     /**
@@ -18,9 +18,10 @@ class FPCollection extends ResourceCollection
     {
 
         return $this->collection->transform(function ($page) {
-
+           
                 return [
                     'id' => $page->id,
+                    'code' => $page->code,
                     'name' => $page->name,
                     'shipping_charges' => $page->shipping_charges,
                     'guest_costs' => $page->guest_costs,
@@ -29,10 +30,11 @@ class FPCollection extends ResourceCollection
                     'commission' => $page->commission,
                     'tax' => $page->tax,
                     'bids_cost' => $page->bids_cost,
-                    'status' => $page->status,
+                    'status' => FPConst::STATUS_NAME[$page->status],
                     'selling' => $page->selling,
                     'margin' => $page->margin,
                     'user' => $page->user->name,
+                    'user_assign' => $page->userAssign->name,
                     'account' => $page->account?->name,
                     'contact' => $page->contact?->name,
                     'created_at' => $page->created_at,

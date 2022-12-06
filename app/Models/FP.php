@@ -28,6 +28,11 @@ class FP extends Model
         return $this->belongsTo(User::class)->withTrashed();
     }
 
+    public function userAssign()
+    {
+        return $this->belongsTo(User::class,"user_assign","id")->withTrashed();
+    }
+
     public function account()
     {
         return $this->belongsTo(Account::class)->withTrashed();

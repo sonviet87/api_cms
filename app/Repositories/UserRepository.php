@@ -16,7 +16,7 @@ class UserRepository implements UserInterface {
     }
 
     public function getList(){
-        return $this->model->all();
+        return $this->model->where('id','<>',1)->all();
     }
 
     public function getUserByEmail($email){
@@ -60,7 +60,7 @@ class UserRepository implements UserInterface {
                 $query = $query->where('username', 'LIKE', "%{$filter['username']}%") ;
             }
         }
-        return $query->with(['roles.permissions'])->orderBy('created_at', 'desc')->paginate($perPage);
+        return $query->where('id','<>',1)->with(['roles.permissions'])->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function createNewUser($data){
