@@ -18,7 +18,7 @@ class FPController extends RestfulController
     {
         parent::__construct();
         $this->fpService = $fpService;
-        //$this->middleware(['permission:account-list|account-create|account-edit|account-delete']);
+        $this->middleware(['permission:fp-approved-manager|fp-approved-sale|fp-list|fp-create|fp-edit|fp-delete']);
     }
 
     /**

@@ -210,7 +210,19 @@ class UserController extends RestfulController
     }
 
     public function getUser(){
-        return Auth::user();
+       // dd(Auth::user()->roles->first()->permissions->pluck('name'));
+       try{
+           
+            $user = Auth::user()->first();
+            return $this->_response([
+                'user' => $user,
+                'roles' => Auth::user()->roles->first()->permissions->pluck('name')
+
+            ]);
+       }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+        
     }
 
     /**

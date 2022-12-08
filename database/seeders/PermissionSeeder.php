@@ -44,7 +44,13 @@ class PermissionSeeder extends Seeder
             'account-list',
             'account-create',
             'account-edit',
-            'account-delete'
+            'account-delete',
+            'fp-list',
+            'fp-approved-manager',
+            'fp-approved-sale',
+            'fp-create',
+            'fp-edit',
+            'fp-delete'
         ];
 
         foreach ($permissions as $permission) {

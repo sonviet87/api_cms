@@ -86,13 +86,15 @@ class ApiAuthenticate
 
     protected function checkPermission($request)
     {
-       /* $token = str_replace('Bearer ', '', $request->header('Authorization'));
+         /*$token = str_replace('Bearer ', '', $request->header('Authorization'));
         // decode JWT
         $publicKey = file_get_contents(storage_path('oauth-public.key'));
         $data = JWT::decode($token, new Key($publicKey, 'RS256'));
 
         $scopes = $data->scopes;
-        if (empty($scopes)) {
+        
+
+       if (empty($scopes)) {
             return false;
         }
         $resource = str_replace(['@', 'Controller'], [':', ''], class_basename($request->route()->getAction()['controller']));
