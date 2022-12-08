@@ -6,6 +6,7 @@ use App\Http\Resources\AccountCollection;
 use App\Http\Resources\ContactCollection;
 use App\Services\AccountService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AccountController extends RestfulController
 {
@@ -15,7 +16,12 @@ class AccountController extends RestfulController
     {
         parent::__construct();
         $this->accountService = $accountService;
-        $this->middleware(['permission:account-list|account-create|account-edit|account-delete']);
+       // $this->middleware(['permission:account-list|account-create|account-edit|account-delete'])
+
+        $this->middleware(['permission:account-delete'])->only('destroy');
+        $this->middleware(['permission:account-create'])->only('store');
+        $this->middleware(['permission:account-edit'])->only('update');
+        $this->middleware(['permission:account-list'])->only('index');
     }
 
     /**
@@ -120,9 +126,11 @@ class AccountController extends RestfulController
      * @return mixed
      */
     public function destroy(Request $request){
+
         $this->validate($request, [
             'ids' => 'required|array|min:1',
         ]);
+       // dd(Auth::user()->first()->hasPermission(['account-list']));
         try{
             $ids = $request->input('ids');
             $result = $this->accountService->destroyAccountByIDs($ids);
