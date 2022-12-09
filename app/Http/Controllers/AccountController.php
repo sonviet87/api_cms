@@ -16,7 +16,6 @@ class AccountController extends RestfulController
     {
         parent::__construct();
         $this->accountService = $accountService;
-       // $this->middleware(['permission:account-list|account-create|account-edit|account-delete'])
 
         $this->middleware(['permission:account-delete'])->only('destroy');
         $this->middleware(['permission:account-create'])->only('store');

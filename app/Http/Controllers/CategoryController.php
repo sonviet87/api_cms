@@ -15,6 +15,10 @@ class CategoryController extends RestfulController
         parent::__construct();
         $this->categoryService = $categoryService;
         //$this->middleware(['permission:account-list|account-create|account-edit|account-delete']);
+       /* $this->middleware(['permission:category-delete'])->only('destroy');
+        $this->middleware(['permission:category-create'])->only('store');
+        $this->middleware(['permission:category-edit'])->only('update');
+        $this->middleware(['permission:category-list'])->only('index');*/
     }
 
     /**

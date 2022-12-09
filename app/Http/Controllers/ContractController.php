@@ -14,6 +14,10 @@ class ContractController extends RestfulController
     {
         parent::__construct();
         $this->contractService = $contractService;
+       /* $this->middleware(['permission:contact-delete'])->only('destroy');
+        $this->middleware(['permission:contact-create'])->only('store');
+        $this->middleware(['permission:contact-edit'])->only('update');
+        $this->middleware(['permission:contact-list'])->only('index');*/
 
     }
 

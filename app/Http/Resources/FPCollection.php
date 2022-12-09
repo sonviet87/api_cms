@@ -18,7 +18,7 @@ class FPCollection extends ResourceCollection
     {
 
         return $this->collection->transform(function ($page) {
-           
+
                 return [
                     'id' => $page->id,
                     'code' => $page->code,
@@ -31,6 +31,7 @@ class FPCollection extends ResourceCollection
                     'tax' => $page->tax,
                     'bids_cost' => $page->bids_cost,
                     'status' => FPConst::STATUS_NAME[$page->status],
+                    'statusNumber' => $page->status,
                     'selling' => $page->selling,
                     'margin' => $page->margin,
                     'user' => $page->user->name,

@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Category;
 use App\Models\FP;
 use App\Models\Supplier;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 
@@ -23,6 +24,7 @@ class FPDetailFactory extends Factory
         return [
 
             'category_id' => Category::all()->random()->id,
+
             'fp_id' => FP::all()->random()->id,
             'supplier_id' => Supplier::all()->random()->id,
             'qty' => fake()->randomNumber(),

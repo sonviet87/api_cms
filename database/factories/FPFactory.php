@@ -23,6 +23,7 @@ class FPFactory extends Factory
             'name' => fake()->name(),
             'account_id' => Account::all()->random()->id,
             'contact_id' => Contact::all()->random()->id,
+            'user_assign'=> User::all()->random()->id,
             'shipping_charges' => fake()->randomNumber(),
             'user_id' =>User::all()->random()->id,
             'user_assign' =>User::all()->random()->id,

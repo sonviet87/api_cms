@@ -18,7 +18,12 @@ class FPController extends RestfulController
     {
         parent::__construct();
         $this->fpService = $fpService;
-        $this->middleware(['permission:fp-approved-manager|fp-approved-sale|fp-list|fp-create|fp-edit|fp-delete']);
+        //$this->middleware(['permission:fp-approved-manager|fp-approved-sale|fp-list|fp-create|fp-edit|fp-delete']);
+        $this->middleware(['permission:fp-delete'])->only('destroy');
+        $this->middleware(['permission:fp-create'])->only('store');
+        $this->middleware(['permission:fp-edit'])->only('update');
+        $this->middleware(['permission:fp-list'])->only('index');
+        $this->middleware(['permission:fp-approved-manager|fp-approved-sale'])->only('updateStatus');
     }
 
     /**
@@ -29,7 +34,11 @@ class FPController extends RestfulController
     {
         try {
             $perPage = $request->input("per_page", 20);
-            $suppliers = $this->fpService->getListPaginate($perPage);
+            $search = $request->input("search", '');
+            $filter = [
+                'search'  => $search,
+            ];
+            $suppliers = $this->fpService->getListPaginate($perPage, $filter);
 
             return new FPCollection($suppliers);
         } catch (\Exception $e) {
@@ -129,7 +138,7 @@ class FPController extends RestfulController
         try{
             $id = $request->input('id');
             $status = $request->input('status');
-            
+
             $result = $this->fpService->updateStatus($id, $status);
             if($result['status']==false){
                 return $this->_error($result['message']);

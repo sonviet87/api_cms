@@ -37,6 +37,9 @@ return new class extends Migration
             $table->string('status')->default(0);
             $table->string('selling')->default(0);
             $table->string('margin')->default(0);
+            $table->string('total_sell')->default(0);
+            $table->string('net_profit')->default(0);
+            $table->string('net_profit_percent')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

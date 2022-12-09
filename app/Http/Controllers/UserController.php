@@ -21,6 +21,11 @@ class UserController extends RestfulController
         $this->roleService = $roleService;
         $this->userService = $userService;
         $this->user = $userInterface;
+
+        $this->middleware(['permission:user-delete'])->only('destroy');
+        $this->middleware(['permission:user-create'])->only('store');
+        $this->middleware(['permission:user-edit'])->only('update');
+        $this->middleware(['permission:user-list'])->only('index');
     }
     /**
      * Get all approved users with paginate
@@ -212,7 +217,7 @@ class UserController extends RestfulController
     public function getUser(){
        // dd(Auth::user()->roles->first()->permissions->pluck('name'));
        try{
-           
+
             $user = Auth::user()->first();
             return $this->_response([
                 'user' => $user,
@@ -222,7 +227,7 @@ class UserController extends RestfulController
        }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
-        
+
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace App\Services;
 
 
+use App\Constants\FPConst;
+use App\Constants\RolePermissionConst;
 use App\Interfaces\FPDetailInterface;
 use App\Interfaces\FPInterface;
 use Carbon\Carbon;
@@ -27,16 +29,28 @@ class FPService extends BaseService
         return $this->fp->getList();
     }
 
-    public function getListPaginate($perPage = 20)
+    public function getListPaginate($perPage = 20, $filter)
     {
-        return $this->fp->getListPaginate($perPage);
+
+        $role = Auth::user()->roles->pluck('name')->first();
+        if(!$role) return $this->_result(false, "Không tìm thấy user");
+
+        /*if($role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_ADMIN] ||  $role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_CEO] ||  $role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_Manager] ){
+            return $this->fp->getListPaginate($perPage, $filter);
+        }*/
+        if($role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_SALE]){
+            $filter['user_id'] = Auth::user()->id;
+        }
+       // dd(Auth::user()->roles->pluck('name')->first());
+        return $this->fp->getListPaginate($perPage, $filter);
+
     }
 
     public function createNew($data)
     {
         DB::beginTransaction();
         try {
-            
+
             $user = Auth::user();
             $details= $data['details'];
             $arrFPDetail= [];
@@ -51,11 +65,11 @@ class FPService extends BaseService
             $arrFP['tax']= Str::replace(",","",$arrFP["tax"]);
             $arrFP['bids_cost_percent']= Str::replace("%","",$arrFP["bids_cost_percent"]);
             $arrFP['commission_percent']= Str::replace("%","",$arrFP["commission_percent"]);
-           
+
             $fp = $this->fp->create($arrFP);
             $fp->code = 'FP'.$fp->id;
             $fp->save();
-           
+
             //create order detail
             foreach ($details as $key => $detail){
 
@@ -163,7 +177,7 @@ class FPService extends BaseService
     {
 
         $check = $this->fp->updateStatus($id,$status);
-       
+
         if (!$check) {
             return $this->_result(false, 'Lỗi');
         }
