@@ -36,6 +36,13 @@ return [
             'throw' => false,
         ],
 
+        'fp' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/fp'),
+            'url' => env('APP_URL').'/storage/fp',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
