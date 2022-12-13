@@ -158,8 +158,12 @@ class FPService extends BaseService
                 $arrFPDetail[$key]["file"] = $detail["file"] ? $detail["file"]: "" ;
                 $arrFPDetail[$key]["file_url"] = $detail["file_url"]?  $detail["file_url"]: "" ;
                 $arrFPDetail[$key]["created_at"] = Carbon::now();
-
-                $this->fpDetail->update($detail['id'],$arrFPDetail[$key]);
+                if(isset($detail['id'])){
+                    $this->fpDetail->update($detail['id'],$arrFPDetail[$key]);
+                }else{
+                    $this->fpDetail->create($arrFPDetail[$key]);
+                }
+                
             }
 
             /*$ids = $this->fpDetail->getIDS($id);
