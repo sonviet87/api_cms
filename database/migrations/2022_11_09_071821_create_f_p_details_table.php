@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('profit')->nullable();
             $table->string('total_buy')->nullable();
             $table->string('total_sell')->nullable();
+            $table->string('file')->nullable();
+            $table->string('file_url')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

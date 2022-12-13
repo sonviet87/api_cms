@@ -43,6 +43,12 @@ class FPResource extends JsonResource
             'account' => $this->account->name,
             'contact' => $this->contact->name,
             'contact_id' => $this->contact_id,
+            'file_customer_invoice' => $this->file_customer_invoice,
+            'file_customer_invoice_url' => $this->file_customer_invoice_url,
+            'file_company_receipt' => $this->file_company_receipt,
+            'file_company_receipt_url' => $this->file_company_receipt_url,
+            'file_bbbg' => $this->file_bbbg,
+            'file_bbbg_url' => $this->file_bbbg_url,
             'created_at' => $this->created_at,
             'details' => new FPDetailsCollection($this->fp_details()->get())
         ];

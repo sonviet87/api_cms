@@ -25,6 +25,7 @@ class UploadController extends RestfulController
             }
             $images = $request->file('file_url');
             $file = $this->fileService->uploadStorage($images);
+            $this->_response('tesst');
             return $this->_response($file);
 
 

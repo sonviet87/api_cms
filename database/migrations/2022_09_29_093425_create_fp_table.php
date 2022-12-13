@@ -40,6 +40,12 @@ return new class extends Migration
             $table->string('total_sell')->default(0);
             $table->string('net_profit')->default(0);
             $table->string('net_profit_percent')->default(0);
+            $table->string('file_customer_invoice')->nullable();
+            $table->string('file_company_receipt')->nullable();
+            $table->string('file_bbbg')->nullable();
+            $table->string('file_customer_invoice_url')->nullable();
+            $table->string('file_company_receipt_url')->nullable();
+            $table->string('file_bbbg_url')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

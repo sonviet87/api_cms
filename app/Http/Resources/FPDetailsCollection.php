@@ -31,6 +31,8 @@ class FPDetailsCollection extends ResourceCollection
                     'profit' => $page->profit,
                     'total_sell' => $page->total_sell,
                     'total_buy' => $page->total_buy,
+                    'file' => $page->file,
+                    'file_url' => $page->file_url,
 
                 ];
             });

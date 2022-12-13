@@ -65,7 +65,9 @@ class FPService extends BaseService
             $arrFP['tax']= Str::replace(",","",$arrFP["tax"]);
             $arrFP['bids_cost_percent']= Str::replace("%","",$arrFP["bids_cost_percent"]);
             $arrFP['commission_percent']= Str::replace("%","",$arrFP["commission_percent"]);
-
+            $arrFP['file_customer_invoice']= $arrFP["file_customer_invoice"]?  $arrFP["file_customer_invoice"]: "" ;
+            $arrFP['file_company_receipt']= $arrFP["file_company_receipt"]?  $arrFP["file_company_receipt"]: "" ;
+            $arrFP['file_bbbg']= $arrFP["file_bbbg"]?  $arrFP["file_bbbg"]: "" ;
             $fp = $this->fp->create($arrFP);
             $fp->code = 'FP'.$fp->id;
             $fp->save();
@@ -82,6 +84,8 @@ class FPService extends BaseService
                 $arrFPDetail[$key]["qty"] = $detail["qty"];
                 $arrFPDetail[$key]["category_id"] = $detail["category_id"];
                 $arrFPDetail[$key]["supplier_id"] = $detail["supplier_id"];
+                $arrFPDetail[$key]["file"] = $detail["file"] ? $detail["file"]: "" ;
+                $arrFPDetail[$key]["file_url"] = $detail["file_url"]?  $detail["file_url"]: "" ;
                 $arrFPDetail[$key]["created_at"] = Carbon::now();
             }
 
@@ -135,6 +139,9 @@ class FPService extends BaseService
             $arrFP['tax']= Str::replace(",","",$arrFP["tax"]);
             $arrFP['bids_cost_percent']= Str::replace("%","",$arrFP["bids_cost_percent"]);
             $arrFP['commission_percent']= Str::replace("%","",$arrFP["commission_percent"]);
+            $arrFP['file_customer_invoice']= $arrFP["file_customer_invoice"]?  $arrFP["file_customer_invoice"]: "" ;
+            $arrFP['file_company_receipt']= $arrFP["file_company_receipt"]?  $arrFP["file_company_receipt"]: "" ;
+            $arrFP['file_bbbg']= $arrFP["file_bbbg"]?  $arrFP["file_bbbg"]: "" ;
 
             $fp = $this->fp->update($id,$arrFP);
             //create order detail
@@ -148,12 +155,16 @@ class FPService extends BaseService
                 $arrFPDetail[$key]["qty"] = $detail["qty"];
                 $arrFPDetail[$key]["category_id"] = $detail["category_id"];
                 $arrFPDetail[$key]["supplier_id"] = $detail["supplier_id"];
+                $arrFPDetail[$key]["file"] = $detail["file"] ? $detail["file"]: "" ;
+                $arrFPDetail[$key]["file_url"] = $detail["file_url"]?  $detail["file_url"]: "" ;
                 $arrFPDetail[$key]["created_at"] = Carbon::now();
+
+                $this->fpDetail->update($detail['id'],$arrFPDetail[$key]);
             }
 
-            $ids = $this->fpDetail->getIDS($id);
+            /*$ids = $this->fpDetail->getIDS($id);
             $this->fpDetail->destroy($ids);
-            $this->fpDetail->create($arrFPDetail);
+            $this->fpDetail->create($arrFPDetail);*/
             DB::commit();
             return $this->_result(true, trans('Cập nhật phương án kinh doanh thành công'), [
                 'fp' => $fp
