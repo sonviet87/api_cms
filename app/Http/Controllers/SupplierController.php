@@ -17,10 +17,10 @@ class SupplierController extends RestfulController
         parent::__construct();
         $this->supplierService = $supplierService;
         //$this->middleware(['permission:account-list|account-create|account-edit|account-delete']);
-       /* $this->middleware(['permission:supplier-delete'])->only('destroy');
+        $this->middleware(['permission:supplier-delete'])->only('destroy');
         $this->middleware(['permission:supplier-create'])->only('store');
         $this->middleware(['permission:supplier-edit'])->only('update');
-        $this->middleware(['permission:supplier-list'])->only('index');*/
+        $this->middleware(['permission:supplier-list'])->only('index');
     }
 
     /**

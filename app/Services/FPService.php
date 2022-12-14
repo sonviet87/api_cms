@@ -65,9 +65,12 @@ class FPService extends BaseService
             $arrFP['tax']= Str::replace(",","",$arrFP["tax"]);
             $arrFP['bids_cost_percent']= Str::replace("%","",$arrFP["bids_cost_percent"]);
             $arrFP['commission_percent']= Str::replace("%","",$arrFP["commission_percent"]);
-            $arrFP['file_customer_invoice']= $arrFP["file_customer_invoice"]?  $arrFP["file_customer_invoice"]: "" ;
-            $arrFP['file_company_receipt']= $arrFP["file_company_receipt"]?  $arrFP["file_company_receipt"]: "" ;
-            $arrFP['file_bbbg']= $arrFP["file_bbbg"]?  $arrFP["file_bbbg"]: "" ;
+            $arrFP['file_customer_invoice']= isset($arrFP["file_customer_invoice"])?  $arrFP["file_customer_invoice"]: "" ;
+            $arrFP['file_company_receipt']= isset($arrFP["file_company_receipt"])?  $arrFP["file_company_receipt"]: "" ;
+            $arrFP['file_bbbg']= isset($arrFP["file_bbbg"])?  $arrFP["file_bbbg"]: "" ;
+            $arrFP['file_customer_invoice_url']= isset($arrFP["file_customer_invoice_url"]) ?  $arrFP["file_customer_invoice_url"]: "" ;
+            $arrFP['file_company_receipt_url']= isset($arrFP["file_company_receipt_url"])?  $arrFP["file_company_receipt_url"]: "" ;
+            $arrFP['file_bbbg_url']= isset($arrFP["file_bbbg_url"]) ?  $arrFP["file_bbbg_url"]: "" ;
             $fp = $this->fp->create($arrFP);
             $fp->code = 'FP'.$fp->id;
             $fp->save();
@@ -139,9 +142,12 @@ class FPService extends BaseService
             $arrFP['tax']= Str::replace(",","",$arrFP["tax"]);
             $arrFP['bids_cost_percent']= Str::replace("%","",$arrFP["bids_cost_percent"]);
             $arrFP['commission_percent']= Str::replace("%","",$arrFP["commission_percent"]);
-            $arrFP['file_customer_invoice']= $arrFP["file_customer_invoice"]?  $arrFP["file_customer_invoice"]: "" ;
-            $arrFP['file_company_receipt']= $arrFP["file_company_receipt"]?  $arrFP["file_company_receipt"]: "" ;
-            $arrFP['file_bbbg']= $arrFP["file_bbbg"]?  $arrFP["file_bbbg"]: "" ;
+            $arrFP['file_customer_invoice']= isset($arrFP["file_customer_invoice"])?  $arrFP["file_customer_invoice"]: "" ;
+            $arrFP['file_company_receipt']= isset($arrFP["file_company_receipt"])?  $arrFP["file_company_receipt"]: "" ;
+            $arrFP['file_bbbg']= isset($arrFP["file_bbbg"])?  $arrFP["file_bbbg"]: "" ;
+            $arrFP['file_customer_invoice_url']= isset($arrFP["file_customer_invoice_url"]) ?  $arrFP["file_customer_invoice_url"]: "" ;
+            $arrFP['file_company_receipt_url']= isset($arrFP["file_company_receipt_url"])?  $arrFP["file_company_receipt_url"]: "" ;
+            $arrFP['file_bbbg_url']= isset($arrFP["file_bbbg_url"]) ?  $arrFP["file_bbbg_url"]: "" ;
 
             $fp = $this->fp->update($id,$arrFP);
             //create order detail
@@ -163,7 +169,7 @@ class FPService extends BaseService
                 }else{
                     $this->fpDetail->create($arrFPDetail[$key]);
                 }
-                
+
             }
 
             /*$ids = $this->fpDetail->getIDS($id);

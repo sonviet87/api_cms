@@ -45,6 +45,20 @@ class AccountController extends RestfulController
         }
     }
     /**
+     * Get all approved products with paginate
+     * @return mixed
+     */
+    public function list(Request $request)
+    {
+        try {
+
+            $accounts = $this->accountService->getList();
+            return new AccountCollection($accounts);
+        } catch (\Exception $e) {
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+    /**
      * Get contact by id
      * @return mixed
      */

@@ -47,6 +47,20 @@ class FPController extends RestfulController
     }
 
     /**
+     * Get all approved products with paginate
+     * @return mixed
+     */
+    public function list(Request $request)
+    {
+        try {
+            $suppliers = $this->fpService->getList();
+            return new FPCollection($suppliers);
+        } catch (\Exception $e) {
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    /**
      * Create a Account
      * @return mixed
      */

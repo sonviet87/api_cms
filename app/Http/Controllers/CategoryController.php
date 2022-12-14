@@ -15,10 +15,10 @@ class CategoryController extends RestfulController
         parent::__construct();
         $this->categoryService = $categoryService;
         //$this->middleware(['permission:account-list|account-create|account-edit|account-delete']);
-       /* $this->middleware(['permission:category-delete'])->only('destroy');
+        $this->middleware(['permission:category-delete'])->only('destroy');
         $this->middleware(['permission:category-create'])->only('store');
         $this->middleware(['permission:category-edit'])->only('update');
-        $this->middleware(['permission:category-list'])->only('index');*/
+        $this->middleware(['permission:category-list'])->only('index');
     }
 
     /**
@@ -30,6 +30,22 @@ class CategoryController extends RestfulController
         try {
             $perPage = $request->input("per_page", 20);
             $cateogries = $this->categoryService->getListPaginate($perPage);
+
+            return new CategoryCollection($cateogries);
+        } catch (\Exception $e) {
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    /**
+     * Get all approved products with paginate
+     * @return mixed
+     */
+    public function list(Request $request)
+    {
+        try {
+
+            $cateogries = $this->categoryService->getList();
 
             return new CategoryCollection($cateogries);
         } catch (\Exception $e) {

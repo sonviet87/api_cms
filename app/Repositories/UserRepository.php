@@ -16,7 +16,7 @@ class UserRepository implements UserInterface {
     }
 
     public function getList(){
-        return $this->model->where('id','<>',1)->all();
+        return $this->model->where('id','<>',1)->get();
     }
 
     public function getUserByEmail($email){

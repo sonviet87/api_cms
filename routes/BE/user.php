@@ -1,6 +1,7 @@
 <?php
 
 Route::get('users', 'UserController@index');
+Route::get('users/getList', 'UserController@list');
 Route::get('users/{id}', 'UserController@show');
 Route::post('users', 'UserController@store');
 Route::put('users/{id}', 'UserController@update');

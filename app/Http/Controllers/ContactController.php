@@ -15,10 +15,10 @@ class ContactController extends RestfulController
         parent::__construct();
         $this->contactService = $contactService;
         //$this->middleware(['permission:account-list|account-create|account-edit|account-delete']);
-       /* $this->middleware(['permission:contact-delete'])->only('destroy');
+       $this->middleware(['permission:contact-delete'])->only('destroy');
         $this->middleware(['permission:contact-create'])->only('store');
         $this->middleware(['permission:contact-edit'])->only('update');
-        $this->middleware(['permission:contact-list'])->only('index');*/
+        $this->middleware(['permission:contact-list'])->only('index');
     }
 
     /**
@@ -35,7 +35,20 @@ class ContactController extends RestfulController
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
     }
+    /**
+     * Get all
+     * @return mixed
+     */
+    public function list(Request $request)
+    {
+        try {
 
+            $contacts = $this->contactService->getList();
+            return new ContactCollection($contacts);
+        } catch (\Exception $e) {
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
 
 
     /**

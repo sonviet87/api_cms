@@ -55,6 +55,19 @@ class UserController extends RestfulController
     }
 
     /**
+     * Get all
+     * @return mixed
+     */
+    public function list(Request $request){
+        try{
+            $users = $this->userService->getList();
+            return  new UserCollection($users);
+        }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    /**
     * Register a client
     * @return array
     */
@@ -218,7 +231,7 @@ class UserController extends RestfulController
        // dd(Auth::user()->roles->first()->permissions->pluck('name'));
        try{
 
-            $user = Auth::user()->first();
+            $user = Auth::user();
             return $this->_response([
                 'user' => $user,
                 'roles' => Auth::user()->roles->first()->permissions->pluck('name')
