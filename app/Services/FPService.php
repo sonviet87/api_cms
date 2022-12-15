@@ -3,7 +3,7 @@
 namespace App\Services;
 
 
-use App\Constants\FPConst;
+
 use App\Constants\RolePermissionConst;
 use App\Interfaces\FPDetailInterface;
 use App\Interfaces\FPInterface;
@@ -202,7 +202,10 @@ class FPService extends BaseService
         if (!$check) {
             return $this->_result(false, 'Lỗi');
         }
-        return $this->_result(true, 'Cập nhật thành công');
+        $fp= $this->fp->getByID($id);
+
+        $data = ['id'=>$id , 'name' => $fp->name,'email_assgin' => $fp->user_assign,'status'=>$fp->status ];
+        return $this->_result(true, 'Cập nhật thành công',$data);
     }
 
 }

@@ -6,9 +6,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\FPCollection;
 use App\Http\Resources\FPResource;
 use App\Http\Resources\SupplierCollection;
+use App\Mail\MailNotify;
 use App\Services\FPService;
 use App\Services\SupplierService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class FPController extends RestfulController
 {
@@ -154,8 +156,13 @@ class FPController extends RestfulController
             $status = $request->input('status');
 
             $result = $this->fpService->updateStatus($id, $status);
+
             if($result['status']==false){
                 return $this->_error($result['message']);
+            }
+
+            if($result['status']){
+                Mail::to('sonviet87@gmail.com')->send(new MailNotify($result['data']));
             }
             return $this->_success($result['message']);
         }catch(\Exception $e){
