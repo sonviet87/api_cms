@@ -18,7 +18,6 @@ class SupplierListCollection extends ResourceCollection
     {
 
         return $this->collection->transform(function ($page) {
-
                 return [
                     'id' => $page->id,
                     'name' => $page->company,
@@ -27,7 +26,7 @@ class SupplierListCollection extends ResourceCollection
                     'account' => $page->account,
                     'phone' => $page->phone,
                     'email' => $page->email,
-
+                    'user' => $page->user->name,
                 ];
             });
 

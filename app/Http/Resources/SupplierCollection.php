@@ -27,6 +27,8 @@ class SupplierCollection extends ResourceCollection
                     'account' => $page->account,
                     'phone' => $page->phone,
                     'email' => $page->email,
+                    'user_id' => $page->user_id,
+                    'user' => $page->user->name,
 
                 ];
             });

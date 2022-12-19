@@ -16,7 +16,7 @@ class SupplierRepository implements SupplierInterface {
     }
 
     public function getListPaginate($perPage = 20){
-        return $this->model->orderBy('created_at', 'desc')->paginate($perPage);
+        return $this->model->with('user')->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function create($data){

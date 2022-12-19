@@ -55,7 +55,7 @@ class FPRepository implements FPInterface {
 
     public function updateStatus($id, $status){
         $fp = $this->model->find($id);
-        if($status == FPConst::STATUS_CONTRACT){
+        if($status == FPConst::STATUS_COMPLETED){
             $fp->selling = $fp->total_sell;
             $fp->margin = $fp->net_profit;
             $fp->save();

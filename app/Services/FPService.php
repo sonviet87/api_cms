@@ -94,9 +94,10 @@ class FPService extends BaseService
 
             $this->fpDetail->create($arrFPDetail);
             DB::commit();
-            return $this->_result(true, trans('Tạo phương án kinh doanh thành công'), [
-                'fp' => $fp
-            ]);
+            $data = ['id'=>$fp->id , 'name' => $fp->name,'email_assgin' => $fp->userAssign->email,'status'=>$fp->status ];
+            return $this->_result(true, trans('Tạo phương án kinh doanh thành công'),
+                $data
+            );
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->_result(false, $e->getMessage());
@@ -115,18 +116,6 @@ class FPService extends BaseService
 
     public function update($id, $data)
     {
-       /* $fpRS = $this->fp->getByID($id);
-        if (!$fpRS) {
-            return $this->_result(false, 'Not found!');
-        }*/
-
-
-//        $result = $this->fp->update($id, $data);
-//        if (!$result) {
-//            return $this->_result(false, 'Updated failed');
-//        }
-//        return $this->_result(true, 'Updated successfully');
-
         DB::beginTransaction();
         try {
             $details= $data['details'];
@@ -172,9 +161,6 @@ class FPService extends BaseService
 
             }
 
-            /*$ids = $this->fpDetail->getIDS($id);
-            $this->fpDetail->destroy($ids);
-            $this->fpDetail->create($arrFPDetail);*/
             DB::commit();
             return $this->_result(true, trans('Cập nhật phương án kinh doanh thành công'), [
                 'fp' => $fp
@@ -204,7 +190,7 @@ class FPService extends BaseService
         }
         $fp= $this->fp->getByID($id);
 
-        $data = ['id'=>$id , 'name' => $fp->name,'email_assgin' => $fp->user_assign,'status'=>$fp->status ];
+        $data = ['id'=>$id , 'name' => $fp->name,'email_assgin' => $fp->userAssign->email,'status'=>$fp->status ];
         return $this->_result(true, 'Cập nhật thành công',$data);
     }
 

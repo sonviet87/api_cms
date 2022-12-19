@@ -12,11 +12,11 @@ class RoleRepository implements RoleInterface {
     }
 
     public function getList(){
-        return $this->model->all();
+        return $this->model->where('id','<>',1)->get();
     }
 
     public function getListPaginate($perPage = 20){
-        return $this->model->orderBy('created_at', 'desc')->paginate($perPage);
+        return $this->model->where('id','<>',1)->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function create($roleName,$permissions){

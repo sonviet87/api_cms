@@ -63,7 +63,9 @@ class PermissionSeeder extends Seeder
             'fp-approved-sale',
             'fp-create',
             'fp-edit',
-            'fp-delete'
+            'fp-delete',
+            'fp-is-sale',
+
         ];
 
         foreach ($permissions as $permission) {

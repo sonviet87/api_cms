@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,7 +24,7 @@ class SupplierFactory extends Factory
             'account' => fake()->name(),
             'phone' => fake()->phoneNumber(),
             'email' => fake()->email(),
-           
+            'user_id' =>User::all()->random()->id
         ];
     }
 }
