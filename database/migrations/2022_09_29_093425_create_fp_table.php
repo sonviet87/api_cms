@@ -46,6 +46,7 @@ return new class extends Migration
             $table->string('file_customer_invoice_url')->nullable();
             $table->string('file_company_receipt_url')->nullable();
             $table->string('file_bbbg_url')->nullable();
+            $table->text('file_ncc')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

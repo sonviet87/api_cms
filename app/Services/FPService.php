@@ -71,6 +71,7 @@ class FPService extends BaseService
             $arrFP['file_customer_invoice_url']= isset($arrFP["file_customer_invoice_url"]) ?  $arrFP["file_customer_invoice_url"]: "" ;
             $arrFP['file_company_receipt_url']= isset($arrFP["file_company_receipt_url"])?  $arrFP["file_company_receipt_url"]: "" ;
             $arrFP['file_bbbg_url']= isset($arrFP["file_bbbg_url"]) ?  $arrFP["file_bbbg_url"]: "" ;
+            $arrFP['file_ncc']= isset($arrFP["file_ncc"]) ?  $arrFP["file_ncc"]: "" ;
             $fp = $this->fp->create($arrFP);
             $fp->code = 'FP'.$fp->id;
             $fp->save();
@@ -137,7 +138,7 @@ class FPService extends BaseService
             $arrFP['file_customer_invoice_url']= isset($arrFP["file_customer_invoice_url"]) ?  $arrFP["file_customer_invoice_url"]: "" ;
             $arrFP['file_company_receipt_url']= isset($arrFP["file_company_receipt_url"])?  $arrFP["file_company_receipt_url"]: "" ;
             $arrFP['file_bbbg_url']= isset($arrFP["file_bbbg_url"]) ?  $arrFP["file_bbbg_url"]: "" ;
-
+            $arrFP['file_ncc']= isset($arrFP["file_ncc"]) ?  $arrFP["file_ncc"]: "" ;
             $fp = $this->fp->update($id,$arrFP);
             //create order detail
             foreach ($details as $key => $detail){

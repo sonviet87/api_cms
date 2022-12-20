@@ -49,6 +49,7 @@ class FPResource extends JsonResource
             'file_company_receipt_url' => $this->file_company_receipt_url,
             'file_bbbg' => $this->file_bbbg,
             'file_bbbg_url' => $this->file_bbbg_url,
+            'file_ncc' => $this->file_ncc,
             'created_at' => $this->created_at,
             'details' => new FPDetailsCollection($this->fp_details()->get())
         ];

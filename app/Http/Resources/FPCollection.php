@@ -39,7 +39,7 @@ class FPCollection extends ResourceCollection
                     'account' => $page->account?->name,
                     'contact' => $page->contact?->name,
                     'created_at' => $page->created_at,
-
+                    'status_code' => $page->status,
                 ];
             });
 
