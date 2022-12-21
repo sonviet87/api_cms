@@ -51,7 +51,10 @@ class FPResource extends JsonResource
             'file_bbbg_url' => $this->file_bbbg_url,
             'file_ncc' => $this->file_ncc,
             'created_at' => $this->created_at,
-            'details' => new FPDetailsCollection($this->fp_details()->get())
+            'details' => new FPDetailsCollection($this->fp_details()->get()),
+            'date_invoice' => date('d-m-Y', strtotime($this->date_invoice)),
+            'date_shipping' => date('d-m-Y', strtotime($this->date_shipping)),
+            'number_invoice' => $this->number_invoice,
         ];
     }
 

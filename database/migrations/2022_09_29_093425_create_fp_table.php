@@ -47,6 +47,9 @@ return new class extends Migration
             $table->string('file_company_receipt_url')->nullable();
             $table->string('file_bbbg_url')->nullable();
             $table->text('file_ncc')->nullable();
+            $table->string('number_invoice')->nullable();
+            $table->timestamp('date_invoice')->nullable();
+            $table->timestamp('date_shipping')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

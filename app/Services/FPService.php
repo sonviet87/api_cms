@@ -72,6 +72,9 @@ class FPService extends BaseService
             $arrFP['file_company_receipt_url']= isset($arrFP["file_company_receipt_url"])?  $arrFP["file_company_receipt_url"]: "" ;
             $arrFP['file_bbbg_url']= isset($arrFP["file_bbbg_url"]) ?  $arrFP["file_bbbg_url"]: "" ;
             $arrFP['file_ncc']= isset($arrFP["file_ncc"]) ?  $arrFP["file_ncc"]: "" ;
+            if(isset($arrFP["date_invoice"])) $arrFP['date_invoice'] =  date('YYYY-MM-DD H:i:s', strtotime($arrFP["date_invoice"]));
+            if(isset($arrFP["date_shipping"])) $arrFP['date_shipping'] = date('YYYY-MM-DD H:i:s', strtotime($arrFP["date_shipping"]));
+            if(isset($arrFP["number_invoice"])) $arrFP['number_invoice'] = $arrFP["number_invoice"];
             $fp = $this->fp->create($arrFP);
             $fp->code = 'FP'.$fp->id;
             $fp->save();
@@ -139,6 +142,9 @@ class FPService extends BaseService
             $arrFP['file_company_receipt_url']= isset($arrFP["file_company_receipt_url"])?  $arrFP["file_company_receipt_url"]: "" ;
             $arrFP['file_bbbg_url']= isset($arrFP["file_bbbg_url"]) ?  $arrFP["file_bbbg_url"]: "" ;
             $arrFP['file_ncc']= isset($arrFP["file_ncc"]) ?  $arrFP["file_ncc"]: "" ;
+            if(isset($arrFP["date_invoice"])) $arrFP['date_invoice'] = $arrFP["date_invoice"];
+            if(isset($arrFP["date_invoice"])) $arrFP['date_invoice'] = $arrFP["date_invoice"];
+            if(isset($arrFP["number_invoice"])) $arrFP['number_invoice'] = $arrFP["number_invoice"];
             $fp = $this->fp->update($id,$arrFP);
             //create order detail
             foreach ($details as $key => $detail){
