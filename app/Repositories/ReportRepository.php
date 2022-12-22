@@ -21,8 +21,8 @@ class ReportRepository implements ReportInterface {
                 $query = $query->where('status', $filter['type_fp']) ;
             }
             if (isset($filter['startDay']) && $filter['startDay'] != '' && isset($filter['endDay']) && $filter['endDay'] != '') {
-                $statDay = date('Y-m-d', strtotime($filter['startDay']));
-                $endDay = date('Y-m-d', strtotime($filter['endDay']));
+                $statDay = date('Y-m-d H:i:s',strtotime($filter['startDay']));
+                $endDay = date('Y-m-d H:i:s', strtotime($filter['endDay']));
                 $query = $query->whereDate('created_at','>=' ,$statDay)->whereDate('created_at','<=' ,$endDay);
             }
         }

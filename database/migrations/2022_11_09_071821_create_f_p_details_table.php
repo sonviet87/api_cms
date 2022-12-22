@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('file')->nullable();
             $table->string('file_url')->nullable();
             $table->string('number_invoice')->nullable();
-            $table->timestamp('date_invoice')->nullable();
+            $table->dateTime('date_invoice')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

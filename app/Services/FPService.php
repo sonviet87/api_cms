@@ -72,8 +72,8 @@ class FPService extends BaseService
             $arrFP['file_company_receipt_url']= isset($arrFP["file_company_receipt_url"])?  $arrFP["file_company_receipt_url"]: "" ;
             $arrFP['file_bbbg_url']= isset($arrFP["file_bbbg_url"]) ?  $arrFP["file_bbbg_url"]: "" ;
             $arrFP['file_ncc']= isset($arrFP["file_ncc"]) ?  $arrFP["file_ncc"]: "" ;
-            if(isset($arrFP["date_invoice"])) $arrFP['date_invoice'] =  date('YYYY-MM-DD H:i:s', strtotime($arrFP["date_invoice"]));
-            if(isset($arrFP["date_shipping"])) $arrFP['date_shipping'] = date('YYYY-MM-DD H:i:s', strtotime($arrFP["date_shipping"]));
+            if(isset($arrFP["date_invoice"])) $arrFP['date_invoice'] =  date('Y-m-d H:i:s', strtotime($arrFP["date_invoice"]));
+            if(isset($arrFP["date_shipping"])) $arrFP['date_shipping'] = date('Y-m-d H:i:s', strtotime($arrFP["date_shipping"]));
             if(isset($arrFP["number_invoice"])) $arrFP['number_invoice'] = $arrFP["number_invoice"];
             $fp = $this->fp->create($arrFP);
             $fp->code = 'FP'.$fp->id;
@@ -93,6 +93,9 @@ class FPService extends BaseService
                 $arrFPDetail[$key]["supplier_id"] = $detail["supplier_id"];
                 $arrFPDetail[$key]["file"] = $detail["file"] ? $detail["file"]: "" ;
                 $arrFPDetail[$key]["file_url"] = $detail["file_url"]?  $detail["file_url"]: "" ;
+
+                if(isset($arrFP[$key]["date_invoice"])) $arrFPDetail[$key]["date_invoice"] =  date('Y-m-d H:i:s', strtotime($detail["date_invoice"]));
+                $arrFPDetail[$key]["number_invoice"]=  $detail['number_invoice'] ;
                 $arrFPDetail[$key]["created_at"] = Carbon::now();
             }
 
@@ -142,8 +145,8 @@ class FPService extends BaseService
             $arrFP['file_company_receipt_url']= isset($arrFP["file_company_receipt_url"])?  $arrFP["file_company_receipt_url"]: "" ;
             $arrFP['file_bbbg_url']= isset($arrFP["file_bbbg_url"]) ?  $arrFP["file_bbbg_url"]: "" ;
             $arrFP['file_ncc']= isset($arrFP["file_ncc"]) ?  $arrFP["file_ncc"]: "" ;
-            if(isset($arrFP["date_invoice"])) $arrFP['date_invoice'] = $arrFP["date_invoice"];
-            if(isset($arrFP["date_invoice"])) $arrFP['date_invoice'] = $arrFP["date_invoice"];
+            if(isset($arrFP["date_invoice"])) $arrFP['date_invoice'] =  date('Y-m-d H:i:s', strtotime($arrFP["date_invoice"]));
+            if(isset($arrFP["date_shipping"])) $arrFP['date_shipping'] = date('Y-m-d H:i:s', strtotime($arrFP["date_shipping"]));
             if(isset($arrFP["number_invoice"])) $arrFP['number_invoice'] = $arrFP["number_invoice"];
             $fp = $this->fp->update($id,$arrFP);
             //create order detail
@@ -159,6 +162,8 @@ class FPService extends BaseService
                 $arrFPDetail[$key]["supplier_id"] = $detail["supplier_id"];
                 $arrFPDetail[$key]["file"] = $detail["file"] ? $detail["file"]: "" ;
                 $arrFPDetail[$key]["file_url"] = $detail["file_url"]?  $detail["file_url"]: "" ;
+                if(isset($arrFP[$key]["date_invoice"])) $arrFPDetail[$key]["date_invoice"] =  date('Y-m-d H:i:s', strtotime($detail["date_invoice"]));
+                $arrFPDetail[$key]["number_invoice"]=  $detail['number_invoice'] ;
                 $arrFPDetail[$key]["created_at"] = Carbon::now();
                 if(isset($detail['id'])){
                     $this->fpDetail->update($detail['id'],$arrFPDetail[$key]);
