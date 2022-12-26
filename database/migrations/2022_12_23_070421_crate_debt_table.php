@@ -24,7 +24,8 @@ return new class extends Migration
             $table->string('deposit_percent')->nullable();
             $table->string('debt_percent')->nullable();
             $table->string('total_debt')->nullable();
-            $table->string('isDebt')->nullable();
+            $table->string('isDone')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
