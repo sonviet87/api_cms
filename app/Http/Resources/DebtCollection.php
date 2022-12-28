@@ -27,7 +27,10 @@ class DebtCollection extends ResourceCollection
                     'pay_second' => $page->deployment_costs,
                     'deposit_percent' => $page->interest,
                     'debt_percent' => $page->commission,
-                    'total_debt' => $page->tax,
+                    'number_date_over' => $page->number_date_over,
+                    'total_debt' => $page->total_debt,
+                    'isDone_number' => $page->isDone,
+                    'isDone' => $page->isDone == 2 ? "Chưa thu" : "Đã thu xong",
                     'fp_id' => new FPResource($page->fp()->first()),
 
                 ];

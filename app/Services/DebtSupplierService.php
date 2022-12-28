@@ -4,30 +4,36 @@ namespace App\Services;
 
 
 
-use App\Constants\RolePermissionConst;
-use App\Interfaces\DebtInterface;
-use App\Interfaces\FPDetailInterface;
-use App\Interfaces\FPInterface;
-use Carbon\Carbon;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
-class DebtService extends BaseService
+
+use App\Interfaces\DebtSupplierInterface;
+use App\Interfaces\FPDetailInterface;
+
+class DebtSupplierService extends BaseService
 {
     protected $debt;
     protected $fpDetail;
 
-    function __construct(DebtInterface $debt)
+    function __construct(DebtSupplierInterface $debt, FPDetailInterface $fpDetail)
     {
         $this->debt = $debt;
+        $this->fpDetail = $fpDetail;
 
     }
 
     public function getList()
     {
         return $this->debt->getList();
+    }
+
+    public function getSupplierbyIDFP($idSupplier,$idFP){
+
+        return $this->fpDetail->getSupplierbyIDFP($idSupplier,$idFP);
+    }
+
+    public function getListSupplierbyIDFP($idFP){
+
+        return $this->fpDetail->getListSupplierbyIDFP($idFP);
     }
 
     public function getListPaginate($perPage = 20, $filter)

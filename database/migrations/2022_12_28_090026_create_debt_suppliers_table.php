@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('debts', function (Blueprint $table) {
+        Schema::create('debt_suppliers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('fp_id');
+            $table->unsignedBigInteger('supplier_id');
             $table->dateTime('date_over')->nullable();
             $table->string('number_date_over')->nullable();
             $table->string('name')->nullable();
@@ -38,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('debts');
+        Schema::dropIfExists('debt_suppliers');
     }
 };

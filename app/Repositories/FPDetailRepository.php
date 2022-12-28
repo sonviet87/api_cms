@@ -23,6 +23,18 @@ class FPDetailRepository implements FPDetailInterface {
 
     }
 
+    public  function getListSupplierbyIDFP($fp_id){
+        $query = $this->model->distinct()->select('supplier_id')->where("fp_id",$fp_id)->get();
+       // dd($query->toSql() );
+        return $query ;
+
+
+    }
+
+    public  function getSupplierbyIDFP($supplier_id,$fp_id){
+        return $this->model->where("fp_id",$fp_id)->where("supplier_id",$supplier_id)->get();
+    }
+
     public function getIDS($id){
 
         return $this->model->where("fp_id",$id)->get()->pluck('id');

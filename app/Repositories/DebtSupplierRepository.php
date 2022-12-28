@@ -1,18 +1,16 @@
 <?php
 namespace App\Repositories;
 
-use App\Constants\FPConst;
-use App\Interfaces\DebtInterface;
-use App\Interfaces\FPInterface;
-use App\Models\Debt;
-use App\Models\FP;
-use App\Models\Supplier;
+use App\Interfaces\DebtSupplierInterface;
+use App\Models\DebtSupplier;
 
 
-class DebtRepository implements DebtInterface {
+
+class DebtSupplierRepository implements DebtSupplierInterface {
     protected $model;
-    function __construct(Debt $debt){
+    function __construct(DebtSupplier $debt){
         $this->model = $debt;
+
     }
 
     public function getList(){

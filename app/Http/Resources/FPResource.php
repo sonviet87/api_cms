@@ -17,6 +17,7 @@ class FPResource extends JsonResource
 
         return  [
             'id' => $this->id,
+            'code' => $this->code,
             'name' =>$this->name,
             'shipping_charges' => $this->shipping_charges,
             'shipping_charges_percent' => $this->shipping_charges_percent,

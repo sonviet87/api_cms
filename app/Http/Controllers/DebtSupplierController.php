@@ -5,16 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Resources\DebtCollection;
 
 use App\Http\Resources\DebtResource;
-use App\Http\Resources\FPResource;
-use App\Services\DebtService;
+use App\Http\Resources\DebtSupplierResource;
+use App\Services\DebtSupplierService;
 use Illuminate\Http\Request;
 
 
-class DebtController extends RestfulController
+class DebtSupplierController extends RestfulController
 {
     protected $debtService;
 
-    public function __construct(DebtService $debtService)
+    public function __construct(DebtSupplierService $debtService)
     {
         parent::__construct();
         $this->debtService = $debtService;
@@ -55,6 +55,48 @@ class DebtController extends RestfulController
         try {
             $debts = $this->debtService->getList();
             return new DebtCollection($debts);
+        } catch (\Exception $e) {
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    /**
+     * Get all approved products with paginate
+     * @return mixed
+     */
+    public function getSupplierbyIDFP(Request $request)
+    {
+        $this->validate($request, [
+            'fp_id' => 'bail|required',
+            'supplier_id' => 'bail|required',
+        ]);
+        try {
+            $supplier_id = $request->input("supplier_id");
+            $fp_id = $request->input("fp_id");
+
+            $debts = $this->debtService->getSupplierbyIDFP($supplier_id, $fp_id);
+            return $this->_response($debts);
+            //return new DebtCollection($debts);
+        } catch (\Exception $e) {
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    /**
+     * Get all approved products with paginate
+     * @return mixed
+     */
+    public function getListSupplierbyIDFP(Request $request)
+    {
+        $this->validate($request, [
+            'fp_id' => 'bail|required',
+        ]);
+        try {
+            $fp_id = $request->input("fp_id");
+            $debts = $this->debtService->getListSupplierbyIDFP( $fp_id);
+
+            //return $this->_response($debts);
+            return new DebtSupplierResource($debts);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
