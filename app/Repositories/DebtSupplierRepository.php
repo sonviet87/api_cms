@@ -39,7 +39,7 @@ class DebtSupplierRepository implements DebtSupplierInterface {
     }
 
     public function getByID($id){
-        return $this->model->find($id);
+        return $this->model->with('supplier')->find($id);
     }
 
     public function update($id, $data){

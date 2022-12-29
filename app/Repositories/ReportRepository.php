@@ -15,7 +15,7 @@ class ReportRepository implements ReportInterface {
         $query = $this->model;
         if(!empty($filter)) {
             if (isset($filter['user_id']) && $filter['user_id'] != '') {
-                $query = $query->where('user_id', $filter['user_id']) ;
+                $query = $query->where('user_assign', $filter['user_id']) ;
             }
             if (isset($filter['type_fp']) && $filter['type_fp'] != '') {
                 $query = $query->where('status', $filter['type_fp']) ;

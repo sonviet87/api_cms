@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Resources\DebtCollection;
 
 use App\Http\Resources\DebtResource;
+use App\Http\Resources\DebtSupplierCollection;
 use App\Http\Resources\DebtSupplierResource;
+use App\Http\Resources\FPDetailsCollection;
+use App\Http\Resources\FPResource;
 use App\Services\DebtSupplierService;
 use Illuminate\Http\Request;
 
@@ -75,8 +78,9 @@ class DebtSupplierController extends RestfulController
             $fp_id = $request->input("fp_id");
 
             $debts = $this->debtService->getSupplierbyIDFP($supplier_id, $fp_id);
-            return $this->_response($debts);
-            //return new DebtCollection($debts);
+           // dd($debts);
+           // return $this->_response($debts);
+            return new FPDetailsCollection($debts);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
@@ -95,8 +99,8 @@ class DebtSupplierController extends RestfulController
             $fp_id = $request->input("fp_id");
             $debts = $this->debtService->getListSupplierbyIDFP( $fp_id);
 
-            //return $this->_response($debts);
-            return new DebtSupplierResource($debts);
+           // return $this->_response($debts);
+            return new DebtSupplierCollection($debts);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
@@ -139,7 +143,7 @@ class DebtSupplierController extends RestfulController
                 return $this->_error($result['message']);
             }
            // return $this->_response($result['data']);
-            return  new DebtResource($result['data']);
+            return  new DebtSupplierResource($result['data']);
         }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }

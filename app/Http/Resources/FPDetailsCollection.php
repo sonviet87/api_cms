@@ -40,6 +40,11 @@ class FPDetailsCollection extends ResourceCollection
 
 
     }
-
+    public function with($request)
+    {
+        return [
+            'status' => true,
+        ];
+    }
 
 }

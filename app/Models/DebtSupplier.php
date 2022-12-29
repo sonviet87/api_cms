@@ -22,6 +22,9 @@ class DebtSupplier extends Model
     {
         return $this->belongsTo(FP::class);
     }
-
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class,'supplier_id')->withTrashed();;
+    }
 
 }
