@@ -21,7 +21,7 @@ class ReportService extends BaseService
 
     public function getListPaginate($perPage = 20, $filter)
     {
-
+        
         return $this->report->getListPaginate($perPage, $filter);
 
     }

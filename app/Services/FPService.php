@@ -94,8 +94,8 @@ class FPService extends BaseService
                 $arrFPDetail[$key]["file"] = $detail["file"] ? $detail["file"]: "" ;
                 $arrFPDetail[$key]["file_url"] = $detail["file_url"]?  $detail["file_url"]: "" ;
 
-                if(isset($arrFP[$key]["date_invoice"])) $arrFPDetail[$key]["date_invoice"] =  date('Y-m-d H:i:s', strtotime($detail["date_invoice"]));
-                $arrFPDetail[$key]["number_invoice"]=  $detail['number_invoice'] ;
+                if(isset($arrFPDetail[$key]["date_invoice"])) $arrFPDetail[$key]["date_invoice"] =  date('Y-m-d H:i:s', strtotime($detail["date_invoice"]));
+                if(isset($arrFPDetail[$key]["number_invoice"])) $arrFPDetail[$key]['number_invoice'] = $detail["number_invoice"];
                 $arrFPDetail[$key]["created_at"] = Carbon::now();
             }
 
@@ -162,8 +162,8 @@ class FPService extends BaseService
                 $arrFPDetail[$key]["supplier_id"] = $detail["supplier_id"];
                 $arrFPDetail[$key]["file"] = $detail["file"] ? $detail["file"]: "" ;
                 $arrFPDetail[$key]["file_url"] = $detail["file_url"]?  $detail["file_url"]: "" ;
-                if(isset($arrFP[$key]["date_invoice"])) $arrFPDetail[$key]["date_invoice"] =  date('Y-m-d H:i:s', strtotime($detail["date_invoice"]));
-                $arrFPDetail[$key]["number_invoice"]=  $detail['number_invoice'] ;
+                if(isset($arrFPDetail[$key]["date_invoice"])) $arrFPDetail[$key]["date_invoice"] =  date('Y-m-d H:i:s', strtotime($detail["date_invoice"]));
+                if(isset($arrFPDetail[$key]["number_invoice"])) $arrFPDetail[$key]['number_invoice'] = $detail["number_invoice"];
                 $arrFPDetail[$key]["created_at"] = Carbon::now();
                 if(isset($detail['id'])){
                     $this->fpDetail->update($detail['id'],$arrFPDetail[$key]);

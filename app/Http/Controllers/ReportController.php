@@ -28,15 +28,22 @@ class ReportController extends RestfulController
         try {
             $perPage = $request->input("per_page", 20);
             $user_id = $request->input("user_id", '');
+            $account_id = $request->input("account_id", '');
             $type_fp = $request->input("type_fp", '');
+            $category_id = $request->input("category_id", '');
             $startDay = $request->input("startDay", '');
             $endDay = $request->input("endDay", '');
+            $supplier_id = $request->input("supplier_id", '');
             $filter = [
                 'user_id'  => $user_id,
+                'account_id'  => $account_id,
                 'startDay'  => $startDay,
                 'endDay'  => $endDay,
                 'type_fp'  => $type_fp,
+                'category_id'  => $category_id,
+                'supplier_id'  => $supplier_id,
             ];
+      
             $reports = $this->reportService->getListPaginate($perPage, $filter);
 
             return new FPCollection($reports);

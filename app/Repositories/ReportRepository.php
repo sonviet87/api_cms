@@ -13,9 +13,31 @@ class ReportRepository implements ReportInterface {
 
     public function getListPaginate($perPage = 20,$filter = []){
         $query = $this->model;
+       
         if(!empty($filter)) {
             if (isset($filter['user_id']) && $filter['user_id'] != '') {
                 $query = $query->where('user_assign', $filter['user_id']) ;
+               
+            }
+            if (isset($filter['account_id']) && $filter['account_id'] != '') {
+                $query = $query->where('account_id', $filter['account_id']) ;
+               
+            }
+            if (isset($filter['type_fp']) && $filter['type_fp'] != '') {
+                $query = $query->where('status', $filter['type_fp']) ;
+               
+            }
+            if (isset($filter['category_id']) && $filter['category_id'] != '') {
+                $category_id = $filter['category_id'];
+                $query = $query->WhereHas('fp_details', function ($query) use ( $category_id){
+                    $query->where('category_id', $category_id);
+                }) ;
+            }
+            if (isset($filter['supplier_id']) && $filter['supplier_id'] != '') {
+                $supplier_id = $filter['supplier_id'];
+                $query = $query->WhereHas('fp_details', function ($query) use ( $supplier_id){
+                    $query->where('supplier_id', $supplier_id);
+                }) ;
             }
             if (isset($filter['type_fp']) && $filter['type_fp'] != '') {
                 $query = $query->where('status', $filter['type_fp']) ;
