@@ -16,11 +16,22 @@ class DebtSupplierCollection extends ResourceCollection
     {
         return $this->collection->transform(function ($page) {
 
-            return
-                 new SupplierResource($page->supplier)
+            return [
+                'id' => $page->id,
+                'name' => $page->name,
+                'date_over' => $page->date_over,
+                'pay_first' => $page->guest_costs,
+                'pay_second' => $page->deployment_costs,
+                'deposit_percent' => $page->interest,
+                'debt_percent' => $page->commission,
+                'number_date_over' => $page->number_date_over,
+                'total_debt' => $page->total_debt,
+                'isDone_number' => $page->isDone,
+                'isDone' => $page->isDone == 2 ? "Chưa thu" : "Đã thu xong",
+                'fp_code' => $page->fp->code,
+                'supplier' => $page->supplier->company
 
-
-            ;
+            ];
         });
 
     }

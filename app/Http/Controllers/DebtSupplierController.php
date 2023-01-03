@@ -43,7 +43,7 @@ class DebtSupplierController extends RestfulController
             ];
             $debts = $this->debtService->getListPaginate($perPage, $filter);
 
-            return new DebtCollection($debts);
+            return new DebtSupplierCollection($debts);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }

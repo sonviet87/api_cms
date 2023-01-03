@@ -23,4 +23,9 @@ class Supplier extends Model
         return $this->belongsTo(User::class)->withTrashed();
     }
 
+    public function details()
+    {
+        return $this->belongsTo(FPDetail::class)->withTrashed();
+    }
+
 }
