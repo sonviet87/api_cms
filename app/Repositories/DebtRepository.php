@@ -24,8 +24,10 @@ class DebtRepository implements DebtInterface {
         if(!empty($filter)) {
             if (isset($filter['search']) && $filter['search'] != '') {
                 $search = $filter['search'];
-                $query = $query->where('name', 'like', "%{$filter['search']}%")->orWhereHas('fp', function ($query) use ( $search){
-                    $query->where('code', 'like', '%'. $search.'%')->orWhereHas('account', function ($query) use ( $search){
+                $query = $query->where('name', 'like', "%{$filter['search']}%")
+                ->orWhereHas('fp', function ($query) use ( $search){
+                    $query->where('code', 'like', '%'. $search.'%')
+                    ->orWhereHas('account', function ($query) use ( $search){
                         $query->where('name', 'like', '%'. $search.'%');
                     }) ;;
                 }) ;
