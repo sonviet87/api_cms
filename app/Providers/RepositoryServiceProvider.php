@@ -21,6 +21,7 @@ class RepositoryServiceProvider extends ServiceProvider {
         $this->app->bind('App\Interfaces\DebtInterface', 'App\Repositories\DebtRepository');
         $this->app->bind('App\Interfaces\DebtSupplierInterface', 'App\Repositories\DebtSupplierRepository');
         $this->app->bind('App\Interfaces\ReportDebtFPInterface', 'App\Repositories\ReportDebtFPRepository');
+        $this->app->bind('App\Interfaces\ReportDebtSupplierInterface', 'App\Repositories\ReportDebtSupplierRepository');
 
     }
 }

@@ -1,12 +1,12 @@
 <?php
 namespace App\Repositories;
 
-use App\Interfaces\ReportDebtFPInterface;
-use App\Models\Debt;
+use App\Interfaces\ReportDebtSupplierInterface;
+use App\Models\DebtSupplier;
 
-class ReportDebtFPRepository implements ReportDebtFPInterface {
+class ReportDebtSupplierRepository implements ReportDebtSupplierInterface {
     protected $model;
-    function __construct(Debt $debt){
+    function __construct(DebtSupplier $debt){
         $this->model = $debt;
     }
 

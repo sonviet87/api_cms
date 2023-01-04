@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ReportDebtFPCollection;
-use App\Services\ReportDebtFPService;
+use App\Http\Resources\ReportDebtSupplierCollection;
+use App\Services\ReportDebtSupplierService;
 use Illuminate\Http\Request;
 
 
-class ReportDebtFPController extends RestfulController
+class ReportDebtSupplierController extends RestfulController
 {
-    protected $reportDebtFPService;
+    protected $reportDebtSupplierService;
 
-    public function __construct(ReportDebtFPService $reportDebtFPService)
+    public function __construct(ReportDebtSupplierService $reportDebtSupplierService)
     {
         parent::__construct();
-        $this->reportDebtFPService = $reportDebtFPService;
+        $this->reportDebtSupplierService = $reportDebtSupplierService;
 
     }
 
@@ -44,9 +44,9 @@ class ReportDebtFPController extends RestfulController
 
             ];
 
-            $reports = $this->reportDebtFPService->getListPaginate($perPage, $filter);
+            $reports = $this->reportDebtSupplierService->getListPaginate($perPage, $filter);
             //return $this->_response($reports);
-            return new ReportDebtFPCollection($reports);
+            return new ReportDebtSupplierCollection($reports);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
