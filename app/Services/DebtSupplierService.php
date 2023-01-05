@@ -2,10 +2,6 @@
 
 namespace App\Services;
 
-
-
-
-
 use App\Interfaces\DebtSupplierInterface;
 use App\Interfaces\FPDetailInterface;
 
@@ -38,9 +34,7 @@ class DebtSupplierService extends BaseService
 
     public function getListPaginate($perPage = 20, $filter)
     {
-
         return $this->debt->getListPaginate($perPage, $filter);
-
     }
 
     public function createNew($data)
@@ -51,7 +45,6 @@ class DebtSupplierService extends BaseService
             return $this->_result(false, 'Tạo công nợ không thành công');
         }
         return $this->_result(true, 'Tạo công nợ thành công');
-
     }
 
     public function getByID($id)

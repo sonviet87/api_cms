@@ -48,4 +48,9 @@ class FP extends Model
         return $this->hasMany(FPDetail::class,"fp_id");
     }
 
+    public function supplier_fp_details($supplier_id)
+    {
+        return $this->hasMany(FPDetail::class,"fp_id")->where('supplier_id',$supplier_id);
+    }
+
 }

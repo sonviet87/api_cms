@@ -35,7 +35,10 @@ class DebtSupplierRepository implements DebtSupplierInterface {
     }
 
     public function create($data){
-       return $this->model->create($data);
+        $debt = $this->model->create($data);
+        $debt->code = 'CNNCC'.$debt->id;
+        $debt->save();
+        return $debt;
     }
 
     public function getByID($id){

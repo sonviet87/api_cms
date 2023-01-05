@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('debt_suppliers', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->nullable();
             $table->unsignedBigInteger('fp_id');
             $table->unsignedBigInteger('supplier_id');
             $table->dateTime('date_over')->nullable();

@@ -13,7 +13,6 @@ class ReportDebtSupplierRepository implements ReportDebtSupplierInterface {
 
     public function getListPaginate($perPage = 20,$filter = []){
         $query = $this->model;
-
         if(!empty($filter)) {
             if (isset($filter['fp_id']) && $filter['fp_id'] != '') {
                 $query = $query->where('fp_id', $filter['fp_id']) ;

@@ -39,7 +39,10 @@ class DebtRepository implements DebtInterface {
     }
 
     public function create($data){
-       return $this->model->create($data);
+        $debt = $this->model->create($data);
+        $debt->code = 'CNKH'.$debt->id;
+        $debt->save();
+        return $debt;
     }
 
     public function getByID($id){

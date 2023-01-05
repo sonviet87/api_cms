@@ -22,6 +22,7 @@ class DebtCollection extends ResourceCollection
                 return [
                     'id' => $page->id,
                     'name' => $page->name,
+                    'code' => $page->code,
                     'date_over' => $page->date_over,
                     'pay_first' => $page->guest_costs,
                     'pay_second' => $page->deployment_costs,

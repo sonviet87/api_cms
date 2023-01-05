@@ -76,7 +76,7 @@ class FPService extends BaseService
             if(isset($arrFP["date_shipping"])) $arrFP['date_shipping'] = date('Y-m-d H:i:s', strtotime($arrFP["date_shipping"]));
             if(isset($arrFP["number_invoice"])) $arrFP['number_invoice'] = $arrFP["number_invoice"];
             $fp = $this->fp->create($arrFP);
-            $fp->code = 'FP'.$fp->id;
+            $fp->code = 'PAKD'.$fp->id;
             $fp->save();
 
             //create order detail

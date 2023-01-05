@@ -33,11 +33,12 @@ class ReportDebtSupplierCollection extends ResourceCollection
                     'statusNumber' => $page->status,
                     'selling' => $page->selling,
                     'margin' => $page->margin,
+                    'supplier'=> $page->supplier->company,
                     'total_debt'=>$page->total_debt,
                     'created_at' => $page->created_at,
                     'isDone' => $page->isDone == 2 ? "Chưa thu xong": "Đã thu xong",
                     'isDone_number' => $page->isDone,
-                    'fp' => new FPResource($page->fp()->first()),
+                    'fp' => new ReportDebtSupplierByIDFPResource($page->fp()->first(),$page->supplier_id,),
                 ];
             });
 

@@ -8,7 +8,7 @@ use App\Http\Resources\DebtResource;
 use App\Http\Resources\DebtSupplierCollection;
 use App\Http\Resources\DebtSupplierResource;
 use App\Http\Resources\FPDetailsCollection;
-use App\Http\Resources\FPResource;
+use App\Http\Resources\SupplierDebtCollection;
 use App\Services\DebtSupplierService;
 use Illuminate\Http\Request;
 
@@ -78,8 +78,8 @@ class DebtSupplierController extends RestfulController
             $fp_id = $request->input("fp_id");
 
             $debts = $this->debtService->getSupplierbyIDFP($supplier_id, $fp_id);
-           // dd($debts);
-           // return $this->_response($debts);
+
+            //return $this->_response($debts);
             return new FPDetailsCollection($debts);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
@@ -100,7 +100,7 @@ class DebtSupplierController extends RestfulController
             $debts = $this->debtService->getListSupplierbyIDFP( $fp_id);
 
            // return $this->_response($debts);
-            return new DebtSupplierCollection($debts);
+            return new SupplierDebtCollection($debts);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }

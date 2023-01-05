@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('debts', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->nullable();
             $table->unsignedBigInteger('fp_id');
             $table->dateTime('date_over')->nullable();
             $table->string('number_date_over')->nullable();
