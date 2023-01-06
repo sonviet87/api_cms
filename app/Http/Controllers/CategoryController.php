@@ -44,8 +44,11 @@ class CategoryController extends RestfulController
     public function list(Request $request)
     {
         try {
-
-            $cateogries = $this->categoryService->getList();
+            $search = $request->input("search", '');
+            $filter = [
+                'search'  => $search,
+            ];
+            $cateogries = $this->categoryService->getList($filter);
 
             return new CategoryCollection($cateogries);
         } catch (\Exception $e) {

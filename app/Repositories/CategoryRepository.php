@@ -14,8 +14,14 @@ class CategoryRepository implements CategoryInterface {
         $this->model = $category;
     }
 
-    public function getList(){
-        return $this->model->all();
+    public function getList($filter = []){
+        $query = $this->model;
+        if(!empty($filter)) {
+            if (isset($filter['search']) && $filter['search'] != '') {
+                $query = $query->where('name', 'LIKE', "%{$filter['search']}%") ;
+            }
+        }
+        return $query->get();
     }
 
     public function getListPaginate($perPage = 20){
