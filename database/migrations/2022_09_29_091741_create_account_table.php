@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
             $table->string('legal_address')->nullable();
-            $table->string('district')->nullable();
+            $table->string('email')->nullable();
             $table->string('city')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->softDeletes();

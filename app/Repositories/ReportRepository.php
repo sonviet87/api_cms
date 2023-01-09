@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Interfaces\ReportInterface;
 use App\Models\FP;
+use Carbon\Carbon;
 
 class ReportRepository implements ReportInterface {
     protected $model;
@@ -13,19 +14,19 @@ class ReportRepository implements ReportInterface {
 
     public function getListPaginate($perPage = 20,$filter = []){
         $query = $this->model;
-       
+
         if(!empty($filter)) {
             if (isset($filter['user_id']) && $filter['user_id'] != '') {
                 $query = $query->where('user_assign', $filter['user_id']) ;
-               
+
             }
             if (isset($filter['account_id']) && $filter['account_id'] != '') {
                 $query = $query->where('account_id', $filter['account_id']) ;
-               
+
             }
             if (isset($filter['type_fp']) && $filter['type_fp'] != '') {
                 $query = $query->where('status', $filter['type_fp']) ;
-               
+
             }
             if (isset($filter['category_id']) && $filter['category_id'] != '') {
                 $category_id = $filter['category_id'];
@@ -43,8 +44,11 @@ class ReportRepository implements ReportInterface {
                 $query = $query->where('status', $filter['type_fp']) ;
             }
             if (isset($filter['startDay']) && $filter['startDay'] != '' && isset($filter['endDay']) && $filter['endDay'] != '') {
-                $statDay = date('Y-m-d H:i:s',strtotime($filter['startDay']));
-                $endDay = date('Y-m-d H:i:s', strtotime($filter['endDay']));
+                $statDay = date('Y-m-d',strtotime($filter['startDay']));
+                $endDay = date('Y-m-d', strtotime($filter['endDay']));
+               // $startDate = Carbon::createFromFormat('Y-m-d', $statDay)->startOfDay();
+               // $endDate = Carbon::createFromFormat('Y-m-d', $endDay)->startOfDay();
+                //dd($endDate);
                 $query = $query->whereDate('created_at','>=' ,$statDay)->whereDate('created_at','<=' ,$endDay);
             }
         }

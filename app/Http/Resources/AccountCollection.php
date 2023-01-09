@@ -21,7 +21,7 @@ class AccountCollection extends ResourceCollection
                     'id' => $page->id,
                     'address' => $page->address,
                     'city' => $page->city,
-                    'district' => $page->district,
+                    'email' => $page->email,
                     'industry' => $page->industry,
                     'legal_address' => $page->legal_address,
                     'legal_name' => $page->legal_name,
