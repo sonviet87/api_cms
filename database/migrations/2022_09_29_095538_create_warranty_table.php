@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->text('file_warranty')->nullable();
+            $table->text('details')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
