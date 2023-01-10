@@ -24,7 +24,7 @@ class AccountFactory extends Factory
             'phone' => fake()->phoneNumber(),
             'address' => fake()->address(),
             'legal_address' => fake()->address(),
-            'district' => fake()->state(),
+            'email' => fake()->email(),
             'city' => fake()->city(),
             'user_id' =>User::all()->random()->id
         ];
