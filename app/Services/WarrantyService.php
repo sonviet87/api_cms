@@ -24,19 +24,14 @@ class WarrantyService extends BaseService
         return $this->warranty->getListPaginate($perPage);
     }
 
-    public function getListContactByID($id)
-    {
-        $contacts =  $this->warranty->getListContactByID($id);
-        if (!$contacts) {
-            return $this->_result(false, 'Không lấy được id');
-        }
-        return  $contacts;
-    }
 
     public function createNew($data)
     {
-        $account = $this->warranty->create($data);
-        if (!$account) {
+        $data['details']= json_encode($data['details']);
+        if(isset($data["start_day"])) $data["start_day"] =  date('Y-m-d H:i:s', strtotime($data["start_day"]));
+        if(isset($data["end_day"])) $data["end_day"] =  date('Y-m-d H:i:s', strtotime($data["end_day"]));
+        $warranty = $this->warranty->create($data);
+        if (!$warranty) {
             return $this->_result(false, 'Created failed');
         }
         return $this->_result(true, 'Created successfully');
@@ -44,17 +39,19 @@ class WarrantyService extends BaseService
 
     public function getByID($id)
     {
-        $account = $this->warranty->getByID($id);
-        if (!$account) {
+        $warranty = $this->warranty->getByID($id);
+        if (!$warranty) {
             return $this->_result(false, 'Not found!');
         }
-        return $this->_result(true, '', $account);
+        return $this->_result(true, '', $warranty);
     }
 
     public function update($id, $data)
-    {
-        $account = $this->warranty->getByID($id);
-        if (!$account) {
+    {   $data['details']= json_encode($data['details']);
+        if(isset($data["start_day"])) $data["start_day"] =  date('Y-m-d H:i:s', strtotime($data["start_day"]));
+        if(isset($data["end_day"])) $data["end_day"] =  date('Y-m-d H:i:s', strtotime($data["end_day"]));
+        $warranty = $this->warranty->getByID($id);
+        if (!$warranty) {
             return $this->_result(false, 'Not found!');
         }
 

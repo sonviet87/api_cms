@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('end_day')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
+            $table->string('account')->nullable();
             $table->text('file_warranty')->nullable();
             $table->text('details')->nullable();
             $table->softDeletes();
