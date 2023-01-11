@@ -58,6 +58,7 @@ class DebtSupplierService extends BaseService
 
     public function update($id, $data)
     {
+        if(isset($data["date_over"])) $data["date_over"] =  date('Y-m-d H:i:s', strtotime($data["date_over"]));
         $account = $this->debt->getByID($id);
         if (!$account) {
             return $this->_result(false, 'Không tìm thấy!');

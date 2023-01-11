@@ -13,8 +13,14 @@ class FPRepository implements FPInterface {
         $this->model = $fp;
     }
 
-    public function getList(){
-        return $this->model->all();
+    public function getList($filter = []){
+        $query = $this->model;
+        if(!empty($filter)) {
+            if (isset($filter['user_id']) && $filter['user_id'] != '') {
+                $query = $query->where('user_id', $filter['user_id'])->orWhere('user_assign', $filter['user_id']) ;
+            }
+        }
+        return $query->get();
     }
 
     public function getListPaginate($perPage = 20,$filter = []){
