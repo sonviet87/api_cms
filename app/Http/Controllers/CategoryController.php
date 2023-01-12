@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CategoryCollection;
+use App\Imports\CategoriesImport;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends RestfulController
 {
@@ -133,6 +135,26 @@ class CategoryController extends RestfulController
         }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
+    }
+
+
+    public function import(Request $request)
+    {
+        $this->validate($request, [
+            'file' => 'required|min:1',
+        ]);
+
+        try {
+            Excel::import(new CategoriesImport(), $request->file('file'));
+            return $this->_success("Nhập dữ liệu thành công");
+        }catch (\Exception $ex){
+            //return $this->_error("Không đúng định dạng", self::HTTP_INTERNAL_ERROR);
+           // return response()->error("Không đúng định dạng", null, self::HTTP_INTERNAL_ERROR);
+            return $this->_error('Không đúng định dạng');
+        }
+
+
+
     }
 
 }
