@@ -89,8 +89,12 @@ class UserRepository implements UserInterface {
         if (!empty($role) ) {
            $user->syncRoles([$role->name]);
         }
-
         return $user;
+    }
+
+    public function updatePassword($id, $password){
+        return $this->model->where('id',$id)->update(['password'=>$password]);
+
     }
 
     public function destroyUsersByIDs($ids){

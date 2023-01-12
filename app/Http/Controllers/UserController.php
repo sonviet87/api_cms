@@ -253,4 +253,41 @@ class UserController extends RestfulController
         $request->user()->token()->revoke();
         return $this->_success('Successfully logged out');
     }
+
+    public function checkPassword(Request $request){
+        $this->validate($request, [
+            'password'=> 'bail|required',
+        ]);
+        try{
+            $password = $request->input('password');
+            $checkPassword = $this->userService->checkPassword($password);
+            if(!$checkPassword){
+                return $this->_response(['isCheck'=> false]);
+            }
+            return $this->_response(['isCheck' => true]);
+        }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    public function changePassword(Request $request){
+
+        $this->validate($request, [
+            'password'=> 'bail|required',
+            'oldPass'=> 'bail|required',
+        ]);
+
+        try{
+            $password = $request->input('password');
+            $oldPass = $request->input('oldPass');
+
+            $result = $this->userService->changePassword($oldPass,$password);
+            if($result['status']==false){
+                return $this->_error($result['message']);
+            }
+            return $this->_success($result['message']);
+        }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
 }

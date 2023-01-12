@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Constants\RolePermissionConst;
 use App\Constants\UserConst;
 use App\Interfaces\UserInterface;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserService extends BaseService
@@ -29,6 +30,11 @@ class UserService extends BaseService
     public function getUserByPhone($phone)
     {
         return $this->user->getUserByPhone($phone);
+    }
+
+    public function checkPassword($password){
+
+        return Hash::check($password, Auth::user()->password);
     }
 
     public function getUserByFacebookID($facebook_id)
@@ -182,6 +188,16 @@ class UserService extends BaseService
         return $this->_result(true, 'Updated successfully');
     }
 
+    public function changePassword($oldPass,$password){
+        $isDulicate = $this->checkPassword($oldPass);
+        if(!$isDulicate) return $this->_result(false, 'Mật khẩu không đúng');
+        $password= Hash::make($password);
+        $result = $this->user->updatePassword(Auth::user()->id, $password);
+        if (!$result) {
+            return $this->_result(false, 'Cập nhật không thành công');
+        }
+        return $this->_result(true, 'Cập nhật thành công');
+    }
     public function destroyUsersByIDs($ids)
     {
         $check = $this->user->destroyUsersByIDs($ids);
