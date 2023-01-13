@@ -22,7 +22,7 @@ class FPDetailsCollection extends ResourceCollection
                 return [
                     'id' => $page->id,
                     'category' => $page->category()->get()->first(),
-                    'category_id' => $page->category()->get()->first()->id,
+                    'category_id' => $page->category()->get()->first(),
                     'supplier' => $page->supplier()->get()->first(),
                     'supplier_id' => $page->supplier()->get()->first()->id,
                     'qty' => $page->qty,
