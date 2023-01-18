@@ -16,15 +16,14 @@ class WarrantyCollection extends ResourceCollection
 
     public function toArray($request)
     {
-       
+
         return $this->collection->transform(function ($page) {
-           
+
                 return [
                     'id' => $page->id,
                     'name' => $page->name,
                     'fp_id' => $page->fp_id,
-                    'fps' => $page->fp()->get()->first(),
-                    'account' => $page->account,
+                    'fps' => new FPResource($page->fp()->get()->first()),
                     'start_day' => $page->start_day,
                     'end_day' => $page->end_day,
                     'phone' => $page->phone,

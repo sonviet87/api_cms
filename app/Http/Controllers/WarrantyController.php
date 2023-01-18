@@ -6,6 +6,7 @@ use App\Http\Resources\AccountCollection;
 use App\Http\Resources\ContactCollection;
 
 use App\Http\Resources\WarrantyCollection;
+use App\Http\Resources\WarrantyResource;
 use App\Services\WarrantyService;
 use Illuminate\Http\Request;
 
@@ -86,7 +87,8 @@ class WarrantyController extends RestfulController
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
-            return $this->_response($result['data']);
+           // return $this->_response($result['data']);
+            return new WarrantyResource($result['data']);
         }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
