@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('legal_address')->nullable();
             $table->string('email')->nullable();
             $table->string('city')->nullable();
+            $table->string('mst')->nullable();
+            $table->string('deposit')->nullable();
+            $table->string('debt')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

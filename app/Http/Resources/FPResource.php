@@ -56,6 +56,8 @@ class FPResource extends JsonResource
             'date_invoice' => $this->date_invoice ?$this->date_invoice: '',
             'date_shipping' => $this->date_shipping ? $this->date_shipping: '',
             'number_invoice' => $this->number_invoice ? $this->number_invoice :'',
+            'notes' => $this->notes ?? '',
+            'code_contract' => $this->code_contract ?? '',
         ];
     }
 

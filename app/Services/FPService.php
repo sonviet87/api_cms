@@ -69,10 +69,13 @@ class FPService extends BaseService
             $arrFP['commission']= Str::replace(",","",$arrFP["commission"]);
             $arrFP['interest']= Str::replace(",","",$arrFP["interest"]);
             $arrFP['tax']= Str::replace(",","",$arrFP["tax"]);
+
             $arrFP['bids_cost_percent']= Str::replace("%","",$arrFP["bids_cost_percent"]);
             $arrFP['commission_percent']= Str::replace("%","",$arrFP["commission_percent"]);
             $arrFP['file_customer_invoice']= isset($arrFP["file_customer_invoice"])?  $arrFP["file_customer_invoice"]: "" ;
             $arrFP['file_company_receipt']= isset($arrFP["file_company_receipt"])?  $arrFP["file_company_receipt"]: "" ;
+            $arrFP['notes']=  $arrFP["notes"] ?? "" ;
+            $arrFP['code_contract']=  $arrFP["code_contract"] ?? "" ;
             $arrFP['file_bbbg']= isset($arrFP["file_bbbg"])?  $arrFP["file_bbbg"]: "" ;
             $arrFP['file_customer_invoice_url']= isset($arrFP["file_customer_invoice_url"]) ?  $arrFP["file_customer_invoice_url"]: "" ;
             $arrFP['file_company_receipt_url']= isset($arrFP["file_company_receipt_url"])?  $arrFP["file_company_receipt_url"]: "" ;
@@ -146,6 +149,8 @@ class FPService extends BaseService
             $arrFP['commission_percent']= Str::replace("%","",$arrFP["commission_percent"]);
             $arrFP['file_customer_invoice']= isset($arrFP["file_customer_invoice"])?  $arrFP["file_customer_invoice"]: "" ;
             $arrFP['file_company_receipt']= isset($arrFP["file_company_receipt"])?  $arrFP["file_company_receipt"]: "" ;
+            $arrFP['notes']=  $arrFP["notes"] ?? "" ;
+            $arrFP['code_contract']=  $arrFP["code_contract"] ?? "" ;
             $arrFP['file_bbbg']= isset($arrFP["file_bbbg"])?  $arrFP["file_bbbg"]: "" ;
             $arrFP['file_customer_invoice_url']= isset($arrFP["file_customer_invoice_url"]) ?  $arrFP["file_customer_invoice_url"]: "" ;
             $arrFP['file_company_receipt_url']= isset($arrFP["file_company_receipt_url"])?  $arrFP["file_company_receipt_url"]: "" ;

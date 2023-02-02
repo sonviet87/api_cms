@@ -48,6 +48,8 @@ return new class extends Migration
             $table->string('file_bbbg_url')->nullable();
             $table->text('file_ncc')->nullable();
             $table->string('number_invoice')->nullable();
+            $table->text('notes')->nullable();
+            $table->string('code_contract')->nullable();
             $table->dateTime('date_invoice')->nullable();
             $table->dateTime('date_shipping')->nullable();
             $table->softDeletes();

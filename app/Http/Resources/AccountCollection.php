@@ -27,6 +27,9 @@ class AccountCollection extends ResourceCollection
                     'legal_name' => $page->legal_name,
                     'name' => $page->name,
                     'phone' => $page->phone,
+                    'mst' => $page->mst,
+                    'deposit' => $page->deposit,
+                    'debt' => $page->debt,
                 ];
             });
 
