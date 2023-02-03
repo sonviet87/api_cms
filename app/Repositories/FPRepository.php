@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Constants\FPConst;
 use App\Interfaces\FPInterface;
+use App\Models\ContractCode;
 use App\Models\FP;
 use App\Models\Supplier;
 
@@ -66,6 +67,20 @@ class FPRepository implements FPInterface {
             $fp->margin = $fp->net_profit;
             $fp->save();
         }
+        if($status == FPConst::STATUS_CONTRACT){
+            if($fp->isCodeContract == 0){
+                //increment code contract
+                $contractCode = ContractCode::get()->first();
+                $contractCode->code = $contractCode->code + 1;
+                $contractCode->save();
+
+                //update code contract
+                $fp->isCodeContract = 1;
+                $fp->code_contract = 'HD-MV-TECH-'. $contractCode->code ;
+            }
+
+        }
+
         return $fp->update(['status'=> $status]);
     }
 

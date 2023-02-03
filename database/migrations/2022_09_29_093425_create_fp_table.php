@@ -50,6 +50,7 @@ return new class extends Migration
             $table->string('number_invoice')->nullable();
             $table->text('notes')->nullable();
             $table->string('code_contract')->nullable();
+            $table->string('isCodeContract')->default(0);
             $table->dateTime('date_invoice')->nullable();
             $table->dateTime('date_shipping')->nullable();
             $table->softDeletes();

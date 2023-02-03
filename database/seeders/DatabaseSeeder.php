@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CategorySeeder::class);
         $this->call(FPSeeder::class);
         $this->call(FPDetailsSeeder::class);
+        $this->call(ContractCodeSeeder::class);
       /*  \App\Models\User::factory()->create([
             'name' => 'admin',
             'email' => 'admin@gmail.com',

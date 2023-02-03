@@ -213,7 +213,7 @@ class FPService extends BaseService
         }
         $fp= $this->fp->getByID($id);
 
-        $data = ['id'=>$id , 'name' => $fp->name,'email_assgin' => $fp->userAssign->email,'status'=>$fp->status ];
+        $data = ['id'=>$id , 'name' => $fp->name,'email_assgin' => $fp->userAssign->email,'status'=>$fp->status,'code_contract' =>$fp->code_contract];
         return $this->_result(true, 'Cập nhật thành công',$data);
     }
 

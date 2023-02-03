@@ -23,14 +23,14 @@ class CategorySeeder extends Seeder
  - Nvidia Quadro P1000, 4GB, 4 mDP to DP adapter/ Ubuntu Linux 18.04/
  -  Dell optical Mouse & Keyboard /
 -  3Yr Prosupport ',
-            'tax_percent' => '10%',
+            'tax_percent' => '10',
 
         ]);
 
         \App\Models\Category::create([
             'name' => 'Windows 10 Pro 64Bit Eng Intl 1pk DSP OEI DVD',
             'descriptions' => 'Windows 10 Pro 64Bit Eng Intl 1pk DSP OEI DVD ',
-            'tax_percent' => '10%',
+            'tax_percent' => '10',
 
         ]);
 

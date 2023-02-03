@@ -168,7 +168,7 @@ class FPController extends RestfulController
             if($result['status']){
                // Mail::to('sonviet87@gmail.com')->cc($result['data']['email_assgin'])->send(new MailNotify($result['data']));
             }
-            return $this->_success($result['message']);
+            return $this->_response($result['data'],$result['message']);
         }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
