@@ -15,6 +15,7 @@ class CategoryRepository implements CategoryInterface {
     }
 
     public function getList($filter = []){
+
         $query = $this->model;
         if(!empty($filter)) {
             if (isset($filter['search']) && $filter['search'] != '') {
@@ -24,8 +25,15 @@ class CategoryRepository implements CategoryInterface {
         return $query->get();
     }
 
-    public function getListPaginate($perPage = 20){
-        return $this->model->orderBy('created_at', 'desc')->paginate($perPage);
+    public function getListPaginate($perPage = 20,$filter = []){
+        $query = $this->model;
+        if(!empty($filter)) {
+            if (isset($filter['search']) && $filter['search'] != '') {
+                $query = $query->where('name', 'LIKE', "%{$filter['search']}%")->orWhere('name', 'LIKE', "%{$filter['search']}%") ;
+            }
+        }
+        return  $query->orderBy('created_at', 'desc')->paginate($perPage);
+
     }
 
     public function create($data){

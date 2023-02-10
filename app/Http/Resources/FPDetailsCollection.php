@@ -32,6 +32,7 @@ class FPDetailsCollection extends ResourceCollection
                     'total_sell' => $page->total_sell,
                     'total_buy' => $page->total_buy,
                     'file' => $page->file,
+                    'file_url' => $page->file_url,
                     'number_invoice' => $page->number_invoice? $page->number_invoice: '',
                     'date_invoice' => $page->date_invoice? $page->date_invoice:'',
 

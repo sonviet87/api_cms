@@ -19,9 +19,9 @@ class CategoryService extends BaseService
         return $this->category->getList($filter);
     }
 
-    public function getListPaginate($perPage = 20)
+    public function getListPaginate($perPage = 20,$filter)
     {
-        return $this->category->getListPaginate($perPage);
+        return $this->category->getListPaginate($perPage,$filter);
     }
 
     public function createNew($data)

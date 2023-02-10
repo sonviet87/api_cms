@@ -29,9 +29,14 @@ class CategoryController extends RestfulController
      */
     public function index(Request $request)
     {
+        $search = $request->input("search", '');
+
+        $filter = [
+            'search'  => $search,
+        ];
         try {
             $perPage = $request->input("per_page", 20);
-            $cateogries = $this->categoryService->getListPaginate($perPage);
+            $cateogries = $this->categoryService->getListPaginate($perPage,$filter);
 
             return new CategoryCollection($cateogries);
         } catch (\Exception $e) {
