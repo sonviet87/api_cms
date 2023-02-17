@@ -28,11 +28,18 @@ class FPRepository implements FPInterface {
         $query = $this->model;
         if(!empty($filter)) {
             if (isset($filter['search']) && $filter['search'] != '') {
-                $query = $query->where('name', 'LIKE', "%{$filter['search']}%")->orWhere('code', 'LIKE', "%{$filter['search']}%") ;
+                $search = $filter['search'];
+               // $query = $query->where('name', 'LIKE', "%{$search}%")->orWhere('code', 'LIKE', "%{$search}%") ;
+                $query = $query->where(function ($q) use ($search){
+                    $q->where('name', 'LIKE', "%{$search}%")->orWhere('code', 'LIKE', "%{$search}%") ;
+                });
             }
             if (isset($filter['user_id']) && $filter['user_id'] != '') {
-                $query = $query->where('user_id', $filter['user_id'])->orWhere('user_assign', $filter['user_id']) ;
-
+                $user_id = $filter['user_id'];
+                //$query = $query->where('user_id', $user_id)->orWhere('user_assign', $user_id) ;
+                $query = $query->where(function ($q) use ($user_id){
+                    $q->where('user_id', $user_id)->orWhere('user_assign', $user_id) ;;
+                });
             }
         }
        // dd($query->toSql() );
