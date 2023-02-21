@@ -21,7 +21,7 @@ class FPRepository implements FPInterface {
                 $query = $query->where('user_id', $filter['user_id'])->orWhere('user_assign', $filter['user_id']) ;
             }
         }
-        return $query->get();
+        return $query->orderBy('id', 'desc')->get();
     }
 
     public function getListPaginate($perPage = 20,$filter = []){

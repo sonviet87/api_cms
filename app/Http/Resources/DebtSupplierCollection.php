@@ -28,7 +28,7 @@ class DebtSupplierCollection extends ResourceCollection
                 'number_date_over' => $page->number_date_over,
                 'total_debt' => $page->total_debt,
                 'isDone_number' => $page->isDone,
-                'isDone' => $page->isDone == 2 ? "Chưa thu" : "Đã thu xong",
+                'isDone' => $page->isDone == 2 ? "Chưa trả" : "Đã trả",
                 'fp_code' => $page->fp->code,
                 'supplier' => $page->supplier->company
 

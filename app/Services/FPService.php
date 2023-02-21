@@ -160,6 +160,13 @@ class FPService extends BaseService
             if(isset($arrFP["date_shipping"])) $arrFP['date_shipping'] = date('Y-m-d H:i:s', strtotime($arrFP["date_shipping"]));
             if(isset($arrFP["number_invoice"])) $arrFP['number_invoice'] = $arrFP["number_invoice"];
             $fp = $this->fp->update($id,$arrFP);
+            //check id deatils not exists and detele
+            $idDetails = $this->fpDetail->getIDS($id)->all();
+            $idPostDetail = Arr::pluck($details, 'id');
+            $idsDiff = array_diff($idDetails,$idPostDetail);
+            if($idsDiff){
+                $this->fpDetail->destroy($idsDiff);
+            }
             //create order detail
             foreach ($details as $key => $detail){
                 $arrFPDetail[$key]["fp_id"] = $id;
@@ -177,7 +184,7 @@ class FPService extends BaseService
                 if(isset($detail["number_invoice"])) $arrFPDetail[$key]['number_invoice'] = $detail["number_invoice"];
                 $arrFPDetail[$key]["created_at"] = Carbon::now();
                 if(isset($detail['id'])){
-                    $this->fpDetail->update($detail['id'],$arrFPDetail[$key]);
+                   $this->fpDetail->update($detail['id'],$arrFPDetail[$key]);
                 }else{
                     $this->fpDetail->create($arrFPDetail[$key]);
                 }
