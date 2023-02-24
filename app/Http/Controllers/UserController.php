@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Services\RoleService;
 use App\Services\UserService;
@@ -19,6 +21,11 @@ class UserController extends RestfulController
         $this->roleService = $roleService;
         $this->userService = $userService;
         $this->user = $userInterface;
+
+        $this->middleware(['permission:user-delete'])->only('destroy');
+        $this->middleware(['permission:user-create'])->only('store');
+        $this->middleware(['permission:user-edit'])->only('update');
+        $this->middleware(['permission:user-list'])->only('index');
     }
     /**
      * Get all approved users with paginate
@@ -27,14 +34,34 @@ class UserController extends RestfulController
     public function index(Request $request){
         try{
             $perPage = $request->input("per_page", 20);
-            $users = $this->userService->getListPaginate($perPage);
+            $username = $request->input("username", '');
+            $filter = [
+                'username'  => $username,
+            ];
+            $users = $this->userService->getListPaginate($perPage,$filter);
             $users->appends($request->except(['page', '_token']));
-            $paginator = $this->getPaginator($users);
+
+          /*  $paginator = $this->getPaginator($users);
             $pagingArr = $users->toArray();
             return $this->_response([
                 'pagination' => $paginator,
-                'users' => $pagingArr['data']
-            ]);
+                'users' => $pagingArr['data'],
+
+            ]);*/
+            return  new UserCollection($users);
+        }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    /**
+     * Get all
+     * @return mixed
+     */
+    public function list(Request $request){
+        try{
+            $users = $this->userService->getList();
+            return  new UserCollection($users);
         }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
@@ -45,14 +72,14 @@ class UserController extends RestfulController
     * @return array
     */
     public function register(Request $request){
-       
+
         $this->validate($request, [
             'name' => 'bail|required',
             'username' => 'bail|required|min:3|max:20|unique:users,username',
             'email' => 'bail|required|email|unique:users,email',
-            'password' => 'bail|required|min:6|max:20',        
+            'password' => 'bail|required|min:6|max:20',
         ]);
-       
+
         try{
             $requestData = $request->all();
             $user = $this->userService->registerByEmail($requestData);
@@ -115,7 +142,7 @@ class UserController extends RestfulController
     public function store(Request $request){
         $this->validate($request, [
             'name' => 'bail|required',
-            'username' => 'bail|min:6|max:20|unique:users,username',
+            'username' => 'bail|min:3|max:20|unique:users,username',
             'email' => 'bail|required|email|unique:users,email',
             'password' => 'bail|required|min:6|max:20',
             'role_id' => 'bail|required|exists:roles,id',
@@ -125,12 +152,14 @@ class UserController extends RestfulController
         ]);
         try{
             $data = $request->all();
+
             $result = $this->userService->createNewUser($data);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
             return $this->_success($result['message']);
         }catch(\Exception $e){
+
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
     }
@@ -146,7 +175,9 @@ class UserController extends RestfulController
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
-            return $this->_response($result['data']);
+            //return $this->_response($result['data']);
+
+            return new UserResource($result['data']);
         }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
@@ -160,7 +191,8 @@ class UserController extends RestfulController
         $this->validate($request, [
             'name' => 'bail|required',
             'email' => 'bail|required|email',
-            'password' => 'nullable|min:6|max:20'
+            'password' => 'nullable|min:6|max:20',
+            'role_id' => 'nullable|exists:roles,id',
         ]);
         try{
             $data = $request->all();
@@ -196,7 +228,19 @@ class UserController extends RestfulController
     }
 
     public function getUser(){
-        return Auth::user();
+       // dd(Auth::user()->roles->first()->permissions->pluck('name'));
+       try{
+
+            $user = Auth::user();
+            return $this->_response([
+                'user' => $user,
+                'roles' => Auth::user()->roles->first()->permissions->pluck('name')
+
+            ]);
+       }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+
     }
 
     /**
@@ -208,5 +252,42 @@ class UserController extends RestfulController
     {
         $request->user()->token()->revoke();
         return $this->_success('Successfully logged out');
+    }
+
+    public function checkPassword(Request $request){
+        $this->validate($request, [
+            'password'=> 'bail|required',
+        ]);
+        try{
+            $password = $request->input('password');
+            $checkPassword = $this->userService->checkPassword($password);
+            if(!$checkPassword){
+                return $this->_response(['isCheck'=> false]);
+            }
+            return $this->_response(['isCheck' => true]);
+        }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    public function changePassword(Request $request){
+
+        $this->validate($request, [
+            'password'=> 'bail|required',
+            'oldPass'=> 'bail|required',
+        ]);
+
+        try{
+            $password = $request->input('password');
+            $oldPass = $request->input('oldPass');
+
+            $result = $this->userService->changePassword($oldPass,$password);
+            if($result['status']==false){
+                return $this->_error($result['message']);
+            }
+            return $this->_success($result['message']);
+        }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
     }
 }

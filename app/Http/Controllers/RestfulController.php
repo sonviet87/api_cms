@@ -64,6 +64,7 @@ class RestfulController extends Controller
            // ob_start('ob_gzhandler');
             http_response_code(self::HTTP_OK);
             header('Content-Type: application/json');
+            header('Access-Control-Allow-Origin: *');
             echo json_encode([
                 'status' => false,
                 'message' => $validator->errors()->first(),

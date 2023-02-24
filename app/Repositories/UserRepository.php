@@ -1,18 +1,22 @@
 <?php
 namespace App\Repositories;
 use App\Interfaces\UserInterface;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Constants\UserConst;
+use Spatie\Permission\Models\Role;
 
 class UserRepository implements UserInterface {
     protected $model;
-    function __construct(User $user){
+    protected $role;
+    function __construct(User $user,Role $role){
         $this->model = $user;
+        $this->role = $role;
     }
 
     public function getList(){
-        return $this->model->all();
+        return $this->model->where('id','<>',1)->get();
     }
 
     public function getUserByEmail($email){
@@ -49,24 +53,52 @@ class UserRepository implements UserInterface {
         $user->save();
         return $user;
     }
-    public function getListPaginate($perPage = 20){
-        return $this->model->orderBy('created_at', 'desc')->paginate($perPage);
+    public function getListPaginate($perPage = 20,$filter = []){
+        $query = $this->model;
+        if(!empty($filter)) {
+            if (isset($filter['username']) && $filter['username'] != 0) {
+                $query = $query->where('username', 'LIKE', "%{$filter['username']}%") ;
+            }
+        }
+        return $query->where('id','<>',1)->with(['roles.permissions'])->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function createNewUser($data){
-        return $this->model->create($data);
+        $idRole = $data['role_id'];
+        $data = Arr::except($data,['role_id']);
+        $user = $this->model->create($data);
+        $role = $this->role->find($idRole);
+
+        if (!empty($role) ) {
+            $user->syncRoles([$role->name]);
+        }
+        return $user;
     }
 
     public function getUserByID($id){
-        return $this->model->find($id);
+        return $this->model->with('roles')->find($id);
     }
 
     public function updateUserByID($id, $data){
-        return $this->model->where('id', $id)->update($data);
+        $idRole = $data['role_id'];
+        $data = Arr::except($data,['role_id']);
+        $user = $this->model->find($id);
+        $user->update($data);
+        $role = $this->role->find($idRole);
+
+        if (!empty($role) ) {
+           $user->syncRoles([$role->name]);
+        }
+        return $user;
+    }
+
+    public function updatePassword($id, $password){
+        return $this->model->where('id',$id)->update(['password'=>$password]);
+
     }
 
     public function destroyUsersByIDs($ids){
-        return $this->model->destroy($ids);
+        return $this->model->whereIn('id', $ids)->delete();
     }
 
     public function getBySimilarPhone($phone){
