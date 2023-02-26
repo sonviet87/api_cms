@@ -17,7 +17,7 @@ class UploadController extends RestfulController
 
     public function uploadStorage(Request $request){
         $this->validate($request, [
-            'file_url' => 'required|file|max:1024'
+            'file_url' => 'required|file'
         ]);
         try{
             if(!$request->hasFile('file_url')){
