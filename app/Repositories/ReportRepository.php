@@ -53,8 +53,14 @@ class ReportRepository implements ReportInterface {
             }
         }
        // dd($query->toSql() );
-        return  $query->with(['user','account','contact'])->orderBy('created_at', 'desc')->paginate($perPage);
+        $query = $query->with(['user','account','contact'])->orderBy('created_at', 'desc');
+
+        if(isset($filter['list']) && $filter['list'] == 'list') return  $query->get();
+
+        return  $query->paginate($perPage);
     }
+
+
 
 
 }
