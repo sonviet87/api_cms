@@ -33,7 +33,7 @@ class ReportDebtFPController extends RestfulController
 
             $startDay = $request->input("startDay", '');
             $endDay = $request->input("endDay", '');
-
+            $list = $request->input("list", '');
             $filter = [
                 'user_id'  => $user_id,
                 'account_id'  => $account_id,
@@ -41,7 +41,7 @@ class ReportDebtFPController extends RestfulController
                 'endDay'  => $endDay,
                 'fp_id'  => $fp_id,
                 'isDone'  => $isDone,
-
+                'list'  => $list,
             ];
 
             $reports = $this->reportDebtFPService->getListPaginate($perPage, $filter);
