@@ -45,7 +45,13 @@ class ReportDebtFPRepository implements ReportDebtFPInterface {
             }
         }
         //dd($query->toSql() );
-        $query =   $query->with(['fp'])->orderBy('created_at', 'desc');
+        $query =   $query->with(['fp']);
+        $totalSelling = $query->withSum('fp','selling')->get()->first();
+        $totalMargin = $query->withSum('fp','margin')->get()->first();
+
+
+        $query =   $query->orderBy('created_at', 'desc');
+
         if(isset($filter['list']) && $filter['list'] == 'list') return  $query->get();
 
         return  $query->paginate($perPage);
