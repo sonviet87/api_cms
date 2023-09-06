@@ -15,8 +15,21 @@ class WarrantyRepository implements WarrantyInterface {
         return $this->model->all();
     }
 
-    public function getListPaginate($perPage = 20){
-        return $this->model->orderBy('created_at', 'desc')->paginate($perPage);
+    public function getListPaginate($perPage = 20,$filter){
+        $query = $this->model;
+        if(!empty($filter)) {
+            if (isset($filter['fp_id']) && $filter['fp_id'] != '') {
+                $query = $query->where('fp_id', $filter['fp_id']) ;
+            }
+            if (isset($filter['keyword']) && $filter['keyword'] != '') {
+                $query = $query->where('name', $filter['keyword']);
+            }
+            if (isset($filter['serial']) && $filter['serial'] != '') {
+                $query = $query->whereJsonContains('details', ['serial' => $filter['serial']]);
+            }
+        }
+        return $query->orderBy('created_at', 'desc')->paginate($perPage);
+        //return $this->model->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function create($data){

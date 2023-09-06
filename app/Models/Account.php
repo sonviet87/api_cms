@@ -23,4 +23,9 @@ class Account extends Model
     {
         return $this->hasMany(Contact::class);
     }
+
+    public function users(){
+        return $this->belongsTo(User::class,'user_id','id')->withTrashed();
+
+    }
 }

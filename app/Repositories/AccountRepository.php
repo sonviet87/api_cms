@@ -10,12 +10,23 @@ class AccountRepository implements AccountInterface {
         $this->model = $account;
     }
 
-    public function getList(){
-        return $this->model->all();
+    public function getList($filter){
+        $query = $this->model;
+        if(!empty($filter)) {
+            if (isset($filter['user_id']) && $filter['user_id'] != '') {
+                $query = $query->where('user_id', $filter['user_id']) ;
+            }
+        }
+        return $query->orderBy('id', 'desc')->get();
     }
 
-    public function getListPaginate($perPage = 20){
-        return $this->model->orderBy('created_at', 'desc')->paginate($perPage);
+    public function getListPaginate($perPage = 20,$filter){
+        $query = $this->model;
+        if (isset($filter['user_id']) && $filter['user_id'] != '') {
+            $user_id = $filter['user_id'];
+            $query = $query->where('user_id', $user_id);
+        }
+        return $query ->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
     public function create($data){

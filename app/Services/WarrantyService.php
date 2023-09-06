@@ -19,9 +19,9 @@ class WarrantyService extends BaseService
         return $this->warranty->getList();
     }
 
-    public function getListPaginate($perPage = 20)
+    public function getListPaginate($perPage = 20,$filter)
     {
-        return $this->warranty->getListPaginate($perPage);
+        return $this->warranty->getListPaginate($perPage,$filter);
     }
 
 

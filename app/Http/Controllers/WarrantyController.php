@@ -34,7 +34,16 @@ class WarrantyController extends RestfulController
     {
         try {
             $perPage = $request->input("per_page", 20);
-            $warranty = $this->warrantyService->getListPaginate($perPage);
+            $search = $request->input("keyword", '');
+            $fp_id = $request->input("fp_id", '');
+            $serial = $request->input("serial", '');
+            $filter = [
+                'keyword'  => $search,
+                'fp_id' =>  $fp_id,
+                'serial' =>  $serial
+            ];
+
+            $warranty = $this->warrantyService->getListPaginate($perPage,$filter);
 
             return new WarrantyCollection($warranty);
         } catch (\Exception $e) {
