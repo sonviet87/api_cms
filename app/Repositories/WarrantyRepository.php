@@ -17,6 +17,7 @@ class WarrantyRepository implements WarrantyInterface {
 
     public function getListPaginate($perPage = 20,$filter){
         $query = $this->model;
+
         if(!empty($filter)) {
             if (isset($filter['fp_id']) && $filter['fp_id'] != '') {
                 $query = $query->where('fp_id', $filter['fp_id']) ;
@@ -26,6 +27,18 @@ class WarrantyRepository implements WarrantyInterface {
             }
             if (isset($filter['serial']) && $filter['serial'] != '') {
                 $query = $query->whereJsonContains('details', ['serial' => $filter['serial']]);
+                //$query = $query->whereJsonContains('details', [['serial' => $filter['serial']]]);
+
+              /* $query = $query->whereRaw(
+                    'json_contains(details, ?)',
+                    [
+                        json_encode(['serial' => $filter['serial']])
+                    ]
+                );*/
+               // $query = $query->whereJsonContains('details->serial',$filter['serial']);
+                // $query = $query->where('details->serial', 'like', '%'.$filter['serial'].'%');
+               // dd($query->toSql());
+
             }
         }
         return $query->orderBy('created_at', 'desc')->paginate($perPage);

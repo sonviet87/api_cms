@@ -38,6 +38,8 @@ class ReportDebtFPCollection extends ResourceCollection
                     'isDone' => $page->isDone == 2 ? "Chưa thu xong": "Đã thu xong",
                     'isDone_number' => $page->isDone,
                     'fp' => new FPResource($page->fp()->first()),
+                    'total_margin' => $page->fp_sum_margin,
+                    'total_selling' => $page->fp_sum_selling,
                 ];
             });
 
