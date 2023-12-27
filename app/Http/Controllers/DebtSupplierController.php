@@ -38,8 +38,10 @@ class DebtSupplierController extends RestfulController
         try {
             $perPage = $request->input("per_page", 20);
             $search = $request->input("keyword", '');
+            $status = $request->input("status", '');
             $filter = [
                 'search'  => $search,
+                'status'  => $status,
             ];
             $debts = $this->debtService->getListPaginate($perPage, $filter);
 

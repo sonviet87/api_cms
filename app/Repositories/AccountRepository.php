@@ -26,6 +26,11 @@ class AccountRepository implements AccountInterface {
             $user_id = $filter['user_id'];
             $query = $query->where('user_id', $user_id);
         }
+        if (isset($filter['search']) && $filter['search'] != '') {
+            $search = $filter['search'];
+             $query = $query->where('name', 'LIKE', "%{$search}%") ;
+
+        }
         return $query ->orderBy('created_at', 'desc')->paginate($perPage);
     }
 

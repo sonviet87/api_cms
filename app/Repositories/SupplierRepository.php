@@ -15,8 +15,14 @@ class SupplierRepository implements SupplierInterface {
         return $this->model->all();
     }
 
-    public function getListPaginate($perPage = 20){
-        return $this->model->with('user')->orderBy('created_at', 'desc')->paginate($perPage);
+    public function getListPaginate($perPage = 20,$filter=[]){
+        $query = $this->model;
+        if (isset($filter['search']) && $filter['search'] != '') {
+            $search = $filter['search'];
+            $query = $query->where('company', 'LIKE', "%{$search}%") ;
+        }
+        return $query->with('user')->orderBy('created_at', 'desc')->paginate($perPage);
+
     }
 
     public function create($data){

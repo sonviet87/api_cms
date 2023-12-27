@@ -31,7 +31,10 @@ class AccountController extends RestfulController
     {
         try {
             $perPage = $request->input("per_page", 20);
-            $filter = [];
+            $search = $request->input("search", '');
+            $filter = [
+                'search'  => $search,
+            ];
             $accounts = $this->accountService->getListPaginate($perPage,$filter);
            // $accounts->appends($request->except(['page', '_token']));
            // $paginator = $this->getPaginator($accounts);

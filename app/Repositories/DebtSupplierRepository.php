@@ -20,6 +20,10 @@ class DebtSupplierRepository implements DebtSupplierInterface {
     public function getListPaginate($perPage = 20,$filter = []){
         $query = $this->model;
         if(!empty($filter)) {
+            if (isset($filter['status']) && $filter['status'] != '' && $filter['status'] != '0') {
+
+                $query = $query->where('isDone',$filter['status']);
+            }
             if (isset($filter['search']) && $filter['search'] != '') {
                 $search = $filter['search'];
                 $query = $query->where('name', 'like', "%{$filter['search']}%")->orWhereHas('fp', function ($query) use ( $search){
@@ -28,9 +32,8 @@ class DebtSupplierRepository implements DebtSupplierInterface {
                     }) ;;
                 }) ;
             }
-
         }
-        //dd($query->toSql() );
+
         return  $query->with(['fp'])->orderBy('created_at', 'desc')->paginate($perPage);
     }
 

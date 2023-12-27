@@ -20,9 +20,9 @@ class SupplierService extends BaseService
         return $this->supplier->getList();
     }
 
-    public function getListPaginate($perPage = 20)
+    public function getListPaginate($perPage = 20,$filter)
     {
-        return $this->supplier->getListPaginate($perPage);
+        return $this->supplier->getListPaginate($perPage,$filter);
     }
 
     public function createNew($data)

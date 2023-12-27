@@ -31,7 +31,11 @@ class SupplierController extends RestfulController
     {
         try {
             $perPage = $request->input("per_page", 20);
-            $suppliers = $this->supplierService->getListPaginate($perPage);
+            $search = $request->input("search", '');
+            $filter = [
+                'search'  => $search,
+            ];
+            $suppliers = $this->supplierService->getListPaginate($perPage,$filter);
 
             return new SupplierCollection($suppliers);
         } catch (\Exception $e) {
