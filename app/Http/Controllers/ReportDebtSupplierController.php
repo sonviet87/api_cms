@@ -30,6 +30,7 @@ class ReportDebtSupplierController extends RestfulController
             $account_id = $request->input("account_id", '');
             $fp_id = $request->input("fp_id", '');
             $isDone = $request->input("isDone", '');
+            $supplier_id = $request->input("supplier_id", '');
 
             $startDay = $request->input("startDay", '');
             $endDay = $request->input("endDay", '');
@@ -40,12 +41,14 @@ class ReportDebtSupplierController extends RestfulController
                 'startDay'  => $startDay,
                 'endDay'  => $endDay,
                 'fp_id'  => $fp_id,
+                'supplier_id'  => $supplier_id,
                 'isDone'  => $isDone,
                 'list'  => $list,
             ];
 
             $reports = $this->reportDebtSupplierService->getListPaginate($perPage, $filter);
             //return $this->_response($reports);
+
             return new ReportDebtSupplierCollection($reports);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);

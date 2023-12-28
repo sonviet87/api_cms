@@ -36,7 +36,7 @@ class ReportDebtSupplierCollection extends ResourceCollection
                     'supplier'=> $page->supplier->company,
                     'total_debt'=>$page->total_debt,
                     'created_at' => $page->created_at,
-                    'isDone' => $page->isDone == 2 ? "Chưa thu xong": "Đã thu xong",
+                    'isDone' => $page->isDone == 2 ? "Chưa trả": "Đã trả",
                     'isDone_number' => $page->isDone,
                     'fp' => new ReportDebtSupplierByIDFPResource($page->fp()->first(),$page->supplier_id,),
                 ];

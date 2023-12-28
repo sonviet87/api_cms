@@ -37,7 +37,7 @@ class FPResource extends JsonResource
             'margin' => $this->margin,
             'user' => $this->user->name,
             'user_id' => $this->user_id,
-            'account_id' => $this->account_id,
+            'account_id' => $this->account,
             'user_assign' => $this->user_assign,
             'user_assign_name' => $this->userAssign->name,
             'phone' => $this->userAssign->phone,

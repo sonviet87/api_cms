@@ -29,6 +29,11 @@ class ReportDebtSupplierRepository implements ReportDebtSupplierInterface {
                 }) ;
 
             }
+            if (isset($filter['supplier_id']) && $filter['supplier_id'] != '') {
+
+                $query = $query->where('supplier_id', $filter['supplier_id']) ;
+
+            }
             if (isset($filter['account_id']) && $filter['account_id'] != '') {
                 $account_id = $filter['account_id'];
                 $query = $query->whereHas('fp', function ($query) use ( $account_id){

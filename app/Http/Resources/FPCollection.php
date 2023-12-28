@@ -18,7 +18,6 @@ class FPCollection extends ResourceCollection
     {
 
         return $this->collection->transform(function ($page) {
-
                 return [
                     'id' => $page->id,
                     'code' => $page->code,
