@@ -6,6 +6,7 @@ use App\Interfaces\FPInterface;
 use App\Models\ContractCode;
 use App\Models\FP;
 use App\Models\Supplier;
+use Carbon\Carbon;
 
 
 class FPRepository implements FPInterface {
@@ -81,9 +82,14 @@ class FPRepository implements FPInterface {
                 $contractCode->code = $contractCode->code + 1;
                 $contractCode->save();
 
+                $currentYear = Carbon::now()->year;
+                //add zero if code less than 10
+                $codeContract = $contractCode->code;
+                if($contractCode->code<10) $codeContract = '0'.$contractCode->code;
                 //update code contract
                 $fp->isCodeContract = 1;
-                $fp->code_contract = 'HD-MV-TECH-'. $contractCode->code ;
+
+                $fp->code_contract = 'HD-MV-TECH-'. $codeContract.'-'.$currentYear ;
             }
 
         }

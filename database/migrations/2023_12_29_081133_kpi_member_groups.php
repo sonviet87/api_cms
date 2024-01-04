@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('kpi_member_groups', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('name')->nullable();
             $table->string('profit_months')->nullable();
             $table->string('profit_3_months')->nullable();
             $table->string('profit_12_months')->nullable();
@@ -25,8 +26,6 @@ return new class extends Migration
             $table->string('debts_months')->nullable();
             $table->string('debts_3_months')->nullable();
             $table->string('debts_12_months')->nullable();
-            $table->unsignedBigInteger('kpi_customer_id')->nullable();
-            $table->unsignedBigInteger('kpi_debts_id')->nullable();
             $table->timestamps();
         });
     }
