@@ -23,6 +23,9 @@ class RepositoryServiceProvider extends ServiceProvider {
         $this->app->bind('App\Interfaces\ReportDebtFPInterface', 'App\Repositories\ReportDebtFPRepository');
         $this->app->bind('App\Interfaces\ReportDebtSupplierInterface', 'App\Repositories\ReportDebtSupplierRepository');
         $this->app->bind('App\Interfaces\WarrantyInterface', 'App\Repositories\WarrantyRepository');
+        $this->app->bind('App\Interfaces\KpiMemberGroupsInterface', 'App\Repositories\KpiMemberGroupsRepository');
+        $this->app->bind('App\Interfaces\KpiCustomerInterface', 'App\Repositories\KpiCustomerRepository');
+        $this->app->bind('App\Interfaces\KpiDebtsInterface', 'App\Repositories\KpiDebtsRepository');
 
     }
 }

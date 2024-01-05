@@ -37,6 +37,7 @@ class UserCollection extends ResourceCollection
                     'name' => $page->name,
                     'email' => $page->email,
                     'status' =>$page->status,
+                    'salary' =>$page->salary,
                     'phone' =>$page->phone,
                     'roles' => $page->roles->transform(function ($item) {
                         return [

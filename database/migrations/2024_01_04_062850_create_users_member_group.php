@@ -13,13 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('kpi_customer', function (Blueprint $table) {
+        Schema::create('users_member_group', function (Blueprint $table) {
             $table->id();
-            $table->string('number')->nullable();
-            $table->string('percentage')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->string('type')->nullable();
-            $table->softDeletes();
             $table->unsignedBigInteger('group_id')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kpi_customer');
+        Schema::dropIfExists('users_member_group');
     }
 };

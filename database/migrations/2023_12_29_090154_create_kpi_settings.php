@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('max_percentage')->nullable();
             $table->string('percentage')->nullable();
             $table->string('type')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
