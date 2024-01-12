@@ -39,6 +39,12 @@ class KpiDebtsRepository implements KpiDebtsInterface {
         return $this->model->where('id', $id)->update($data);
     }
 
+    public function getIDS($id){
+
+        return $this->model->where("group_id",$id)->get()->pluck('id');
+
+    }
+
     public function destroy($ids){
         return $this->model->whereIn('id', $ids)->delete();
     }

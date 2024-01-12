@@ -2,39 +2,34 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Http\Resources\KpiMemberGroupsCollection;
-use App\Http\Resources\KpiMemberGroupsResource;
-use App\Services\KpiMemberGroupsService;
+use App\Http\Resources\KpiSettingsCollection;
+use App\Http\Resources\KpiSettingsResource;
+use App\Services\KpiSettingsService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class KpiMemberGroupsController extends RestfulController{
 
-    protected  $kpiMemberGroups;
+class KpiSettingsController extends RestfulController{
 
-    public function __construct(KpiMemberGroupsService $kpiMemberGroups)
+    protected  $kpiSettings;
+
+    public function __construct(KpiSettingsService $kpiSettings)
     {
         parent::__construct();
-        $this->kpiMemberGroups = $kpiMemberGroups;
-
+        $this->kpiSettings = $kpiSettings;
 
     }
+
     /**
-     * Get all  Kpi members groups with paginate
+     * Get all  Kpi settings
      * @return mixed
      */
     public function index(Request $request)
     {
         try {
-            $perPage = $request->input("per_page", 20);
-            $search = $request->input("search", '');
-            $filter = [
-                'search'  => $search,
-            ];
-            $rs = $this->kpiMemberGroups->getListPaginate($perPage, $filter);
 
-            return new KpiMemberGroupsCollection($rs);
+            $rs = $this->kpiSettings->getList();
+
+            return new KpiSettingsCollection($rs);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
@@ -48,7 +43,7 @@ class KpiMemberGroupsController extends RestfulController{
 
         try{
             $data = $request->all();
-            $result = $this->kpiMemberGroups->create($data);
+            $result = $this->kpiSettings->create($data);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
@@ -63,13 +58,14 @@ class KpiMemberGroupsController extends RestfulController{
      * @return mixed
      */
     public function show($id){
+
         try{
-            $result = $this->kpiMemberGroups->getByID($id);
+            $result = $this->kpiSettings->getByID($id);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
             // return $this->_response($result['data']);
-            return  new KpiMemberGroupsResource($result['data']);
+            return  new KpiSettingsResource($result['data']);
         }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
@@ -82,11 +78,11 @@ class KpiMemberGroupsController extends RestfulController{
     public function update(Request $request, $id){
 
         $this->validate($request, [
-            'name' => 'bail|required',
+           // 'name' => 'bail|required',
         ]);
         try{
             $data = $request->all();
-            $result = $this->kpiMemberGroups->update($id, $data);
+            $result = $this->kpiSettings->update($id, $data);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
@@ -102,18 +98,6 @@ class KpiMemberGroupsController extends RestfulController{
      * @return mixed
      */
     public function destroy(Request $request){
-        $this->validate($request, [
-            'ids' => 'required|array|min:1',
-        ]);
-        try{
-            $ids = $request->input('ids');
-            $result = $this->kpiMemberGroups->destroyByIDs($ids);
-            if($result['status']==false){
-                return $this->_error($result['message']);
-            }
-            return $this->_success($result['message']);
-        }catch(\Exception $e){
-            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
-        }
+
     }
 }

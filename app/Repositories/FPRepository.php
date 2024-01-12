@@ -25,6 +25,21 @@ class FPRepository implements FPInterface {
         return $query->orderBy('id', 'desc')->get();
     }
 
+    public function getListbyUsers($startDay,$endDay,$idUsers = []){
+        $query = $this->model;
+        if (isset($startDay) && $startDay != '' && isset($endDay) && $endDay != '') {
+            $statDayValue = date('Y-m-d',strtotime($startDay));
+            $endDayValue = date('Y-m-d', strtotime($endDay));
+
+            $query = $query->whereDate('created_at','>=' ,$statDayValue)->whereDate('created_at','<=' ,$endDayValue);
+        }
+        if(count($idUsers)) {
+           $query = $query->whereIn('user_assign', $idUsers) ;
+        }
+
+        return $query->orderBy('id', 'desc')->get();
+    }
+
     public function getListPaginate($perPage = 20,$filter = []){
         $query = $this->model;
         if(!empty($filter)) {

@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('number')->nullable();
             $table->string('percentage')->nullable();
             $table->string('type')->nullable();
-            $table->softDeletes();
             $table->unsignedBigInteger('group_id')->nullable();
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 

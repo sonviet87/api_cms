@@ -17,7 +17,7 @@ class KpiSettings extends Model
 
     protected $guarded = [];
 
-    protected $table = ' kpi_settings';
+    protected $table = 'kpi_settings';
 
 
 }
