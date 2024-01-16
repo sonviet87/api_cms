@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Http\Resources\KpiMemberGroupsCollection;
-use App\Http\Resources\KpiMemberGroupsResource;
-use App\Services\KpiMemberGroupsService;
+use App\Http\Resources\SalaryCollection;
+use App\Services\SalaryService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class KpiMemberGroupsController extends RestfulController{
-
-    protected  $kpiMemberGroups;
-
-    public function __construct(KpiMemberGroupsService $kpiMemberGroups)
+class SalaryController extends RestfulController
+{
+    protected $salarySerivce;
+    public function __construct(SalaryService $salarySerivce)
     {
         parent::__construct();
-        $this->kpiMemberGroups = $kpiMemberGroups;
-
-
+        $this->salarySerivce = $salarySerivce;
     }
     /**
-     * Get all  Kpi members groups with paginate
-     * @return mixed
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
@@ -32,78 +27,44 @@ class KpiMemberGroupsController extends RestfulController{
             $filter = [
                 'search'  => $search,
             ];
-            $rs = $this->kpiMemberGroups->getListPaginate($perPage, $filter);
+            $rs = $this->salarySerivce->getListPaginate($perPage,$filter);
 
-            return new KpiMemberGroupsCollection($rs);
+            return new SalaryCollection($rs);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
     }
     /**
-     * Get all  Kpi members groups with paginate
+     * Get all approved products with paginate
      * @return mixed
      */
     public function list(Request $request)
     {
         try {
-            $search = $request->input("search", '');
-            $filter = [
-                'search'  => $search,
-            ];
-            $rs = $this->kpiMemberGroups->getList($filter);
-            return new KpiMemberGroupsCollection($rs);
+
+            $rs = $this->salarySerivce->getList();
+            return new SalaryCollection($rs);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
     }
 
-    /**
-     * Create a Kpi members groups
-     * @return mixed
-     */
-    public function store(Request $request){
-
-        try{
-            $data = $request->all();
-            $result = $this->kpiMemberGroups->create($data);
-            if($result['status']==false){
-                return $this->_error($result['message']);
-            }
-            return $this->_success($result['message']);
-        }catch(\Exception $e){
-            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
-        }
-    }
-    /**
-     * Get a kpi member group by id
-     * @param interger $id
-     * @return mixed
-     */
-    public function show($id){
-        try{
-            $result = $this->kpiMemberGroups->getByID($id);
-            if($result['status']==false){
-                return $this->_error($result['message']);
-            }
-            // return $this->_response($result['data']);
-            return  new KpiMemberGroupsResource($result['data']);
-        }catch(\Exception $e){
-            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
-        }
-    }
 
     /**
-     * Update a kpi member group  by  id
-     * @return mixed
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id){
-
+    public function store(Request $request)
+    {
         $this->validate($request, [
-            'name' => 'bail|required',
+            'level' => 'bail|required',
+            'salary' => 'bail|required',
         ]);
         try{
             $data = $request->all();
-            $result = $this->kpiMemberGroups->update($id, $data);
+            $result = $this->salarySerivce->create($data);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
@@ -114,17 +75,66 @@ class KpiMemberGroupsController extends RestfulController{
     }
 
     /**
-     * Delete a list of kpi member group by an array of  id
-     * @param array $ids
-     * @return mixed
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request){
+    public function show($id)
+    {
+        try{
+            $result = $this->salarySerivce->getByID($id);
+            if($result['status']==false){
+                return $this->_error($result['message']);
+            }
+            return $this->_response($result['data']);
+        }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $this->validate($request, [
+            'level' => 'bail|required',
+            'salary' => 'bail|required',
+        ]);
+        try{
+            $data = $request->all();
+            $result = $this->salarySerivce->update($id, $data);
+            if($result['status']==false){
+                return $this->_error($result['message']);
+            }
+            return $this->_success($result['message']);
+        }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+    {
         $this->validate($request, [
             'ids' => 'required|array|min:1',
         ]);
+
         try{
             $ids = $request->input('ids');
-            $result = $this->kpiMemberGroups->destroyByIDs($ids);
+            $result = $this->salarySerivce->destroyByIDs($ids);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }

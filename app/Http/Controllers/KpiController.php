@@ -2,10 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\KpiService;
 use Illuminate\Http\Request;
 
-class KpiController extends Controller
+class KpiController extends RestfulController
 {
+    protected $kpiService;
+    public function __construct(KpiService $kpiService)
+    {
+        parent::__construct();
+        $this->kpiService = $kpiService;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,10 +23,22 @@ class KpiController extends Controller
         $type = $request->input("type", 'months');
         $startDay = $request->input("startDay", '');
         $endDay = $request->input("endDay", '');
+        $groupMember = $request->input("groupMember", '');
         $filter = [
             'startDay'  => $startDay,
             'endDay'  => $endDay,
+            'groupMember'  => $groupMember,
+            'status' => 6
         ];
+
+        $rs = $this->kpiService->getList($filter);
+        $pagingArr = $rs->toArray();
+        return $this->_response([
+
+            'kpi' => $pagingArr
+        ]);
+        //return new FPCollection($rs);
+
     }
 
     /**

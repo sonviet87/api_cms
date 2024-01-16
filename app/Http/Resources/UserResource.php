@@ -22,7 +22,9 @@ class UserResource extends JsonResource
             'salary' =>$this->salary,
             'username' => $this->username,
             'phone' => $this->phone,
-            'role_id' => $this->roles->first()->id
+            'role_id' => $this->roles->first()->id,
+            'salary_lv_id' => $this->salary->id ?? null,
+            'salary' => $this->salary->salary ?? 0,
         ];
     }
 

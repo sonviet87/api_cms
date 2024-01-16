@@ -1,23 +1,20 @@
 <?php
 namespace App\Interfaces;
 
-interface FPInterface {
-
+interface SalaryInterface {
 
     /**
      * Get all  with paginate
      * @param interger $perPage
      * @return mixed
      */
-    public function getListPaginate($perPage = 20);
-
+    public function getListPaginate($perPage = 20,$filter);
     /**
-     * Get list with users id
-     * @param Array $idUsers
+     * Get all  with paginate
+     * @param minxed $fillter
      * @return mixed
      */
-    public function getListbyUsers($filter = []);
-
+    public function getList($fillter=[]);
     /**
      * Create new
      * @param array $data
@@ -45,6 +42,7 @@ interface FPInterface {
      * @return mixed
      */
     public function destroy($ids);
+
 
 
 }

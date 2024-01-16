@@ -25,7 +25,8 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
-        'role_id'
+        'role_id',
+        'salary_lv_id'
     ];
 
     /**
@@ -50,4 +51,9 @@ class User extends Authenticatable
     /*public function roles(){
         return $this->belongsToMany(Role::class);
     }*/
+
+    public function salary()
+    {
+        return $this->belongsTo(Salary::class,'salary_lv_id')->withTrashed();
+    }
 }

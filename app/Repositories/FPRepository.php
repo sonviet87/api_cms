@@ -25,16 +25,20 @@ class FPRepository implements FPInterface {
         return $query->orderBy('id', 'desc')->get();
     }
 
-    public function getListbyUsers($startDay,$endDay,$idUsers = []){
+    public function getListbyUsers($filter = []){
         $query = $this->model;
-        if (isset($startDay) && $startDay != '' && isset($endDay) && $endDay != '') {
-            $statDayValue = date('Y-m-d',strtotime($startDay));
-            $endDayValue = date('Y-m-d', strtotime($endDay));
+        if (isset($filter['startDay']) && $filter['startDay'] != '' && isset($filter['endDay']) && $filter['endDay'] != '') {
+            $statDayValue = date('Y-m-d',strtotime($filter['startDay']));
+            $endDayValue = date('Y-m-d', strtotime($filter['endDay']));
 
             $query = $query->whereDate('created_at','>=' ,$statDayValue)->whereDate('created_at','<=' ,$endDayValue);
         }
-        if(count($idUsers)) {
-           $query = $query->whereIn('user_assign', $idUsers) ;
+        if (isset($filter['users']) && count($filter['users'])) {
+
+           $query = $query->whereIn('user_assign', $filter['users']) ;
+        }
+        if (isset($filter['status']) && $filter['status'] !="") {
+            $query = $query->where('status',6);
         }
 
         return $query->orderBy('id', 'desc')->get();

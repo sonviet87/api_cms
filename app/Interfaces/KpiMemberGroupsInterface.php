@@ -12,6 +12,13 @@ interface KpiMemberGroupsInterface {
     public function getListPaginate($perPage = 20,$filter);
 
     /**
+     * Get all  with paginate
+     * @param interger $perPage
+     * @return mixed
+     */
+    public function getList($filter);
+
+    /**
      * Create new
      * @param array $data
      * @return mixed

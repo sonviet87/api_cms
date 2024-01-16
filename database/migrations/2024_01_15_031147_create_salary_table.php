@@ -13,11 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users_member_group', function (Blueprint $table) {
+        Schema::create('salary', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->string('type')->nullable();
-            $table->unsignedBigInteger('group_id')->nullable();
+            $table->string('level')->nullable();
+            $table->string('salary')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users_member_group');
+        Schema::dropIfExists('salary');
     }
 };

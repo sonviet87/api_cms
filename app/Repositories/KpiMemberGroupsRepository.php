@@ -39,7 +39,7 @@ class KpiMemberGroupsRepository implements KpiMemberGroupsInterface {
     }
 
     public function getByID($id){
-        return $this->model->with(['customers','debts'])->find($id);
+        return $this->model->with(['customers','debts','users'])->find($id);
     }
 
     public function update($id, $data){
