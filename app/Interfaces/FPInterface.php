@@ -17,6 +17,12 @@ interface FPInterface {
      * @return mixed
      */
     public function getListbyUsers($filter = []);
+    /**
+     * Get list with users id
+     * @param Array mixed
+     * @return mixed
+     */
+    public function getIDsUsersNotExistInCurrentUsers($filter = []);
 
     /**
      * Create new

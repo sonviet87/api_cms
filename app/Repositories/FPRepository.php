@@ -27,15 +27,18 @@ class FPRepository implements FPInterface {
 
     public function getListbyUsers($filter = []){
         $query = $this->model;
-        if (isset($filter['startDay']) && $filter['startDay'] != '' && isset($filter['endDay']) && $filter['endDay'] != '') {
+        if (isset($filter['startDay']) && $filter['startDay'] != '') {
             $statDayValue = date('Y-m-d',strtotime($filter['startDay']));
-            $endDayValue = date('Y-m-d', strtotime($filter['endDay']));
+            $query = $query->whereDate('created_at','>=' ,$statDayValue);
+        }
+        if (isset($filter['endDay']) && $filter['endDay'] != '') {
 
-            $query = $query->whereDate('created_at','>=' ,$statDayValue)->whereDate('created_at','<=' ,$endDayValue);
+            $endDayValue = date('Y-m-d', strtotime($filter['endDay']));
+            $query = $query->whereDate('created_at','<=' ,$endDayValue);
         }
         if (isset($filter['users']) && count($filter['users'])) {
 
-           $query = $query->whereIn('user_assign', $filter['users']) ;
+            $query = $query->whereIn('user_assign', $filter['users']) ;
         }
         if (isset($filter['status']) && $filter['status'] !="") {
             $query = $query->where('status',6);
@@ -43,6 +46,24 @@ class FPRepository implements FPInterface {
 
         return $query->orderBy('id', 'desc')->get();
     }
+
+    public function getIDsUsersNotExistInCurrentUsers($filter = []){
+        $query = $this->model;
+        if (isset($filter['startDay']) && $filter['startDay'] != '') {
+            $startDayValue = date('Y-m-d', strtotime($filter['startDay']));
+            $query = $query->whereDate('created_at','<' ,$startDayValue);
+        }
+
+        if (isset($filter['users']) && count($filter['users'])) {
+            $query = $query->whereIn('user_assign', $filter['users']) ;
+        }
+        //dd($query->toSql());
+        $query = $query->where('status',6)->get()->pluck('account_id');
+
+        return $query;
+
+    }
+
 
     public function getListPaginate($perPage = 20,$filter = []){
         $query = $this->model;

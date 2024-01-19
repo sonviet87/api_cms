@@ -19,6 +19,7 @@ class DebtResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'date_over' => $this->date_over,
+            'date_collection' => $this->date_collection,
             'pay_first' => $this->pay_first,
             'pay_second' => $this->pay_second,
             'deposit_percent' => $this->deposit_percent,

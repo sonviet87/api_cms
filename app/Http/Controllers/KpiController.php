@@ -32,10 +32,49 @@ class KpiController extends RestfulController
         ];
 
         $rs = $this->kpiService->getList($filter);
+
+        $arrParams = [
+            'target_profit_months'=>$rs->get('target_profit_months'),
+            'target_profit_3_months' => $rs->get('target_profit_3_months'),
+            'target_profit_12_months' => $rs->get('target_profit_12_months'),
+            'target_customer_months' => $rs->get('target_customer_months'),
+            'target_customer_3_months' => $rs->get('target_customer_3_months'),
+            'target_customer_12_months' => $rs->get('target_customer_12_months'),
+            'target_debts_months' => $rs->get('target_debts_months'),
+            'target_debts_3_months' => $rs->get('target_debts_3_months'),
+            'target_debts_12_months' => $rs->get('target_debts_12_months'),
+            'total_account_new' => $rs->get('total_account_new'),
+            'total_profit' => $rs->get('total_profit'),
+            'account_new' => $rs->get('account_new'),
+            'customer_conditions_months' => $rs->get('customer_conditions_months'),
+            'goal_percent_customer' => $rs->get('goal_percent_customer'),
+            'total_percent_profit_months' => $rs->get('total_percent_profit_months'),
+            'total_percent_profit_max_70_months' => $rs->get('total_percent_profit_max_70_months'),
+        ];
+        $arrForget = [
+            'target_profit_months',
+            'target_profit_3_months',
+            'target_profit_12_months' ,
+            'target_customer_months' ,
+            'target_customer_3_months',
+            'target_customer_12_months',
+            'target_debts_months',
+            'target_debts_3_months',
+            'target_debts_12_months',
+            'total_account_new',
+            'total_profit',
+
+            'customer_conditions_months',
+            'goal_percent_customer',
+            'total_percent_profit_months',
+            'total_percent_profit_max_70_months',
+            'account_new'
+        ];
+        $rs->forget($arrForget);
         $pagingArr = $rs->toArray();
         return $this->_response([
-
-            'kpi' => $pagingArr
+            'target_kpi' =>$arrParams,
+            'data' => $pagingArr
         ]);
         //return new FPCollection($rs);
 

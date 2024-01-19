@@ -12,6 +12,13 @@ interface DebtInterface {
     public function getListPaginate($perPage = 20);
 
     /**
+     * Get all  with paginate
+     * @param interger $filter
+     * @return mixed
+     */
+    public function getListKpi($filter);
+
+    /**
      * Create new
      * @param array $data
      * @return mixed
