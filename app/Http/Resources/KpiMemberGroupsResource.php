@@ -29,10 +29,10 @@ class KpiMemberGroupsResource extends JsonResource
             'debts_3_months' => $this->debts_3_months,
             'debts_12_months' => $this->debts_12_months,
             'users' => new UserCollection($this->users()->get()),
-            'customer_months_conditions' => $this->customers()->where('type','months')->get(),
+            'customer_months_conditions' => $this->customers()->where('type','1months')->get(),
             'customer_3months_conditions' =>$this->customers()->where('type','3months')->get(),
             'customer_12months_conditions' =>$this->customers()->where('type','12months')->get(),
-            'debts_months_conditions' =>$this->debts()->where('type','months')->get(),
+            'debts_months_conditions' =>$this->debts()->where('type','1months')->get(),
             'debts_3months_conditions' =>$this->debts()->where('type','3months')->get(),
             'debts_12months_conditions' =>$this->debts()->where('type','12months')->get(),
         ];

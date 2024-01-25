@@ -2,16 +2,11 @@
 
 namespace App\Services;
 
-
-
-use App\Constants\RolePermissionConst;
+use App\Constants\DebtsConst;
 use App\Interfaces\DebtInterface;
 use App\Interfaces\FPInterface;
-use App\Interfaces\KpiInterface;
 use App\Interfaces\KpiMemberGroupsInterface;
-use App\Interfaces\ReportInterface;
-use Illuminate\Support\Facades\Auth;
-
+use App\Interfaces\KpiSettingsInterface;
 
 class KpiService extends BaseService
 {
@@ -19,24 +14,19 @@ class KpiService extends BaseService
     protected $fp;
     protected $groupMember;
     protected $debts;
-    function __construct(FPInterface $fp,KpiMemberGroupsInterface $groupMember,DebtInterface $debts)
+    protected $setting;
+    function __construct(FPInterface $fp,KpiMemberGroupsInterface $groupMember,DebtInterface $debts,KpiSettingsInterface $kpiSettings)
     {
         $this->groupMember = $groupMember;
         $this->fp = $fp;
         $this->debts = $debts;
-
+        $this->setting = $kpiSettings;
     }
 
     public function getList($filter)
     {
-        $profitTargetMonths = 0;
-        $profitTargetMonths3 = 0;
-        $profitTargetMonths12 = 0;
-        if (isset($filter['startDay']) && $filter['startDay'] != '' && isset($filter['endDay']) && $filter['endDay'] != '') {
-            $startDay = $filter['startDay'];
-            $endDay = $filter['endDay'];
-        }
         if(isset($filter['groupMember']) && $filter['groupMember'] !=''){
+            $typeKpi = $filter['type'] ?? DebtsConst::MONTHS_1;
             $groupMember = $this->groupMember->getByID($filter['groupMember']);
             if($groupMember!=null){
                 $profitTargetMonths = $groupMember->profit_months;
@@ -45,118 +35,238 @@ class KpiService extends BaseService
                 $customerTargetMonths = $groupMember->customer_months;
                 $customerTargetMonths3 = $groupMember->	customer_3_months;
                 $customerTargetMonths12 = $groupMember->customer_12_months;
-                $debtsTargetMonths = $groupMember->debts_months;
-                $debtsTargetMonths3 = $groupMember->debts_3_months;
-                $debtsTargetMonths12 = $groupMember->debts_12_months;
+
                 $users = $groupMember->users()->get()->pluck('id')->all();
                 if(count($users)>0) $filter['users'] = $users;
+
+                $profitType = DebtsConst::MONTHS_1;
+                $customerTager = 0;
+                if($typeKpi== DebtsConst::MONTHS_1){
+                    $profitType = $profitTargetMonths;
+                    $customerTager = $customerTargetMonths;
+                }
+                elseif($typeKpi== DebtsConst::MONTHS_3) {
+                    $profitType =$profitTargetMonths3 ;
+                    $customerTager = $customerTargetMonths3;
+                }
+                else {
+                    $profitType =$profitTargetMonths12 ;
+                    $customerTager = $customerTargetMonths12;
+                }
 
                 /////////////////
                 /// get Accounts
                 /// ////////////
-                $rs =   $this->fp->getListbyUsers($filter);
-                //get account id betten start day and end day
-                $distinctAccount = $rs->unique('account_id')->pluck('account_id')->toArray();
-                //get all account id
-                $rsAccount = $this->fp->getIDsUsersNotExistInCurrentUsers(['startDay'=> $filter['startDay'],'users' =>$filter['users']]);
-                $distinctAccountAll = $rsAccount->unique()->values()->all();
-                $accoutResult = array_diff($distinctAccount, $distinctAccountAll);
+                [
+                    'totalMargin' => $totalMargin,
+                    'goalPercentCustomer' =>$goalPercentCustomer,
+                    'accoutResult' => $accoutResult,
+                    'conditionsCustomer' =>$conditionsCustomer,
+                    'list' => $rs
 
-
-
-                //get conditions customer
-                $conditionsCustomer = $groupMember->customers()->get();
-                $conditionsCustomerMonths = $conditionsCustomer->filter(function ($item) {
-                    return $item['type'] === 'months';
-                });
-
-                //compare values to get percents
-                $goalPercentCustomer = $conditionsCustomerMonths->firstWhere('number', count($accoutResult))
-                    ?: $conditionsCustomerMonths
-                        ->where('number', '<', count($accoutResult))
-                        ->sortByDesc('number') // Sắp xếp theo giảm dần để lấy giá trị lớn nhất
-                        ->first();
-
-
-                $conditionsCustomer3Months = $conditionsCustomer->filter(function ($item) {
-                    return $item['type'] === '3months';
-                });
-                $conditionsCustomer12Months = $conditionsCustomer->filter(function ($item) {
-                    return $item['type'] === '3months';
-                });
-
-                $totalMargin = $rs->sum('margin');
+                ] = $this->getCustomer($groupMember,$filter,$customerTager);
                 //get total percent profit
-                $totlaPrecentProftMonths = ($totalMargin/$profitTargetMonths)*100;
+
+
+
+                $totlaPrecentProft = ($totalMargin/$profitType)*100;
                 //get total percent profit max 70%
-                $totlaPrecentProftMax70Months = (($totalMargin*0.7)/$profitTargetMonths)*100;
+                $totlaPrecentProftMax70 = (($totalMargin*0.7)/$profitType)*100;
                 ////////////////////////
                 /// Debts
                 /// ///////////////////
-                $conditionsDebts = $groupMember->debts()->get();
-                $conditionsDebtsMonths = $conditionsDebts->filter(function ($item) {
-                    return $item['type'] === 'months';
-                });
+                [
+                    "totalPercentDebuts" => $totalPercentDebuts,
+                    "rsDebuts" => $rsDebuts,
+                    "debuts_percent" => $arrPercentDebuts,
+                    "conditionsDebtsTypeList" => $conditionsDebtsTypeList
+                ] = $this->getDebts($groupMember,$filter);
+                $goalPercentCustomerTotal = $goalPercentCustomer? $goalPercentCustomer->percentage : 0;
 
-                $rsDebuts = $this->debts->getListKpi($filter);
-                $arrPercentDebuts= [];
-                foreach ($rsDebuts as $debt) {
-                    $matchedCondition = null;
+                //calculator total percent goals
+                $totalGoals = $totlaPrecentProftMax70 + $goalPercentCustomerTotal + $totalPercentDebuts;
+                //get percent total settings
+                [ "percent" => $percentTotalSettings, "resultKpiGoals" => $resultKpiGoals,'record' => $record ]= $this->getKpiSettings($totalGoals,$filter);
 
-                    foreach ($conditionsDebtsMonths as $condition) {
-                        if ($debt->diff >= $condition->min_day && $debt->diff <= $condition->max_day) {
-                            $matchedCondition = $condition;
-                            break;
-                        }
-                    }
-
-                    if (!$matchedCondition) {
-                        // Nếu không có điều kiện phù hợp, xử lý theo yêu cầu của bạn
-                        if ($debt->diff >= $conditionsDebtsMonths->max('max_day')) {
-                            $percent = $conditionsDebtsMonths->max('percent');
-                        } elseif ($debt->diff <= $conditionsDebtsMonths->min('min_day')) {
-                            $percent = $conditionsDebtsMonths->min('percent');
-                        } else {
-                            // Xử lý theo trường hợp không có điều kiện nào khớp
-                            // Hoặc bạn có thể đặt giá trị mặc định khác tùy thuộc vào yêu cầu của bạn
-                        }
-                    } else {
-                        $percent = $matchedCondition->percent;
-                    }
-                    $arrPercentDebuts[]=$percent;
-                    // Sử dụng $percent theo nhu cầu của bạn (ví dụ: lưu vào một mảng, hiển thị, v.v.).
-                }
-
+                $rs->put('percentTotalSettings', $percentTotalSettings);
+                $rs->put('result_kpi_goals', $resultKpiGoals);
+                $rs->put('totalGoals', $totalGoals);
+                $rs->put('totalPercentDebuts', $totalPercentDebuts);
                 $rs->put('total_profit', $totalMargin);
                 $rs->put('debuts', $rsDebuts);
                 $rs->put('debuts_percent', $arrPercentDebuts);
-                $rs->put('conditionsDebtsMonths', $conditionsDebtsMonths);
-
+                $rs->put('conditions_debts_type_list', $conditionsDebtsTypeList);
+                $rs->put('target_profit', $profitType);
                 $rs->put('target_profit_months', $profitTargetMonths);
                 $rs->put('target_profit_3_months', $profitTargetMonths3);
                 $rs->put('target_profit_12_months', $profitTargetMonths12);
                 $rs->put('target_customer_months', $customerTargetMonths);
                 $rs->put('target_customer_3_months', $customerTargetMonths3);
                 $rs->put('target_customer_12_months', $customerTargetMonths12);
-                $rs->put('target_debts_months', $debtsTargetMonths);
-                $rs->put('target_debts_3_months', $debtsTargetMonths3);
-                $rs->put('target_debts_12_months', $debtsTargetMonths12);
+                $rs->put('target_customer', $customerTager);
+                $rs->put('record_setting_percent', $record);
+
+
                // $rs->put('account_id', $distinctAccount);
                // $rs->put('account_id_test',$distinctAccountAll);
                 $rs->put('account_new',$accoutResult);
                 $rs->put('total_account_new',count($accoutResult));
                // $rs->put('customer_conditions',$groupMember->customers()->get());
-                $rs->put('customer_conditions_months',$conditionsCustomerMonths);
-                $rs->put('goal_percent_customer',$goalPercentCustomer? $goalPercentCustomer->percentage : 0);
-                $rs->put('total_percent_profit_months', $totlaPrecentProftMonths);
-                $rs->put('total_percent_profit_max_70_months', $totlaPrecentProftMax70Months);
+                $rs->put('customer_conditions',$conditionsCustomer);
+                $rs->put('goal_percent_customer',$goalPercentCustomerTotal);
+                $rs->put('total_percent_profit', $totlaPrecentProft);
+                $rs->put('total_percent_profit_max_70', $totlaPrecentProftMax70);
 
             }
             return $rs;
         }
         return $this->_result(false, 'Không thể tạo kpi');
     }
+    private function getCustomer($groupMember,$filter,$customerTager){
+        $typeKpi = $filter['type'] ?? DebtsConst::MONTHS_1;
+        $rs =   $this->fp->getListbyUsers($filter);
+        //get account id betten start day and end day
+        $distinctAccount = $rs->unique('account_id')->pluck('account_id')->toArray();
+        //get all account id
+        $rsAccount = $this->fp->getIDsUsersNotExistInCurrentUsers(['startDay'=> $filter['startDay'],'users' =>$filter['users']]);
+        $distinctAccountAll = $rsAccount->unique()->values()->all();
+        $accoutResult = array_diff($distinctAccount, $distinctAccountAll);
+        $newAccount = count($accoutResult);
+        //check new account greate than account target
 
+        //get conditions customer
+        $conditionsCustomer = $groupMember->customers()->get();
+        $conditionsCustomer = $conditionsCustomer->filter(function ($item) use ($typeKpi) {
+            return $item['type'] === $typeKpi .'months';
+        });
+
+        //compare values to get percents
+        $goalPercentCustomer = $conditionsCustomer->firstWhere('number', $newAccount)
+            ?: $conditionsCustomer
+                ->where('number', '<', count($accoutResult))
+                ->sortByDesc('number') // Sắp xếp theo giảm dần để lấy giá trị lớn nhất
+                ->first();
+
+        $totalMargin = $rs->sum('margin');
+        if($customerTager> $newAccount)  $goalPercentCustomer = 0;
+        return [
+            'totalMargin' => $totalMargin,
+            'goalPercentCustomer' =>$goalPercentCustomer,
+            'accoutResult' => $accoutResult,
+            'conditionsCustomer' =>$conditionsCustomer,
+            'list' => $rs
+
+
+        ];
+    }
+
+    private function getDebts($groupMember,$filter){
+        $typeKpi = $filter['type'] ?? DebtsConst::MONTHS_1;
+        $conditionsDebts = $groupMember->debts()->get();
+        $conditionsDebtsTypeList = $conditionsDebts->filter(function ($item) use ($typeKpi){
+            return $item['type'] === $typeKpi .'months';
+        });
+        //get all days
+        $rsDebuts = $this->debts->getListKpi($filter);
+        $arrPercentDebuts= [];
+        $totalPercentDebuts = 0;
+        //compare day to conditions
+        foreach ($rsDebuts as $debt) {
+            $matchedCondition = null;
+            //if day debt less than 0 and greater than debt day allows
+            if($debt->diff<0 || $debt->diff > $debt->day_debuts_allows ) {
+                $percent = 0;
+            }else{
+                // loop to find day correct conditions
+                foreach ($conditionsDebtsTypeList as $condition) {
+                    if ($debt->diff >= $condition->min_days && $debt->diff <= $condition->max_days) {
+                        $matchedCondition = $condition;
+                        break;
+                    }
+                }
+                //if not found will get max day or min day to percent
+                if (!$matchedCondition) {
+                    if ($debt->diff >= $conditionsDebtsTypeList->max('max_days')) {
+                        $percent = $conditionsDebtsTypeList->max('percentage');
+                    } elseif ($debt->diff < $conditionsDebtsTypeList->min('min_days')) {
+                        $percent =  0;
+                    } else {
+                        $percent = 0;
+                    }
+
+                } else {
+                    $percent = $matchedCondition->percentage;
+                }
+            }
+
+            $arrPercentDebuts[]=$percent;
+            $totalDebuts = count($arrPercentDebuts);
+
+            if($totalDebuts>0){
+                $totalPercentDebuts = array_sum($arrPercentDebuts)/$totalDebuts;
+            }
+
+
+        }
+        return  [
+            "totalPercentDebuts" => $totalPercentDebuts,
+            "rsDebuts" => $rsDebuts,
+            "debuts_percent"=> $arrPercentDebuts,
+            "conditionsDebtsTypeList" => $conditionsDebtsTypeList
+         ];
+
+    }
+
+    private function getKpiSettings($totalGoals,$filter){
+        $typeKpi = $filter['type'] ?? DebtsConst::MONTHS_1;
+        $conditionsSettings = $this->setting->getList();
+        $conditionsSettingsType = $conditionsSettings->filter(function ($item) use ($typeKpi){
+            return $item['type'] === $typeKpi.'months';
+        });
+
+        $matchedCondition = null;
+        $record = 0;
+        $minPercent = $conditionsSettingsType->min('min_percentage');
+        $maxPercent = $conditionsSettingsType->max('max_percentage');
+        //if day debt less than 0 and greater than debt day allows
+        if($totalGoals == 0 ) {
+            $percent = 0;
+        }else{
+            // loop to find day correct conditions
+            foreach ($conditionsSettingsType as $condition) {
+                if ($totalGoals >= $condition->min_percentage && $totalGoals <= $condition->max_percentage) {
+                    $matchedCondition = $condition;
+                    $record =  $condition;
+                    break;
+                }
+            }
+
+            //if not found will get max day or min day to percent
+
+            if (!$matchedCondition) {
+                if ($totalGoals >= $maxPercent) {
+                    $record = $conditionsSettings->sortByDesc('percentage')->values()->first();
+
+                    $percent = $maxPercent;
+                } elseif ($totalGoals <$minPercent) {
+                    $percent = 0;
+                    $record =  0;
+                } else {
+                    $percent = 0;
+                    $record =  0;
+                }
+
+            } else {
+                $percent = $matchedCondition->percentage;
+            }
+
+        }
+        return [
+            'resultKpiGoals' => ($totalGoals == 0.0 || $totalGoals < $minPercent  ) ? 0: 1,
+            'percent' =>$percent,
+            'record' => $record
+        ];
+    }
 
 
 }

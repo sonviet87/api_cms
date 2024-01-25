@@ -20,7 +20,7 @@ class KpiController extends RestfulController
      */
     public function index(Request $request)
     {
-        $type = $request->input("type", 'months');
+        $type = $request->input("kpiType", '1');
         $startDay = $request->input("startDay", '');
         $endDay = $request->input("endDay", '');
         $groupMember = $request->input("groupMember", '');
@@ -28,47 +28,62 @@ class KpiController extends RestfulController
             'startDay'  => $startDay,
             'endDay'  => $endDay,
             'groupMember'  => $groupMember,
-            'status' => 6
+            'status' => 6,
+            'type' => $type
         ];
 
         $rs = $this->kpiService->getList($filter);
 
         $arrParams = [
+            'target_profit'=>$rs->get('target_profit'),
             'target_profit_months'=>$rs->get('target_profit_months'),
             'target_profit_3_months' => $rs->get('target_profit_3_months'),
             'target_profit_12_months' => $rs->get('target_profit_12_months'),
             'target_customer_months' => $rs->get('target_customer_months'),
             'target_customer_3_months' => $rs->get('target_customer_3_months'),
             'target_customer_12_months' => $rs->get('target_customer_12_months'),
-            'target_debts_months' => $rs->get('target_debts_months'),
-            'target_debts_3_months' => $rs->get('target_debts_3_months'),
-            'target_debts_12_months' => $rs->get('target_debts_12_months'),
+            'target_customer' => $rs->get('target_customer'),
+            'result_kpi_goals' => $rs->get('result_kpi_goals'),
+            'conditions_debts_type_list' => $rs->get('conditions_debts_type_list'),
+            'debuts' => $rs->get('debuts'),
+            'debuts_percent' => $rs->get('debuts_percent'),
+            'percentTotalSettings' => $rs->get('percentTotalSettings'),
+            'record_setting_percent' => $rs->get('record_setting_percent'),
+
             'total_account_new' => $rs->get('total_account_new'),
             'total_profit' => $rs->get('total_profit'),
             'account_new' => $rs->get('account_new'),
-            'customer_conditions_months' => $rs->get('customer_conditions_months'),
+            'customer_conditions_type_list' => $rs->get('conditions_debts_type_list'),
             'goal_percent_customer' => $rs->get('goal_percent_customer'),
-            'total_percent_profit_months' => $rs->get('total_percent_profit_months'),
-            'total_percent_profit_max_70_months' => $rs->get('total_percent_profit_max_70_months'),
+            'total_percent_profit' => $rs->get('total_percent_profit'),
+            'total_percent_profit_max_70' => $rs->get('total_percent_profit_max_70'),
+            'totalGoals' => $rs->get('totalGoals'),
+            'totalPercentDebuts' => $rs->get('totalPercentDebuts')
         ];
         $arrForget = [
             'target_profit_months',
             'target_profit_3_months',
-            'target_profit_12_months' ,
+            'target_profit_12_months',
+            'target_profit',
             'target_customer_months' ,
             'target_customer_3_months',
             'target_customer_12_months',
-            'target_debts_months',
-            'target_debts_3_months',
-            'target_debts_12_months',
+            'target_customer',
+            'result_kpi_goals',
+            'record_setting_percent',
+            'conditions_debts_type_list',
             'total_account_new',
             'total_profit',
-
-            'customer_conditions_months',
+            'customer_conditions',
             'goal_percent_customer',
-            'total_percent_profit_months',
-            'total_percent_profit_max_70_months',
-            'account_new'
+            'total_percent_profit',
+            'total_percent_profit_max_70',
+            'account_new',
+            'totalGoals',
+            'debuts',
+            'debuts_percent',
+            'percentTotalSettings',
+            'totalPercentDebuts'
         ];
         $rs->forget($arrForget);
         $pagingArr = $rs->toArray();
