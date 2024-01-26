@@ -49,6 +49,7 @@ class KpiController extends RestfulController
             'debuts_percent' => $rs->get('debuts_percent'),
             'percentTotalSettings' => $rs->get('percentTotalSettings'),
             'record_setting_percent' => $rs->get('record_setting_percent'),
+            'revenues' => $rs->get('revenues'),
 
             'total_account_new' => $rs->get('total_account_new'),
             'total_profit' => $rs->get('total_profit'),
@@ -58,13 +59,22 @@ class KpiController extends RestfulController
             'total_percent_profit' => $rs->get('total_percent_profit'),
             'total_percent_profit_max_70' => $rs->get('total_percent_profit_max_70'),
             'totalGoals' => $rs->get('totalGoals'),
-            'totalPercentDebuts' => $rs->get('totalPercentDebuts')
+            'totalPercentDebuts' => $rs->get('totalPercentDebuts'),
+            'users' => $rs->get('users'),
+            'totalSalary' => $rs->get('totalSalary'),
+            'totalProfitMargin' => $rs->get('totalProfitMargin'),
+            'totalPercentRevenues' => $rs->get('totalPercentRevenues')
         ];
         $arrForget = [
+            'totalPercentRevenues',
+            'totalProfitMargin',
+            'totalSalary',
             'target_profit_months',
             'target_profit_3_months',
             'target_profit_12_months',
             'target_profit',
+            'users',
+            'revenues',
             'target_customer_months' ,
             'target_customer_3_months',
             'target_customer_12_months',

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Constants\DebtsConst;
+use App\Http\Resources\UserCollection;
 use App\Interfaces\DebtInterface;
 use App\Interfaces\FPInterface;
 use App\Interfaces\KpiMemberGroupsInterface;
@@ -36,8 +37,15 @@ class KpiService extends BaseService
                 $customerTargetMonths3 = $groupMember->	customer_3_months;
                 $customerTargetMonths12 = $groupMember->customer_12_months;
 
-                $users = $groupMember->users()->get()->pluck('id')->all();
-                if(count($users)>0) $filter['users'] = $users;
+                $users = new UserCollection($groupMember->users()->get());
+                $totalSalary = 0;
+
+                foreach ($users as $employee) {
+                    $totalSalary += (int) $employee->salary->salary;
+                }
+
+                $usersID = $users->pluck('id')->all();
+                if(count($usersID)>0) $filter['users'] = $usersID;
 
                 $profitType = DebtsConst::MONTHS_1;
                 $customerTager = 0;
@@ -88,6 +96,16 @@ class KpiService extends BaseService
                 //get percent total settings
                 [ "percent" => $percentTotalSettings, "resultKpiGoals" => $resultKpiGoals,'record' => $record ]= $this->getKpiSettings($totalGoals,$filter);
 
+                //revenues
+                $revenues = ($totalMargin*$percentTotalSettings)/100;
+
+                $totalProfitMargin = $totalMargin - ($totalSalary + $revenues);
+                $totalPercentRevenues = 0;
+                if($totalMargin!=0)  $totalPercentRevenues = ($totalProfitMargin/$totalMargin)*100;
+
+                $rs->put('totalPercentRevenues', $totalPercentRevenues);
+                $rs->put('totalProfitMargin', $totalProfitMargin);
+                $rs->put('totalSalary', $totalSalary);
                 $rs->put('percentTotalSettings', $percentTotalSettings);
                 $rs->put('result_kpi_goals', $resultKpiGoals);
                 $rs->put('totalGoals', $totalGoals);
@@ -105,6 +123,8 @@ class KpiService extends BaseService
                 $rs->put('target_customer_12_months', $customerTargetMonths12);
                 $rs->put('target_customer', $customerTager);
                 $rs->put('record_setting_percent', $record);
+                $rs->put('users', $users);
+                $rs->put('revenues', $revenues);
 
 
                // $rs->put('account_id', $distinctAccount);
@@ -148,7 +168,7 @@ class KpiService extends BaseService
                 ->first();
 
         $totalMargin = $rs->sum('margin');
-        if($customerTager> $newAccount)  $goalPercentCustomer = 0;
+       // if($customerTager> $newAccount)  $goalPercentCustomer = 0;
         return [
             'totalMargin' => $totalMargin,
             'goalPercentCustomer' =>$goalPercentCustomer,
