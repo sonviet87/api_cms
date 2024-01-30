@@ -59,7 +59,7 @@ class UserService extends BaseService
             }
         } */
 
-        $data['role_id'] = RolePermissionConst::ROLE_CLIENT;
+        $data['role_id'] = RolePermissionConst::ROLE_SALE;
         $data['status'] = UserConst::STATUS_ACTIVE;
         $user = $this->user->createNewUserByEmail($data);
         return $user;

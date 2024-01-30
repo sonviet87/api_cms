@@ -4,6 +4,7 @@ namespace App\Services;
 
 
 use App\Interfaces\WarrantyInterface;
+use Carbon\Carbon;
 
 class WarrantyService extends BaseService
 {
@@ -28,8 +29,8 @@ class WarrantyService extends BaseService
     public function createNew($data)
     {
         $data['details']= json_encode($data['details']);
-        if(isset($data["start_day"])) $data["start_day"] =  date('Y-m-d H:i:s', strtotime($data["start_day"]));
-        if(isset($data["end_day"])) $data["end_day"] =  date('Y-m-d H:i:s', strtotime($data["end_day"]));
+        if(isset($data["start_day"])) $data["start_day"] =  Carbon::parse($data["start_day"])->toDateTimeString();
+        if(isset($data["end_day"])) $data["end_day"] =  Carbon::parse($data["end_day"])->toDateTimeString();
         $warranty = $this->warranty->create($data);
         if (!$warranty) {
             return $this->_result(false, 'Created failed');
@@ -48,8 +49,8 @@ class WarrantyService extends BaseService
 
     public function update($id, $data)
     {   $data['details']= json_encode($data['details']);
-        if(isset($data["start_day"])) $data["start_day"] =  date('Y-m-d H:i:s', strtotime($data["start_day"]));
-        if(isset($data["end_day"])) $data["end_day"] =  date('Y-m-d H:i:s', strtotime($data["end_day"]));
+        if(isset($data["start_day"])) $data["start_day"] =  Carbon::parse($data["start_day"])->toDateTimeString();
+        if(isset($data["end_day"])) $data["end_day"] =  Carbon::parse($data["end_day"])->toDateTimeString();
         $warranty = $this->warranty->getByID($id);
         if (!$warranty) {
             return $this->_result(false, 'Not found!');

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Interfaces\DebtSupplierInterface;
 use App\Interfaces\FPDetailInterface;
+use Carbon\Carbon;
 
 class DebtSupplierService extends BaseService
 {
@@ -39,7 +40,7 @@ class DebtSupplierService extends BaseService
 
     public function createNew($data)
     {
-        if(isset($data["date_over"])) $data["date_over"] =  date('Y-m-d H:i:s', strtotime($data["date_over"]));
+        if(isset($data["date_over"])) $data["date_over"] =  Carbon::parse($data["date_over"])->toDateTimeString();
         $account = $this->debt->create($data);
         if (!$account) {
             return $this->_result(false, 'Tạo công nợ không thành công');
@@ -58,7 +59,7 @@ class DebtSupplierService extends BaseService
 
     public function update($id, $data)
     {
-        if(isset($data["date_over"])) $data["date_over"] =  date('Y-m-d H:i:s', strtotime($data["date_over"]));
+        if(isset($data["date_over"])) $data["date_over"] =  Carbon::parse($data["date_over"])->toDateTimeString();
         $account = $this->debt->getByID($id);
         if (!$account) {
             return $this->_result(false, 'Không tìm thấy!');

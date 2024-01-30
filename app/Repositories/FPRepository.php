@@ -29,12 +29,12 @@ class FPRepository implements FPInterface {
         $query = $this->model;
         if (isset($filter['startDay']) && $filter['startDay'] != '') {
             $statDayValue = date('Y-m-d',strtotime($filter['startDay']));
-            $query = $query->whereDate('created_at','>=' ,$statDayValue);
+            $query = $query->whereDate('date_completed','>=' ,$statDayValue);
         }
         if (isset($filter['endDay']) && $filter['endDay'] != '') {
 
             $endDayValue = date('Y-m-d', strtotime($filter['endDay']));
-            $query = $query->whereDate('created_at','<=' ,$endDayValue);
+            $query = $query->whereDate('date_completed','<=' ,$endDayValue);
         }
         if (isset($filter['users']) && count($filter['users'])) {
 
@@ -51,7 +51,7 @@ class FPRepository implements FPInterface {
         $query = $this->model;
         if (isset($filter['startDay']) && $filter['startDay'] != '') {
             $startDayValue = date('Y-m-d', strtotime($filter['startDay']));
-            $query = $query->whereDate('created_at','<' ,$startDayValue);
+            $query = $query->whereDate('date_completed','<' ,$startDayValue);
         }
 
         if (isset($filter['users']) && count($filter['users'])) {
@@ -113,6 +113,7 @@ class FPRepository implements FPInterface {
         if($status == FPConst::STATUS_COMPLETED){
             $fp->selling = $fp->total_sell;
             $fp->margin = $fp->net_profit;
+            $fp->date_completed =  Carbon::now()->startOfDay();
             $fp->save();
         }
         if($status == FPConst::STATUS_CONTRACT){

@@ -39,8 +39,8 @@ class DebtService extends BaseService
 
     public function createNew($data)
     {
-        if(isset($data["date_over"])) $data["date_over"] =  date('Y-m-d H:i:s', strtotime($data["date_over"]));
-        if(isset($data["date_collection"])) $data["date_collection"] =  date('Y-m-d H:i:s', strtotime($data["date_collection"]));
+        if(isset($data["date_over"])) $data["date_over"] =  Carbon::parse($data["date_over"])->toDateTimeString();
+        if(isset($data["date_collection"])) $data["date_collection"] =  Carbon::parse($data["date_collection"])->toDateTimeString();
         $account = $this->debt->create($data);
         if (!$account) {
             return $this->_result(false, 'Tạo công nợ không thành công');
@@ -60,8 +60,9 @@ class DebtService extends BaseService
 
     public function update($id, $data)
     {
-        if(isset($data["date_over"])) $data["date_over"] =  date('Y-m-d H:i:s', strtotime($data["date_over"]));
-        if(isset($data["date_collection"])) $data["date_collection"] =  date('Y-m-d H:i:s', strtotime($data["date_collection"]));
+
+        if(isset($data["date_over"])) $data["date_over"] =  Carbon::parse($data["date_over"])->toDateTimeString();
+        if(isset($data["date_collection"])) $data["date_collection"] =  Carbon::parse($data["date_collection"])->toDateTimeString();
         $account = $this->debt->getByID($id);
         if (!$account) {
             return $this->_result(false, 'Không tìm thấy!');
