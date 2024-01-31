@@ -266,8 +266,7 @@ class KpiService extends BaseService
             if (!$matchedCondition) {
                 if ($totalGoals >= $maxPercent) {
                     $record = $conditionsSettings->sortByDesc('percentage')->values()->first();
-
-                    $percent = $maxPercent;
+                    $percent = $record->percentage;
                 } elseif ($totalGoals <$minPercent) {
                     $percent = 0;
                     $record =  0;

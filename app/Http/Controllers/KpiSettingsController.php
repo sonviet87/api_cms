@@ -23,7 +23,7 @@ class KpiSettingsController extends RestfulController{
      * Get all  Kpi settings
      * @return mixed
      */
-    public function index(Request $request)
+    public function index()
     {
         try {
 
@@ -34,6 +34,7 @@ class KpiSettingsController extends RestfulController{
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
     }
+
 
     /**
      * Create a Kpi members groups
