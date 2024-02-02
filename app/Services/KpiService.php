@@ -34,7 +34,7 @@ class KpiService extends BaseService
                 $profitTargetMonths3 = $groupMember->profit_3_months;
                 $profitTargetMonths12 = $groupMember->profit_12_months;
                 $customerTargetMonths = $groupMember->customer_months;
-                $customerTargetMonths3 = $groupMember->	customer_3_months;
+                $customerTargetMonths3 = $groupMember->customer_3_months;
                 $customerTargetMonths12 = $groupMember->customer_12_months;
 
                 $users = new UserCollection($groupMember->users()->get());
@@ -49,17 +49,21 @@ class KpiService extends BaseService
 
                 $profitType = DebtsConst::MONTHS_1;
                 $customerTager = 0;
+                $profitPercentTarget = 0;
                 if($typeKpi== DebtsConst::MONTHS_1){
                     $profitType = $profitTargetMonths;
                     $customerTager = $customerTargetMonths;
+                    $profitPercentTarget = $groupMember->profit_months_percent;
                 }
                 elseif($typeKpi== DebtsConst::MONTHS_3) {
                     $profitType =$profitTargetMonths3 ;
                     $customerTager = $customerTargetMonths3;
+                    $profitPercentTarget = $groupMember->profit_3_months_percent;
                 }
                 else {
                     $profitType =$profitTargetMonths12 ;
                     $customerTager = $customerTargetMonths12;
+                    $profitPercentTarget = $groupMember->profit_12_months_percent;
                 }
 
                 /////////////////
@@ -79,7 +83,8 @@ class KpiService extends BaseService
 
                 $totlaPrecentProft = ($totalMargin/$profitType)*100;
                 //get total percent profit max 70%
-                $totlaPrecentProftMax70 = (($totalMargin*0.7)/$profitType)*100;
+                //$totlaPrecentProftMax70 = (($totalMargin*0.7)/$profitType)*100;
+                $totlaPrecentProftMax70 = (($totalMargin*($profitPercentTarget/100))/$profitType)*100;
                 ////////////////////////
                 /// Debts
                 /// ///////////////////

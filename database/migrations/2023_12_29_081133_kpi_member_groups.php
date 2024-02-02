@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('profit_months')->nullable();
             $table->string('profit_3_months')->nullable();
             $table->string('profit_12_months')->nullable();
+            $table->string('profit_months_percent')->nullable();
+            $table->string('profit_3_months_percent')->nullable();
+            $table->string('profit_12_months_percent')->nullable();
             $table->string('customer_months')->nullable();
             $table->string('customer_3_months')->nullable();
             $table->string('customer_12_months')->nullable();
