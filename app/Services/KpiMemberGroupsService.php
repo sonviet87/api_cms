@@ -25,7 +25,13 @@ class KpiMemberGroupsService extends BaseService
     public function getList()
     {
         $filter=[];
-        return $this->kpiMemberGroups->getList($filter);
+        $role = Auth::user()->roles->pluck('name')->first();
+        if($role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_ADMIN] ||  $role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_CEO]  ){
+              return $this->kpiMemberGroups->getList($filter);
+        }else{
+            return Auth::user()->groups()->get();
+        }
+
     }
 
     public function getListPaginate($perPage = 20,$filter)
@@ -129,7 +135,7 @@ class KpiMemberGroupsService extends BaseService
 
 
             $arrCustomerAll = array_merge($customer_months_conditions, $customer_3months_conditions, $customer_12months_conditions);
-            //check id deatils not exists and detele
+            //check id details not exists and detele
             $idsCustomer = $this->kpiCustomer->getIDS($id)->all();
             $idArIDCustomer = Arr::pluck($arrCustomerAll, 'id');
             $idsCustomerDiff = array_diff($idsCustomer,$idArIDCustomer);

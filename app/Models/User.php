@@ -56,4 +56,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Salary::class,'salary_lv_id')->withTrashed();
     }
+
+    public function groups()
+    {
+        return $this->belongsToMany(KpiMemberGroup::class, 'users_member_group', 'user_id', 'group_id');
+    }
 }

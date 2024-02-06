@@ -24,7 +24,7 @@ class FPDetailsCollection extends ResourceCollection
                     'category' => $page->category()->get()->first(),
                     'category_id' => $page->category()->get()->first(),
                     'supplier' => $page->supplier()->get()->first(),
-                    'supplier_id' => $page->supplier()->get()->first()->id,
+                    'supplier_id' => new SupplierResource($page->supplier()->get()->first()),
                     'qty' => $page->qty,
                     'price_buy' => $page->price_buy,
                     'price_sell' => $page->price_sell,

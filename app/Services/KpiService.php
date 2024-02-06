@@ -243,6 +243,7 @@ class KpiService extends BaseService
     }
 
     private function getKpiSettings($totalGoals,$filter){
+        $totalGoals = round($totalGoals);
         $typeKpi = $filter['type'] ?? DebtsConst::MONTHS_1;
         $conditionsSettings = $this->setting->getList();
         $conditionsSettingsType = $conditionsSettings->filter(function ($item) use ($typeKpi){
@@ -272,12 +273,15 @@ class KpiService extends BaseService
                 if ($totalGoals >= $maxPercent) {
                     $record = $conditionsSettings->sortByDesc('percentage')->values()->first();
                     $percent = $record->percentage;
+
                 } elseif ($totalGoals <$minPercent) {
                     $percent = 0;
                     $record =  0;
+
                 } else {
                     $percent = 0;
                     $record =  0;
+                    dd($totalGoals);
                 }
 
             } else {
