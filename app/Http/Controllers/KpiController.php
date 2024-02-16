@@ -63,7 +63,8 @@ class KpiController extends RestfulController
             'users' => $rs->get('users'),
             'totalSalary' => $rs->get('totalSalary'),
             'totalProfitMargin' => $rs->get('totalProfitMargin'),
-            'totalPercentRevenues' => $rs->get('totalPercentRevenues')
+            'totalPercentRevenues' => $rs->get('totalPercentRevenues'),
+            'profit_percent_target' => $rs->get('profit_percent_target')
         ];
         $arrForget = [
             'totalPercentRevenues',
@@ -93,7 +94,8 @@ class KpiController extends RestfulController
             'debuts',
             'debuts_percent',
             'percentTotalSettings',
-            'totalPercentDebuts'
+            'totalPercentDebuts',
+            'profit_percent_target'
         ];
         $rs->forget($arrForget);
         $pagingArr = $rs->toArray();

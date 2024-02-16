@@ -141,6 +141,7 @@ class KpiService extends BaseService
                 $rs->put('goal_percent_customer',$goalPercentCustomerTotal);
                 $rs->put('total_percent_profit', $totlaPrecentProft);
                 $rs->put('total_percent_profit_max_70', $totlaPrecentProftMax70);
+                $rs->put('profit_percent_target', $profitPercentTarget);
 
             }
             return $rs;
@@ -281,7 +282,6 @@ class KpiService extends BaseService
                 } else {
                     $percent = 0;
                     $record =  0;
-                    dd($totalGoals);
                 }
 
             } else {
