@@ -28,6 +28,7 @@ class RepositoryServiceProvider extends ServiceProvider {
         $this->app->bind('App\Interfaces\KpiDebtsInterface', 'App\Repositories\KpiDebtsRepository');
         $this->app->bind('App\Interfaces\KpiSettingsInterface', 'App\Repositories\KpiSettingsRepository');
         $this->app->bind('App\Interfaces\SalaryInterface', 'App\Repositories\SalaryRepository');
+        $this->app->bind('App\Interfaces\ChanceInterface', 'App\Repositories\ChanceRepository');
 
 
     }
