@@ -27,6 +27,7 @@ class ChanceCollection extends ResourceCollection
                     'progress' => $page->progress,
                     'start_day' => $page->start_day,
                     'end_day' => $page->end_day,
+                    'files' => $page->files,
                 ];
             });
 

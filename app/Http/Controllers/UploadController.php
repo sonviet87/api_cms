@@ -17,14 +17,15 @@ class UploadController extends RestfulController
 
     public function uploadStorage(Request $request){
         $this->validate($request, [
-            'file_url' => 'required|file'
+            'file_url' => 'required|file',
         ]);
         try{
             if(!$request->hasFile('file_url')){
                 return $this->_error(trans('messages.images_not_found'));
             }
             $images = $request->file('file_url');
-            $file = $this->fileService->uploadStorage($images);
+            $folder = $request->input("name", '');
+            $file = $this->fileService->uploadStorage($images,$folder);
             $this->_response('tesst');
             return $this->_response($file);
 

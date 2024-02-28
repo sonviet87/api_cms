@@ -90,7 +90,7 @@ class ChanceController extends RestfulController
         ]);
         try{
             $data = $request->all();
-            $result = $this->chanceService->createNewAccount($data);
+            $result = $this->chanceService->createNew($data);
             if($result['status']==false){
                 return $this->_error($result['message']);
             }

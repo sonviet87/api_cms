@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('progress')->nullable();
             $table->dateTime('start_day')->nullable();
             $table->dateTime('end_day')->nullable();
+            $table->text('files')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

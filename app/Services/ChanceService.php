@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\ChanceConst;
 use App\Constants\RolePermissionConst;
 use App\Interfaces\ChanceInterface;
 use Illuminate\Support\Facades\Auth;
@@ -46,8 +47,11 @@ class ChanceService extends BaseService
         return  $contacts;
     }
 
-    public function createNewAccount($data)
+    public function createNew($data)
     {
+        $user = Auth::user();
+        $data['user_id']= $user->id;
+        $data['progress']= ChanceConst::STEP_1;
         $account = $this->account->create($data);
         if (!$account) {
             return $this->_result(false, 'Created failed');

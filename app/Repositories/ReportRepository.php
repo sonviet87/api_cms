@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
 
+use App\Constants\FPConst;
 use App\Interfaces\ReportInterface;
 use App\Models\FP;
 use Carbon\Carbon;
@@ -49,7 +50,11 @@ class ReportRepository implements ReportInterface {
                // $startDate = Carbon::createFromFormat('Y-m-d', $statDay)->startOfDay();
                // $endDate = Carbon::createFromFormat('Y-m-d', $endDay)->startOfDay();
                 //dd($endDate);
-                $query = $query->whereDate('created_at','>=' ,$statDay)->whereDate('created_at','<=' ,$endDay);
+                if (isset($filter['type_fp']) && $filter['type_fp'] != '' && $filter['type_fp']== FPConst::STATUS_COMPLETED) {
+                    $query = $query->whereDate('date_completed', '>=', $statDay)->whereDate('date_completed', '<=', $endDay);
+                }else{
+                    $query = $query->whereDate('created_at', '>=', $statDay)->whereDate('created_at', '<=', $endDay);
+                }
             }
         }
        // dd($query->toSql() );
