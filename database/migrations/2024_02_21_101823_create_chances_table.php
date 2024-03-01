@@ -26,6 +26,7 @@ return new class extends Migration
             $table->dateTime('end_day')->nullable();
             $table->text('files')->nullable();
             $table->softDeletes();
+            $table->integer('completed')->default(0);
             $table->timestamps();
         });
     }

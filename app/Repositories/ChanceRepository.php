@@ -4,6 +4,7 @@ use App\Constants\ChanceConst;
 use App\Interfaces\ChanceInterface;
 use App\Models\Chance;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 
 class ChanceRepository implements ChanceInterface {
@@ -38,7 +39,16 @@ class ChanceRepository implements ChanceInterface {
             $statDay = date('Y-m-d',strtotime($filter['startDay']));
             $endDay = date('Y-m-d', strtotime($filter['endDay']));
 
-             $query = $query->whereDate('start_day', '>=', $statDay)->whereDate('start_day', '<=', $endDay);
+             $query = $query->whereDate('start_day', '>=', $statDay)->whereDate('start_day', '<=', $endDay)
+                 ->where(function ($query) {
+                     $query->where('completed', 0)
+                         ->orWhere(function ($query) {
+                             $query->whereMonth('end_day', '=', DB::raw('MONTH(start_day)'))
+                                 ->orWhere(function ($query) {
+                                     $query->whereMonth('end_day', '>', DB::raw('MONTH(start_day)'));
+                                 });
+                         });
+                 });
 
         }
 
