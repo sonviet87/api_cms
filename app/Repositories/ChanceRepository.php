@@ -1,7 +1,9 @@
 <?php
 namespace App\Repositories;
+use App\Constants\ChanceConst;
 use App\Interfaces\ChanceInterface;
 use App\Models\Chance;
+use Carbon\Carbon;
 
 
 class ChanceRepository implements ChanceInterface {
@@ -23,14 +25,23 @@ class ChanceRepository implements ChanceInterface {
     public function getListPaginate($perPage = 20,$filter){
         $query = $this->model;
         if (isset($filter['user_id']) && $filter['user_id'] != '') {
-            $user_id = $filter['user_id'];
-            $query = $query->where('user_id', $user_id);
+            $query = $query->where('user_assign', $filter['user_id']);
         }
-        if (isset($filter['search']) && $filter['search'] != '') {
-            $search = $filter['search'];
-             $query = $query->where('name', 'LIKE', "%{$search}%") ;
+        if (isset($filter['account_id']) && $filter['account_id'] != '') {
+            $query = $query->where('account_id', $filter['account_id']);
+        }
+
+        if (isset($filter['contact_id']) && $filter['contact_id'] != '') {
+            $query = $query->where('contact_id', $filter['contact_id']);
+        }
+        if (isset($filter['startDay']) && $filter['startDay'] != '' && isset($filter['endDay']) && $filter['endDay'] != '') {
+            $statDay = date('Y-m-d',strtotime($filter['startDay']));
+            $endDay = date('Y-m-d', strtotime($filter['endDay']));
+
+             $query = $query->whereDate('start_day', '>=', $statDay)->whereDate('start_day', '<=', $endDay);
 
         }
+
         return $query ->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
@@ -56,5 +67,15 @@ class ChanceRepository implements ChanceInterface {
             return ;
         }
         return $account->contacts;
+    }
+
+    public function updateStatus($id, $progress){
+        $chance = $this->model->find($id);
+        if($progress == ChanceConst::STEP_6){
+            $chance->end_day =  Carbon::now()->startOfDay();
+            $chance->save();
+        }
+
+        return $chance->update(['progress'=> $progress]);
     }
 }

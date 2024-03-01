@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Constants\RolePermissionConst;
 use App\Interfaces\ContactInterface;
+use Illuminate\Support\Facades\Auth;
 
 class ContactService extends BaseService
 {
@@ -15,11 +17,21 @@ class ContactService extends BaseService
 
     public function getList()
     {
+        $role = Auth::user()->roles->pluck('name')->first();
+        if(!$role) return $this->_result(false, "Không tìm thấy user");
+        if($role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_SALE]){
+            $filter['user_id'] = Auth::user()->id;
+        }
         return $this->contact->getList();
     }
 
     public function getListPaginate($perPage = 20)
     {
+        $role = Auth::user()->roles->pluck('name')->first();
+        if(!$role) return $this->_result(false, "Không tìm thấy user");
+        if($role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_SALE]){
+            $filter['user_id'] = Auth::user()->id;
+        }
         return $this->contact->getListPaginate($perPage);
     }
 

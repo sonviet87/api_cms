@@ -20,14 +20,18 @@ class ChanceCollection extends ResourceCollection
                 return [
                     'id' => $page->id,
                     'account_id' => $page->account_id,
+                    'name' => $page->name,
+                    'account' => $page->account->name,
                     'user_id' => $page->user_id,
+                    'contact' => $page->contact->name,
+                    'phone' => $page->contact->phone,
                     'contact_id' => $page->contact_id,
                     'user_assign' => $page->user_assign,
                     'prices' => $page->prices,
                     'progress' => $page->progress,
                     'start_day' => $page->start_day,
                     'end_day' => $page->end_day,
-                    'files' => $page->files,
+                    'user_assign_name' => $page->userAssign->name,
                 ];
             });
 

@@ -5,15 +5,16 @@ namespace App\Services;
 use App\Constants\ChanceConst;
 use App\Constants\RolePermissionConst;
 use App\Interfaces\ChanceInterface;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class ChanceService extends BaseService
 {
-    protected $account;
+    protected $chance;
 
-    function __construct(ChanceInterface $account)
+    function __construct(ChanceInterface $chance)
     {
-        $this->account = $account;
+        $this->chance = $chance;
     }
 
     public function getList()
@@ -24,7 +25,7 @@ class ChanceService extends BaseService
         if($role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_SALE]){
             $filter['user_id'] = Auth::user()->id;
         }
-        return $this->account->getList($filter);
+        return $this->chance->getList($filter);
     }
 
     public function getListPaginate($perPage = 20,$filter)
@@ -35,12 +36,12 @@ class ChanceService extends BaseService
             $filter['user_id'] = Auth::user()->id;
         }
 
-        return $this->account->getListPaginate($perPage,$filter);
+        return $this->chance->getListPaginate($perPage,$filter);
     }
 
     public function getListContactByID($id)
     {
-        $contacts =  $this->account->getListContactByID($id);
+        $contacts =  $this->chance->getListContactByID($id);
         if (!$contacts) {
             return $this->_result(false, 'Không lấy được id');
         }
@@ -52,8 +53,9 @@ class ChanceService extends BaseService
         $user = Auth::user();
         $data['user_id']= $user->id;
         $data['progress']= ChanceConst::STEP_1;
-        $account = $this->account->create($data);
-        if (!$account) {
+        if(isset($data["start_day"])) $data['start_day'] =  Carbon::parse($data["start_day"])->toDateTimeString();
+        $rs = $this->chance->create($data);
+        if (!$rs) {
             return $this->_result(false, 'Created failed');
         }
         return $this->_result(true, 'Created successfully');
@@ -61,22 +63,23 @@ class ChanceService extends BaseService
 
     public function getAccountByID($id)
     {
-        $account = $this->account->getByID($id);
-        if (!$account) {
+        $chance = $this->chance->getByID($id);
+        if (!$chance) {
             return $this->_result(false, 'Not found!');
         }
-        return $this->_result(true, '', $account);
+        return $this->_result(true, '', $chance);
     }
 
     public function update($id, $data)
     {
-        $account = $this->account->getByID($id);
-        if (!$account) {
+        $rs = $this->chance->getByID($id);
+        if (!$rs) {
             return $this->_result(false, 'Not found!');
         }
 
-
-        $result = $this->account->update($id, $data);
+        if(isset($data["start_day"])) $data['start_day'] =  Carbon::parse($data["start_day"])->toDateTimeString();
+        //dd($data["start_day"]);
+        $result = $this->chance->update($id, $data);
         if (!$result) {
             return $this->_result(false, 'Updated failed');
         }
@@ -85,11 +88,25 @@ class ChanceService extends BaseService
 
     public function destroyAccountByIDs($ids)
     {
-        $check = $this->account->destroy($ids);
+        $check = $this->chance->destroy($ids);
         if (!$check) {
             return $this->_result(false, 'Delete failed!');
         }
         return $this->_result(true, 'Delete successfuly');
+    }
+
+    public function updateStatus($id, $status)
+    {
+
+        $check = $this->chance->updateStatus($id,$status);
+
+        if (!$check) {
+            return $this->_result(false, 'Lỗi');
+        }
+        $rs= $this->chance->getByID($id);
+
+        $data = ['id'=>$id , 'name' => $rs->name,'email_assgin' => $rs->userAssign->email,'progress'=>$rs->progress];
+        return $this->_result(true, 'Cập nhật thành công',$data);
     }
 
 }

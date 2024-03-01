@@ -13,11 +13,21 @@ class ContactRepository implements ContactInterface {
     }
 
     public function getList(){
-        return $this->model->all();
+        $query = $this->model;
+        if (isset($filter['user_id']) && $filter['user_id'] != '') {
+            $user_id = $filter['user_id'];
+            $query = $query->where('user_id', $user_id);
+        }
+        return $query->all();
     }
 
     public function getListPaginate($perPage = 20){
-        return $this->model->with(['users','accounts'])->orderBy('created_at', 'desc')->paginate($perPage);
+        $query = $this->model;
+        if (isset($filter['user_id']) && $filter['user_id'] != '') {
+            $user_id = $filter['user_id'];
+            $query = $query->where('user_id', $user_id);
+        }
+        return $query->with(['users','accounts'])->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
 

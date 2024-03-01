@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Resources\ChanceCollection;
+use App\Http\Resources\ChanceResource;
 use App\Http\Resources\ContactCollection;
 use App\Services\ChanceService;
 use Illuminate\Http\Request;
@@ -32,18 +33,19 @@ class ChanceController extends RestfulController
     {
         try {
             $perPage = $request->input("per_page", 20);
-            $search = $request->input("search", '');
+
+            $user_id = $request->input("user_id", '');
+            $account_id = $request->input("account_id", '');
+            $startDay = $request->input("startDay", '');
+            $endDay = $request->input("endDay", '');
             $filter = [
-                'search'  => $search,
+                'user_id'  => $user_id,
+                'account_id'  => $account_id,
+                'startDay'  => $startDay,
+                'endDay'  => $endDay,
             ];
             $rs = $this->chanceService->getListPaginate($perPage,$filter);
-           // $accounts->appends($request->except(['page', '_token']));
-           // $paginator = $this->getPaginator($accounts);
-           // $pagingArr = $accounts->toArray();
-           /* return $this->_response([
-                'pagination' => $paginator,
-                'account' => $pagingArr['data']
-            ]);*/
+
             return new ChanceCollection($rs);
         } catch (\Exception $e) {
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
@@ -111,7 +113,7 @@ class ChanceController extends RestfulController
             if($result['status']==false){
                 return $this->_error($result['message']);
             }
-            return $this->_response($result['data']);
+            return  new ChanceResource(($result['data']));
         }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
@@ -156,6 +158,26 @@ class ChanceController extends RestfulController
                 return $this->_error($result['message']);
             }
             return $this->_success($result['message']);
+        }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    public function updateStatus(Request $request){
+        $this->validate($request, [
+            'id' => 'required',
+            'status' => 'required',
+        ]);
+        try{
+            $id = $request->input('id');
+            $status = $request->input('status');
+
+            $result = $this->chanceService->updateStatus($id, $status);
+
+            if($result['status']==false){
+                return $this->_error($result['message']);
+            }
+            return $this->_response($result['data'],$result['message']);
         }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
