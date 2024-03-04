@@ -38,11 +38,15 @@ class ChanceController extends RestfulController
             $account_id = $request->input("account_id", '');
             $startDay = $request->input("startDay", '');
             $endDay = $request->input("endDay", '');
+            $contact_id = $request->input("contact_id", '');
+            $list = $request->input("list", '');
             $filter = [
                 'user_id'  => $user_id,
                 'account_id'  => $account_id,
+                'contact_id'  => $contact_id,
                 'startDay'  => $startDay,
                 'endDay'  => $endDay,
+                'list'  => $list,
             ];
             $rs = $this->chanceService->getListPaginate($perPage,$filter);
 
@@ -173,6 +177,26 @@ class ChanceController extends RestfulController
             $status = $request->input('status');
 
             $result = $this->chanceService->updateStatus($id, $status);
+
+            if($result['status']==false){
+                return $this->_error($result['message']);
+            }
+            return $this->_response($result['data'],$result['message']);
+        }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    public function updateProgress(Request $request){
+        $this->validate($request, [
+            'id' => 'required',
+            'completed' => 'required',
+        ]);
+        try{
+            $id = $request->input('id');
+            $progress = $request->input('completed');
+
+            $result = $this->chanceService->updateProgress($id, $progress);
 
             if($result['status']==false){
                 return $this->_error($result['message']);

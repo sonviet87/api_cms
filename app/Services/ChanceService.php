@@ -7,6 +7,7 @@ use App\Constants\RolePermissionConst;
 use App\Interfaces\ChanceInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ChanceService extends BaseService
 {
@@ -53,6 +54,8 @@ class ChanceService extends BaseService
         $user = Auth::user();
         $data['user_id']= $user->id;
         $data['progress']= ChanceConst::STEP_1;
+        $data['prices'] = Str::replace(",","",$data["prices"]);
+        $data['user_assign'] = $data['user_assign']?? $data['user_id'];
         if(isset($data["start_day"])) $data['start_day'] =  Carbon::parse($data["start_day"])->toDateTimeString();
         $rs = $this->chance->create($data);
         if (!$rs) {
@@ -76,7 +79,7 @@ class ChanceService extends BaseService
         if (!$rs) {
             return $this->_result(false, 'Not found!');
         }
-
+        $data['prices'] = Str::replace(",","",$data["prices"]);
         if(isset($data["start_day"])) $data['start_day'] =  Carbon::parse($data["start_day"])->toDateTimeString();
         //dd($data["start_day"]);
         $result = $this->chance->update($id, $data);
@@ -106,6 +109,19 @@ class ChanceService extends BaseService
         $rs= $this->chance->getByID($id);
 
         $data = ['id'=>$id , 'name' => $rs->name,'email_assgin' => $rs->userAssign->email,'progress'=>$rs->progress];
+        return $this->_result(true, 'Cập nhật thành công',$data);
+    }
+
+    public function updateProgress($id, $progress)
+    {
+        $check = $this->chance->updateProgress($id,$progress);
+
+        if (!$check) {
+            return $this->_result(false, 'Lỗi');
+        }
+        $rs= $this->chance->getByID($id);
+
+        $data = ['id'=>$id , 'name' => $rs->name,'completed' => $rs->completed,'progress'=>$rs->progress];
         return $this->_result(true, 'Cập nhật thành công',$data);
     }
 

@@ -30,6 +30,7 @@ class ChanceResource extends JsonResource
             'start_day' => $this->start_day,
             'files' => $this->files,
             'progress' => $this->progress,
+            'completed' => $this->completed,
 
 
         ];

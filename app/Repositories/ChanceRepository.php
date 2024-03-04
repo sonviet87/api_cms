@@ -41,7 +41,7 @@ class ChanceRepository implements ChanceInterface {
 
              $query = $query->whereDate('start_day', '>=', $statDay)->whereDate('start_day', '<=', $endDay)
                  ->where(function ($query) {
-                     $query->where('completed', 0)
+                     $query->where('completed', ChanceConst::IN_PROGRESS)
                          ->orWhere(function ($query) {
                              $query->whereMonth('end_day', '=', DB::raw('MONTH(start_day)'))
                                  ->orWhere(function ($query) {
@@ -51,7 +51,7 @@ class ChanceRepository implements ChanceInterface {
                  });
 
         }
-
+        if(isset($filter['list']) && $filter['list'] == 'list') return  $query->orderBy('created_at', 'desc')->get();
         return $query ->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
@@ -87,5 +87,10 @@ class ChanceRepository implements ChanceInterface {
         }
 
         return $chance->update(['progress'=> $progress]);
+    }
+
+    public function updateProgress($id, $progress){
+        $chance = $this->model->find($id);
+        return $chance->update(['completed'=> $progress]);
     }
 }

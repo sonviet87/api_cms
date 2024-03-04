@@ -9,7 +9,9 @@ class ChanceConst
     const STEP_5 = 90;
     const STEP_6 = 100;
 
-
+    const IN_PROGRESS = 0;
+    const PROGRESS_SUCCESS = 1;
+    const PROGRESS_FAILED = 2;
 
     const CHANCE_NAME = [
         ChanceConst::STEP_1 => 'Cà phê & ăn Trưa',
@@ -18,7 +20,6 @@ class ChanceConst
         ChanceConst::STEP_4 => 'Thương Lượng giá',
         ChanceConst::STEP_5 => 'Thương thảo hợp đồng',
         ChanceConst::STEP_6 => 'Ký hợp đồng',
-
 
     ];
 }

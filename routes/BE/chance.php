@@ -7,5 +7,6 @@ Route::post('chances', 'ChanceController@store');
 Route::put('chances/{id}', 'ChanceController@update');
 Route::delete('chances', 'ChanceController@destroy');
 Route::post('chances/updateStatus', 'ChanceController@updateStatus');
+Route::post('chances/updateProgress', 'ChanceController@updateProgress');
 
 

@@ -31,6 +31,7 @@ class ChanceCollection extends ResourceCollection
                     'progress' => $page->progress,
                     'start_day' => $page->start_day,
                     'end_day' => $page->end_day,
+                    'completed' => $page->completed,
                     'user_assign_name' => $page->userAssign->name,
                 ];
             });
