@@ -15,6 +15,10 @@ class AccountService extends BaseService
         $this->account = $account;
     }
 
+    public function getAll($IDs)
+    {
+        return $this->account->getAll($IDs);
+    }
     public function getList()
     {
         $filter=[];

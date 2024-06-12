@@ -50,7 +50,8 @@ class KpiController extends RestfulController
             'percentTotalSettings' => $rs->get('percentTotalSettings'),
             'record_setting_percent' => $rs->get('record_setting_percent'),
             'revenues' => $rs->get('revenues'),
-
+            'listAccountNew' => $rs->get('listAccountNew'),
+            'fp' => $rs->get('listFP'),
             'total_account_new' => $rs->get('total_account_new'),
             'total_profit' => $rs->get('total_profit'),
             'account_new' => $rs->get('account_new'),
@@ -67,6 +68,7 @@ class KpiController extends RestfulController
             'profit_percent_target' => $rs->get('profit_percent_target')
         ];
         $arrForget = [
+            'listAccountNew',
             'totalPercentRevenues',
             'totalProfitMargin',
             'totalSalary',
@@ -101,7 +103,7 @@ class KpiController extends RestfulController
         $pagingArr = $rs->toArray();
         return $this->_response([
             'target_kpi' =>$arrParams,
-            'data' => $pagingArr
+
         ]);
         //return new FPCollection($rs);
 

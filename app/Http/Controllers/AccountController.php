@@ -55,7 +55,6 @@ class AccountController extends RestfulController
     public function list(Request $request)
     {
         try {
-
             $accounts = $this->accountService->getList();
             return new AccountCollection($accounts);
         } catch (\Exception $e) {

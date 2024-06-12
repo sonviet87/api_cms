@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Constants\DebtsConst;
 use App\Http\Resources\UserCollection;
+use App\Interfaces\AccountInterface;
 use App\Interfaces\DebtInterface;
 use App\Interfaces\FPInterface;
 use App\Interfaces\KpiMemberGroupsInterface;
@@ -16,12 +17,14 @@ class KpiService extends BaseService
     protected $groupMember;
     protected $debts;
     protected $setting;
-    function __construct(FPInterface $fp,KpiMemberGroupsInterface $groupMember,DebtInterface $debts,KpiSettingsInterface $kpiSettings)
+    protected $account;
+    function __construct(FPInterface $fp,KpiMemberGroupsInterface $groupMember,DebtInterface $debts,KpiSettingsInterface $kpiSettings,AccountInterface $account)
     {
         $this->groupMember = $groupMember;
         $this->fp = $fp;
         $this->debts = $debts;
         $this->setting = $kpiSettings;
+        $this->account = $account;
     }
 
     public function getList($filter)
@@ -74,7 +77,9 @@ class KpiService extends BaseService
                     'goalPercentCustomer' =>$goalPercentCustomer,
                     'accoutResult' => $accoutResult,
                     'conditionsCustomer' =>$conditionsCustomer,
-                    'list' => $rs
+                    'list' => $rs,
+                    'listFP' => $listFP,
+                    'listAccountNew' =>$listAccountNew
 
                 ] = $this->getCustomer($groupMember,$filter,$customerTager);
                 //get total percent profit
@@ -107,7 +112,21 @@ class KpiService extends BaseService
                 $totalProfitMargin = $totalMargin - ($totalSalary + $revenues);
                 $totalPercentRevenues = 0;
                 if($totalMargin!=0)  $totalPercentRevenues = ($totalProfitMargin/$totalMargin)*100;
+                $filtered = $listFP->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'name' => $item->name,
+                        'code' => $item->code,
+                    ];
+                });
+                $listAccountNews = $listAccountNew->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'name' => $item->name,
+                    ];
+                });
 
+                $rs->put('listFP', $filtered);
                 $rs->put('totalPercentRevenues', $totalPercentRevenues);
                 $rs->put('totalProfitMargin', $totalProfitMargin);
                 $rs->put('totalSalary', $totalSalary);
@@ -130,7 +149,7 @@ class KpiService extends BaseService
                 $rs->put('record_setting_percent', $record);
                 $rs->put('users', $users);
                 $rs->put('revenues', $revenues);
-
+                $rs->put('listAccountNew',$listAccountNews);
 
                // $rs->put('account_id', $distinctAccount);
                // $rs->put('account_id_test',$distinctAccountAll);
@@ -143,6 +162,7 @@ class KpiService extends BaseService
                 $rs->put('total_percent_profit_max_70', $totlaPrecentProftMax70);
                 $rs->put('profit_percent_target', $profitPercentTarget);
 
+
             }
             return $rs;
         }
@@ -151,12 +171,17 @@ class KpiService extends BaseService
     private function getCustomer($groupMember,$filter,$customerTager){
         $typeKpi = $filter['type'] ?? DebtsConst::MONTHS_1;
         $rs =   $this->fp->getListbyUsers($filter);
+        $listFP = $rs;
+
         //get account id betten start day and end day
         $distinctAccount = $rs->unique('account_id')->pluck('account_id')->toArray();
         //get all account id
         $rsAccount = $this->fp->getIDsUsersNotExistInCurrentUsers(['startDay'=> $filter['startDay'],'users' =>$filter['users']]);
         $distinctAccountAll = $rsAccount->unique()->values()->all();
         $accoutResult = array_diff($distinctAccount, $distinctAccountAll);
+
+        $listAccountNew = $this->account->getAll($accoutResult);
+
         $newAccount = count($accoutResult);
         //check new account greate than account target
 
@@ -180,7 +205,9 @@ class KpiService extends BaseService
             'goalPercentCustomer' =>$goalPercentCustomer,
             'accoutResult' => $accoutResult,
             'conditionsCustomer' =>$conditionsCustomer,
-            'list' => $rs
+            'list' => $rs,
+            'listFP' => $listFP,
+            'listAccountNew' => $listAccountNew,
 
 
         ];

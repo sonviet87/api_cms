@@ -10,13 +10,21 @@ class AccountRepository implements AccountInterface {
         $this->model = $account;
     }
 
-    public function getList($filter){
+    public function getList($filter=[]){
         $query = $this->model;
         if(!empty($filter)) {
             if (isset($filter['user_id']) && $filter['user_id'] != '') {
                 $query = $query->where('user_id', $filter['user_id']) ;
             }
         }
+        return $query->orderBy('id', 'desc')->get();
+    }
+
+    public function getAll($data){
+        $query = $this->model;
+
+        $query = $query->whereIn('id', $data) ;
+
         return $query->orderBy('id', 'desc')->get();
     }
 
