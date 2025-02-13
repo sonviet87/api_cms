@@ -22,6 +22,10 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('debts')->nullable();
+            $table->string('is_new')->nullable();
+            $table->string('increase_debt_times')->nullable();
+            $table->string('history')->nullable();
+            $table->dateTime('created_supplier')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

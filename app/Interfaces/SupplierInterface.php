@@ -38,6 +38,18 @@ interface SupplierInterface {
      * @return mixed
      */
     public function destroy($ids);
+    /**
+     * Get by ID
+     * @param array $filter
+     * @return mixed
+     */
+    public function getListNewSuplierbyUsers($filter);
 
+    /**
+     * Get by ID
+     * @param array $filter
+     * @return mixed
+     */
+    public function getOldSupplierIncreaseDebts($filter);
 
 }

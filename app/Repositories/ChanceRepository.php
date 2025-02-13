@@ -4,6 +4,7 @@ use App\Constants\ChanceConst;
 use App\Interfaces\ChanceInterface;
 use App\Models\Chance;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 
@@ -19,6 +20,10 @@ class ChanceRepository implements ChanceInterface {
             if (isset($filter['user_id']) && $filter['user_id'] != '') {
                 $query = $query->where('user_id', $filter['user_id']) ;
             }
+            if (isset($filter['staffs']) && $filter['staffs'] != '') {
+
+                $query = $query->orwhereIn('user_assign',$filter['staffs']);
+            }
         }
         return $query->orderBy('id', 'desc')->get();
     }
@@ -28,6 +33,7 @@ class ChanceRepository implements ChanceInterface {
         if (isset($filter['user_id']) && $filter['user_id'] != '') {
             $query = $query->where('user_assign', $filter['user_id']);
         }
+
         if (isset($filter['account_id']) && $filter['account_id'] != '') {
             $query = $query->where('account_id', $filter['account_id']);
         }
@@ -51,9 +57,62 @@ class ChanceRepository implements ChanceInterface {
                  });
 
         }
+        if (isset($filter['staffs']) && $filter['staffs'] != '') {
+
+            $query = $query->orwhereIn('user_assign',$filter['staffs']);
+        }
         if(isset($filter['list']) && $filter['list'] == 'list') return  $query->orderBy('created_at', 'desc')->get();
         return $query ->orderBy('created_at', 'desc')->paginate($perPage);
     }
+
+    public function getChanceStatsByDateRange($filter)
+    {
+        if (!isset($filter['startDay'], $filter['endDay']) || $filter['startDay'] == '' || $filter['endDay'] == '') {
+            return [
+                'total' => 0,
+                'in_progress' => 0,
+                'progress_success' => 0,
+                'progress_failed' => 0,
+            ];
+        }
+
+        $query = $this->model;
+        $startDate = date('Y-m-d', strtotime($filter['startDay']));
+        $endDate = date('Y-m-d', strtotime($filter['endDay']));
+        $user = Auth::user();
+        if (!$user->hasPermissionTo('is_dashboard_all')) {
+            $filter['users'] = [$user->id];
+
+        }
+        if (isset($filter['users']) && count($filter['users'])) {
+            $query = $query->whereIn('user_assign', $filter['users']);
+        }
+
+        // Lấy tổng số dòng và nhóm theo trạng thái completed
+        $data = $query
+            ->selectRaw('count(*) as total, completed')
+            ->whereDate('start_day', '>=', $startDate)
+            ->whereDate('start_day', '<=', $endDate)
+            ->groupBy('completed')
+            ->get();
+
+        // Tổng số dòng
+        $totalRows = $data->sum('total');
+
+        // Tính số dòng theo từng trạng thái
+        $inProgressCount = $data->firstWhere('completed', ChanceConst::IN_PROGRESS)->total ?? 0;
+        $successCount = $data->firstWhere('completed', ChanceConst::PROGRESS_SUCCESS)->total ?? 0;
+        $failedCount = $data->firstWhere('completed', ChanceConst::PROGRESS_FAILED)->total ?? 0;
+
+        return [
+            'total' => $totalRows,
+            'in_progress' => $inProgressCount,
+            'progress_success' => $successCount,
+            'progress_failed' => $failedCount,
+        ];
+    }
+
+
 
     public function create($data){
         return $this->model->create($data);

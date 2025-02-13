@@ -16,6 +16,19 @@ interface AccountInterface {
      * @param interger $perPage
      * @return mixed
      */
+    public function getList();
+    /**
+     * Get all  with paginate
+     * @param interger $perPage
+     * @return mixed
+     */
+    public function getAccountDashboard();
+
+    /**
+     * Get all  with paginate
+     * @param interger $perPage
+     * @return mixed
+     */
     public function getAll($filter);
 
     /**

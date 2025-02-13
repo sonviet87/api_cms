@@ -58,6 +58,7 @@ class FPResource extends JsonResource
             'number_invoice' => $this->number_invoice ? $this->number_invoice :'',
             'notes' => $this->notes ?? '',
             'code_contract' => $this->code_contract ?? '',
+            'technical_id' => $this->technicals->pluck('id')->all(),
         ];
     }
 

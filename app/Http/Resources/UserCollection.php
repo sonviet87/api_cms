@@ -49,8 +49,9 @@ class UserCollection extends ResourceCollection
                         return [
                             $item->name
                         ];
-                    })
-
+                    }),
+                    'position' => $page->position ? $page->position->name : null,
+                    'users' => $page->subordinates()->get(),
                 ];
             });
 

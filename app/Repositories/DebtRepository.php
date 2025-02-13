@@ -7,6 +7,7 @@ use App\Interfaces\FPInterface;
 use App\Models\Debt;
 use App\Models\FP;
 use App\Models\Supplier;
+use Carbon\Carbon;
 
 
 class DebtRepository implements DebtInterface {
@@ -75,6 +76,65 @@ class DebtRepository implements DebtInterface {
             $item->setAttribute('day_debuts_allows', $item->fp->account?->debt);
         }
         return $query;
+    }
+
+    public function getOverdueDebts($filter = [])
+    {
+        $userId = $filter['user_id'];
+        $startDate = $filter['startDay'];
+        $endDate = $filter['endDay'];
+        $currentDate = Carbon::now();
+
+
+        $overdueDebts = $this->model
+            ->with('fp')
+            ->where('user_id', $userId)
+            ->where(function ($query) use ($currentDate) {
+                $query->where(function ($q) use ($currentDate) {
+                    $q->where('isDone', 2)
+                        ->where('date_over', '<', $currentDate);
+                })->orWhere(function ($q) {
+                    $q->where('isDone', 1)
+                        ->whereColumn('date_collection', '>', 'date_over');
+                });
+            })
+            ->whereHas('fp', function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('date_invoice', [$startDate, $endDate]);
+            })
+            ->get();
+
+
+        $totalDebts = $this->model
+            ->where('user_id', $userId)
+            ->whereHas('fp', function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('date_invoice', [$startDate, $endDate]);
+            })
+            ->get()->count();
+        //dd($overdueDebts);
+        return [
+            'overdueDebts' => $overdueDebts,
+            'totalDebts' => $totalDebts,
+        ];
+    }
+
+    public function getUnPaidCustomerDebts($filter = [])
+    {
+       // $userId = $filter['user_id'];
+        $startDate = $filter['startDay'];
+        $endDate = $filter['endDay'];
+        $overdueDebts = $this->model
+            ->with('fp')
+                ->where(function ($q) {
+                    $q->where('isDone', 2);
+                })
+            ->whereHas('fp', function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('date_invoice', [$startDate, $endDate]);
+            })
+            ;
+
+        return  $overdueDebts->get();
+
+
     }
 
 

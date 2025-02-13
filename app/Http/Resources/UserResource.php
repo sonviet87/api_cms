@@ -25,6 +25,11 @@ class UserResource extends JsonResource
             'role_id' => $this->roles->first()->id,
             'salary_lv_id' => $this->salary->id ?? null,
             'salary' => $this->salary->salary ?? 0,
+            'level' => $this->salary->level ?? 0,
+            'position_id' => $this->position_id ?? null,
+            'config_kpi' => $this->config_kpi ?? null,
+            'users' => new UserCollection($this->subordinates()->get()),
+
         ];
     }
 

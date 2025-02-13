@@ -56,6 +56,21 @@ class DebtSupplierRepository implements DebtSupplierInterface {
         return $this->model->whereIn('id', $ids)->delete();
     }
 
+    public function getUnPaidSupplierDebts($filter = [])
+    {
+        // $userId = $filter['user_id'];
+        $startDate = $filter['startDay'];
+        $endDate = $filter['endDay'];
+        $overdueDebts = $this->model
 
+            ->where(function ($q) {
+                $q->where('isDone', 2);
+            })
+            ->whereBetween('created_supplier', [$startDate, $endDate]);
+
+        return  $overdueDebts->get();
+
+
+    }
 
 }

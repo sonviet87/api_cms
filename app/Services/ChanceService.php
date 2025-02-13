@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Constants\ChanceConst;
+use App\Constants\PermissionConst;
 use App\Constants\RolePermissionConst;
 use App\Interfaces\ChanceInterface;
 use Carbon\Carbon;
@@ -21,20 +22,27 @@ class ChanceService extends BaseService
     public function getList()
     {
         $filter=[];
-        $role = Auth::user()->roles->pluck('name')->first();
-        if(!$role) return $this->_result(false, "Không tìm thấy user");
-        if($role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_SALE]){
-            $filter['user_id'] = Auth::user()->id;
+        $user = Auth::user();
+        if ($user->hasPermissionTo(PermissionConst::IS_SALE)) {
+            $filter['user_id'] = $user->id;
+            $staffs = $user->subordinates()->get();
+            if ($staffs) {
+                $filter['staffs'] = $staffs->pluck('id')->toArray();;
+            }
         }
         return $this->chance->getList($filter);
     }
 
     public function getListPaginate($perPage = 20,$filter)
     {
-        $role = Auth::user()->roles->pluck('name')->first();
-        if(!$role) return $this->_result(false, "Không tìm thấy user");
-        if($role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_SALE]){
-            $filter['user_id'] = Auth::user()->id;
+
+        $user = Auth::user();
+        if ($user->hasPermissionTo(PermissionConst::IS_SALE)) {
+            $filter['user_id'] = $user->id;
+            $staffs = $user->subordinates()->get();
+            if ($staffs) {
+                $filter['staffs'] = $staffs->pluck('id')->toArray();;
+            }
         }
 
         return $this->chance->getListPaginate($perPage,$filter);

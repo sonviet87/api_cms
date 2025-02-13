@@ -38,6 +38,14 @@ interface ChanceInterface {
      * @return mixed
      */
     public function destroy($ids);
+    /**
+     * Get by kpi chances
+     * @param array $filter
+     * @return mixed
+     */
+    public function getChanceStatsByDateRange($filter);
+
+
 
 
 }

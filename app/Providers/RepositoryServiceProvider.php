@@ -29,6 +29,24 @@ class RepositoryServiceProvider extends ServiceProvider {
         $this->app->bind('App\Interfaces\KpiSettingsInterface', 'App\Repositories\KpiSettingsRepository');
         $this->app->bind('App\Interfaces\SalaryInterface', 'App\Repositories\SalaryRepository');
         $this->app->bind('App\Interfaces\ChanceInterface', 'App\Repositories\ChanceRepository');
+        $this->app->bind('App\Interfaces\PositionInterface', 'App\Repositories\PositionRepository');
+        $this->app->bind('App\Interfaces\KpiSetUpUserInterface', 'App\Repositories\KpiSetUpUserRepository');
+        $this->app->bind('App\Interfaces\KpiSettingSaleItemInterface', 'App\Repositories\KpiSettingSaleItemRepository');
+        $this->app->bind('App\Interfaces\KpiSettingSaleInterface', 'App\Repositories\KpiSettingSaleRepository');
+        $this->app->bind('App\Interfaces\KpiSettingDebtsItemInterface', 'App\Repositories\KpiSettingDebtsItemRepository');
+        $this->app->bind('App\Interfaces\KpiSettingStaffManagerItemInterface', 'App\Repositories\KpiSettingStaffManagerItemRepository');
+        $this->app->bind('App\Interfaces\KpiSettingStaffManagerInterface', 'App\Repositories\KpiSettingStaffManagerRepository');
+        $this->app->bind('App\Interfaces\KpiSettingTotalInterface', 'App\Repositories\KpiSettingsTotalRepository');
+        $this->app->bind('App\Interfaces\SysKpiInterface', 'App\Repositories\SysKpiRepository');
+        $this->app->bind('App\Interfaces\TechnicalCertificateInterface', 'App\Repositories\TechnicalCertificateRepository');
+        $this->app->bind('App\Interfaces\TechnicalProjectInterface', 'App\Repositories\TechnicalProjectRepository');
+        $this->app->bind('App\Interfaces\TechnicalReviewInterface', 'App\Repositories\TechnicalReviewRepository');
+        $this->app->bind('App\Interfaces\KpiSettingTechnicalInterface', 'App\Repositories\KpiSettingTechnicalRepository');
+        $this->app->bind('App\Interfaces\KpiSettingSupplierInterface', 'App\Repositories\KpiSettingSupplierRepository');
+        $this->app->bind('App\Interfaces\CostsFixedInterface', 'App\Repositories\CostsFixedRepository');
+        $this->app->bind('App\Interfaces\CostsTeamInterface', 'App\Repositories\CostsTeamRepository');
+        $this->app->bind('App\Interfaces\CostsInterface', 'App\Repositories\CostsRepository');
+        $this->app->bind('App\Interfaces\DashboardInterface', 'App\Repositories\DashboardRepository');
 
 
     }

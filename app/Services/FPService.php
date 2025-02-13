@@ -4,6 +4,7 @@ namespace App\Services;
 
 
 
+use App\Constants\PermissionConst;
 use App\Constants\RolePermissionConst;
 use App\Interfaces\FPDetailInterface;
 use App\Interfaces\FPInterface;
@@ -27,10 +28,18 @@ class FPService extends BaseService
     public function getList()
     {
         $filter=[];
-        $role = Auth::user()->roles->pluck('name')->first();
-        if(!$role) return $this->_result(false, "Không tìm thấy user");
-        if($role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_SALE]){
-            $filter['user_id'] = Auth::user()->id;
+        $user = Auth::user();
+        if(!$user) return $this->_result(false, "Không tìm thấy user");
+
+        if ($user->hasPermissionTo(PermissionConst::IS_SALE)) {
+            $staffs = $user->subordinates()->get();
+            $arrUser = [$user->id];
+
+            if ($staffs) {
+                $arrUser = array_merge($arrUser, $staffs->pluck('id')->toArray());
+            }
+
+            $filter['user_id'] = $arrUser;
         }
         return $this->fp->getList($filter);
     }
@@ -38,16 +47,21 @@ class FPService extends BaseService
     public function getListPaginate($perPage = 20, $filter)
     {
 
-        $role = Auth::user()->roles->pluck('name')->first();
-        if(!$role) return $this->_result(false, "Không tìm thấy user");
+        $user = Auth::user();
+        if(!$user) return $this->_result(false, "Không tìm thấy user");
 
-        /*if($role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_ADMIN] ||  $role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_CEO] ||  $role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_Manager] ){
-            return $this->fp->getListPaginate($perPage, $filter);
-        }*/
-        if($role == RolePermissionConst::STATUS_NAME[RolePermissionConst::ROLE_SALE]){
-            $filter['user_id'] = Auth::user()->id;
+        if ($user->hasPermissionTo(PermissionConst::IS_SALE)) {
+
+            $filter['user_id'] = [$user->id];
+            $staffs = $user->subordinates()->get();
+           // dd($user->id);
+            if ($staffs) {
+                $filter['staffs'] = $staffs->pluck('id')->toArray();;
+            }
+
+
         }
-       // dd(Auth::user()->roles->pluck('name')->first());
+
         return $this->fp->getListPaginate($perPage, $filter);
 
     }
@@ -60,6 +74,7 @@ class FPService extends BaseService
             $user = Auth::user();
             $details= $data['details'];
             $arrFPDetail= [];
+
             $arrFP = Arr::except($data, ['details']);
             $arrFP['user_id']= $user->id;
             $arrFP['shipping_charges']= Str::replace(",","",$arrFP["shipping_charges"]);
@@ -96,6 +111,8 @@ class FPService extends BaseService
                 $arrFPDetail[$key]["price_sell"] = Str::replace(",","",$detail["price_sell"]);
                 $arrFPDetail[$key]["total_buy"] = Str::replace(",","",$detail["total_buy"]);
                 $arrFPDetail[$key]["total_sell"] = Str::replace(",","",$detail["total_sell"]);
+                $arrFPDetail[$key]["price_sell_customer"] = Str::replace(",","",$detail["price_sell_customer"]);
+                $arrFPDetail[$key]["total_price_sell_customer"] = Str::replace(",","",$detail["total_price_sell_customer"]);
                 $arrFPDetail[$key]["profit"] = Str::replace("%","",$detail["profit"]);
                 $arrFPDetail[$key]["qty"] = $detail["qty"];
                 $arrFPDetail[$key]["category_id"] = $detail["category_id"];
@@ -136,7 +153,9 @@ class FPService extends BaseService
         try {
             $details= $data['details'];
             $arrFPDetail= [];
-            $arrFP = Arr::except($data, ['details','created_at']);
+            $arrIdTechnical = $data['technical_id'];
+
+            $arrFP = Arr::except($data, ['details','created_at','technical_id']);
 
             $arrFP['shipping_charges']= Str::replace(",","",$arrFP["shipping_charges"]);
             $arrFP['guest_costs']= Str::replace(",","",$arrFP["guest_costs"]);
@@ -172,6 +191,8 @@ class FPService extends BaseService
                 $arrFPDetail[$key]["fp_id"] = $id;
                 $arrFPDetail[$key]["price_buy"] = Str::replace(",","",$detail["price_buy"]);
                 $arrFPDetail[$key]["price_sell"] = Str::replace(",","",$detail["price_sell"]);
+                $arrFPDetail[$key]["price_sell_customer"] = Str::replace(",","",$detail["price_sell_customer"]);
+                $arrFPDetail[$key]["total_price_sell_customer"] = Str::replace(",","",$detail["total_price_sell_customer"]);
                 $arrFPDetail[$key]["total_buy"] = Str::replace(",","",$detail["total_buy"]);
                 $arrFPDetail[$key]["total_sell"] = Str::replace(",","",$detail["total_sell"]);
                 $arrFPDetail[$key]["profit"] = Str::replace("%","",$detail["profit"]);
@@ -191,6 +212,9 @@ class FPService extends BaseService
 
             }
 
+            // update technical
+            $fpUpdate = $this->fp->getByID($id);
+            $fpUpdate->technicals()->sync($arrIdTechnical);
             DB::commit();
             return $this->_result(true, trans('Cập nhật phương án kinh doanh thành công'), [
                 'fp' => $fp

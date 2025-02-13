@@ -45,6 +45,12 @@ interface DebtInterface {
      * @return mixed
      */
     public function destroy($ids);
+    /**
+     * Delete a list unpaid debts
+     * @param array $filter
+     * @return mixed
+     */
+    public function getUnPaidCustomerDebts($filter=[]);
 
 
 }

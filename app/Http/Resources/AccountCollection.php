@@ -30,6 +30,7 @@ class AccountCollection extends ResourceCollection
                     'mst' => $page->mst,
                     'deposit' => $page->deposit,
                     'debt' => $page->debt,
+                    'created_at' => $page->created_at,
                 ];
             });
 

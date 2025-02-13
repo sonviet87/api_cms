@@ -22,6 +22,16 @@ class Debt extends Model
     {
         return $this->belongsTo(FP::class);
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class)->withTrashed();
+    }
+    protected static function booted()
+    {
+        static::created(function ($debt) {
 
+            Account::where('id', $debt->fp->account_id)->whereNull('is_new')->update(['is_new' => now()->year]);
+        });
+    }
 
 }

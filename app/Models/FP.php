@@ -33,6 +33,14 @@ class FP extends Model
         return $this->belongsTo(User::class,"user_assign","id")->withTrashed();
     }
 
+    // Fp.php
+    public function technicals()
+    {
+        return $this->belongsToMany(User::class, 'fp_user', 'fp_id', 'user_id');
+    }
+
+
+
     public function account()
     {
         return $this->belongsTo(Account::class)->withTrashed();
@@ -52,5 +60,7 @@ class FP extends Model
     {
         return $this->hasMany(FPDetail::class,"fp_id")->where('supplier_id',$supplier_id);
     }
+
+
 
 }

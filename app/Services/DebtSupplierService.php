@@ -41,8 +41,8 @@ class DebtSupplierService extends BaseService
     public function createNew($data)
     {
         if(isset($data["date_over"])) $data["date_over"] =  Carbon::parse($data["date_over"])->toDateTimeString();
-        $account = $this->debt->create($data);
-        if (!$account) {
+        $rs = $this->debt->create($data);
+        if (!$rs) {
             return $this->_result(false, 'Tạo công nợ không thành công');
         }
         return $this->_result(true, 'Tạo công nợ thành công');

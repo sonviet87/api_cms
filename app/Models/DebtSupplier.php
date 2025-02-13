@@ -4,6 +4,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
+
 class DebtSupplier extends Model
 {
   use HasFactory, SoftDeletes;
@@ -25,6 +27,13 @@ class DebtSupplier extends Model
     public function supplier()
     {
         return $this->belongsTo(Supplier::class)->withTrashed();;
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($debtSupplier) {
+            Supplier::where('id', $debtSupplier->supplier_id)->whereNull('is_new')->update(['is_new' => now()->year]);
+        });
     }
 
 

@@ -17,6 +17,9 @@ class Supplier extends Model
     protected $guarded = [];
 
     protected $table = 'supplier';
+    protected $casts = [
+        'history' => 'array',
+    ];
 
     public function user()
     {
@@ -27,5 +30,6 @@ class Supplier extends Model
     {
         return $this->belongsTo(FPDetail::class)->withTrashed();
     }
+
 
 }

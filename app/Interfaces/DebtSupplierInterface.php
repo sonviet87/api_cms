@@ -39,6 +39,13 @@ interface DebtSupplierInterface {
      * @return mixed
      */
     public function destroy($ids);
+    /**
+     * Delete a list unpaid supplier
+     * @param array $filter
+     * @return mixed
+     */
+    public function getUnPaidSupplierDebts($filter=[]);
+
 
 
 }

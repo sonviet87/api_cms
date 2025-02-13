@@ -2,9 +2,11 @@
 namespace App\Repositories;
 
 use App\Constants\FPConst;
+use App\Constants\PermissionConst;
 use App\Interfaces\ReportInterface;
 use App\Models\FP;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ReportRepository implements ReportInterface {
     protected $model;
@@ -56,6 +58,11 @@ class ReportRepository implements ReportInterface {
                     $query = $query->whereDate('created_at', '>=', $statDay)->whereDate('created_at', '<=', $endDay);
                 }
             }
+        }
+        $user = Auth::user();
+        if ($user->hasPermissionTo(PermissionConst::IS_SALE)) {
+            $query = $query->where('status','!=',FPConst::STATUS_NEW)->where('status','!=',FPConst::STATUS_PAKD);
+
         }
        // dd($query->toSql() );
         $query = $query->with(['user','account','contact'])->orderBy('created_at', 'desc');

@@ -52,5 +52,10 @@ interface FPInterface {
      */
     public function destroy($ids);
 
-
+    /**
+     * Get fp kpi
+     * @param interger $filter
+     * @return mixed
+     */
+    public function getKpiFP($filter);
 }

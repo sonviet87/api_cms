@@ -4,6 +4,7 @@ namespace App\Services;
 
 
 use App\Interfaces\SupplierInterface;
+use Carbon\Carbon;
 
 
 class SupplierService extends BaseService
@@ -45,12 +46,30 @@ class SupplierService extends BaseService
 
     public function update($id, $data)
     {
-        $account = $this->supplier->getByID($id);
-        if (!$account) {
+        $rs = $this->supplier->getByID($id);
+        if (!$rs) {
             return $this->_result(false, 'Not found!');
         }
+        //upate history debts
+        $currentYear = Carbon::now()->year;
+        $oldDebts = $rs->debts;
 
+        if ($oldDebts != $data['debts']) {
 
+            if (empty($rs->increase_debt_times) || $rs->increase_debt_times != $currentYear) {
+                $history = $rs->history ? $rs->history: [];
+                $data['increase_debt_times'] = $currentYear;
+                $history[] = [
+                    'year' => $currentYear,
+                    'current_value' => $data['debts'],
+                    'old_value' => $oldDebts,
+                ];
+
+                $data['history'] = $history;
+            }
+
+        }
+        //update data
         $result = $this->supplier->update($id, $data);
         if (!$result) {
             return $this->_result(false, 'Updated failed');

@@ -27,6 +27,8 @@ class DebtResource extends JsonResource
             'number_date_over' => $this->number_date_over,
             'total_debt' => $this->total_debt,
             'isDone' => $this->isDone,
+            'user_id' => $this->user_id,
+            'user_name' => $this->user->name,
             'fp_id' => new FPResource($this->fp()->first()),
             'date_invoice' => $this->date_invoice ?$this->date_invoice: '',
 

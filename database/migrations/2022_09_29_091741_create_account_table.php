@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('mst')->nullable();
             $table->string('deposit')->nullable();
             $table->string('debt')->nullable();
+            $table->string('is_new')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->softDeletes();
             $table->timestamps();

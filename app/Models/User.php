@@ -26,7 +26,8 @@ class User extends Authenticatable
         'password',
         'phone',
         'role_id',
-        'salary_lv_id'
+        'salary_lv_id',
+        'position_id'
     ];
 
     /**
@@ -46,11 +47,13 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'config' => 'array',
     ];
 
-    /*public function roles(){
-        return $this->belongsToMany(Role::class);
-    }*/
+    public function fpsAsTechnical()
+    {
+        return $this->belongsToMany(Fp::class, 'fp_technical', 'user_id', 'fp_id');
+    }
 
     public function salary()
     {
@@ -61,4 +64,26 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(KpiMemberGroup::class, 'users_member_group', 'user_id', 'group_id');
     }
+
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class);
+    }
+
+    public function subordinates()
+    {
+        return $this->belongsToMany(User::class, 'subordinates', 'manager_id', 'user_id');
+    }
+
+
+    public function manager()
+    {
+        return $this->hasOne(Subordinate::class, 'user_id');
+    }
+
+    public function kpi(){
+        return $this->belongsTo(KpiSetUpUser::class)();
+    }
+
 }

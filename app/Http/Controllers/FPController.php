@@ -80,7 +80,7 @@ class FPController extends RestfulController
             }
 
             if($result['status']){
-               // Mail::to('sonviet87@gmail.com')->cc($result['data']['email_assgin'])->send(new MailNotify($result['data']));
+                Mail::to('thanhmv@lugaatech.vn')->send(new MailNotify($result['data']));
             }
             return $this->_success($result['message']);
         }catch(\Exception $e){
@@ -166,7 +166,12 @@ class FPController extends RestfulController
             }
 
             if($result['status']){
-                Mail::to('thanhmv@lugaatech.vn')->cc($result['data']['email_assgin'])->send(new MailNotify($result['data']));
+                $mail = Mail::to('thanhmv@lugaatech.vn');
+                if($result['status']>2){
+                    //$mail = $mail->cc($result['data']['email_assgin']);
+                    $mail = $mail->cc('seocamera87@gmail.com');
+                }
+                $mail->send(new MailNotify($result['data']));
             }
             return $this->_response($result['data'],$result['message']);
         }catch(\Exception $e){

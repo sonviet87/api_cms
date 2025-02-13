@@ -188,6 +188,7 @@ class UserController extends RestfulController
      * @return mixed
      */
     public function update(Request $request, $id){
+
         $this->validate($request, [
             'name' => 'bail|required',
             'email' => 'bail|required|email',
@@ -233,11 +234,25 @@ class UserController extends RestfulController
 
             $user = Auth::user();
             return $this->_response([
-                'user' => $user,
+                'user' =>  new UserResource($user),
                 'roles' => Auth::user()->roles->first()->permissions->pluck('name')
 
             ]);
        }catch(\Exception $e){
+            return $this->_error($e, self::HTTP_INTERNAL_ERROR);
+        }
+
+    }
+
+    public function updateConfigKpi(Request $request){
+
+        $this->validate($request, [
+            'config' => 'required',
+        ]);
+        try{
+            $data = $request->all();
+           return $this->userService->updateConfigKpi($data['config']);
+        }catch(\Exception $e){
             return $this->_error($e, self::HTTP_INTERNAL_ERROR);
         }
 
