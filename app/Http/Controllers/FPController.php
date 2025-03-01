@@ -168,8 +168,8 @@ class FPController extends RestfulController
             if($result['status']){
                 $mail = Mail::to('thanhmv@lugaatech.vn');
                 if($result['status']>2){
-                    //$mail = $mail->cc($result['data']['email_assgin']);
-                    $mail = $mail->cc('seocamera87@gmail.com');
+                    $mail = $mail->cc($result['data']['email_assgin']);
+                    //$mail = $mail->cc('seocamera87@gmail.com');
                 }
                 $mail->send(new MailNotify($result['data']));
             }

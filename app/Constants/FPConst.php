@@ -14,10 +14,13 @@ class FPConst
 
     const STATUS_NAME = [
         FPConst::STATUS_NEW => 'Mới',
-        FPConst::STATUS_PAKD => 'Duyệt PAKD',
+        //'Duyệt PAKD'
+        FPConst::STATUS_PAKD => 'Duyệt giá Sale',
         FPConst::STATUS_PAKD_FAILED => 'Hủy PAKD',
-        FPConst::STATUS_CONTRACT => 'Duyệt hợp đồng',
-        FPConst::STATUS_SHIPPING => 'Duyệt giao hàng',
+        //'Duyệt PAKD'
+        FPConst::STATUS_CONTRACT => 'Duyệt giá bán',
+        //'Duyệt giao hàng'
+        FPConst::STATUS_SHIPPING => 'Duyệt PA Triển Khai ',
         FPConst::STATUS_INVOICE => 'Xuất hóa đơn',
 
         FPConst::STATUS_COMPLETED => 'Hoàn tất hợp đồng',

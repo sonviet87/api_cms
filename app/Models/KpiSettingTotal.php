@@ -19,5 +19,14 @@ class KpiSettingTotal extends Model
 
     protected $table = 'kpi_setting_total';
 
+    public function setMaxAttribute($value)
+    {
+        $this->attributes['max'] = str_replace(',', '', $value);
+    }
+    public function setMinAttribute($value)
+    {
+        $this->attributes['min'] = str_replace(',', '', $value);
+    }
+
 
 }

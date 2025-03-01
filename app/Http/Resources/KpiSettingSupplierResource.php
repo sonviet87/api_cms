@@ -19,6 +19,8 @@ class KpiSettingSupplierResource extends JsonResource
             'old_supplier_conditions' => $this->old_supplier_conditions,
             'new_supplier_target' => $this->new_supplier_target,
             'old_supplier_target' => $this->old_supplier_target,
+            'new_supplier_percent' => $this->new_supplier_percent,
+            'old_supplier_percent' => $this->old_supplier_percent,
 
         ];
     }

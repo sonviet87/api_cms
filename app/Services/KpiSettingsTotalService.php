@@ -29,6 +29,9 @@ class KpiSettingsTotalService extends BaseService
 
     public function create($data)
     {
+        $data['max_percentage'] =str_replace(',', '', $data['max_percentage']) ;
+        $data['min_percentage'] =str_replace(',', '', $data['min_percentage']) ;
+
         $rs = $this->kpiSettingsTotal->create($data);
         if (!$rs) {
             return $this->_result(false, 'Created failed');
@@ -80,8 +83,8 @@ class KpiSettingsTotalService extends BaseService
                 "points" => $item['points'] ?? null,
                 "bonus" => $item['bonus'] ?? null,
                 "name" => $item['name'] ?? null,
-                "max" => $item['max_percentage'] ?? null,
-                "min" => $item['min_percentage'] ?? null,
+                "max" => str_replace(',', '', $item['max_percentage']) ?? null,
+                "min" => str_replace(',', '', $item['min_percentage'])   ?? null,
                 "percentage" => $item['percentage'] ?? null,
                 "type" => $item['type'],
             ];

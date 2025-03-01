@@ -26,21 +26,26 @@ class TechnicalCertificateRepository implements TechnicalCertificateInterface {
         return $query->with('user')->orderBy('id', 'asc')->paginate($perpage);
     }
 
-    public function getListbyUsers($filter = []){
+    public function getListbyUsers($filter = [])
+    {
         $query = $this->model;
 
-        if (isset($filter['selectedYear']) && $filter['selectedYear'] != '') {
-            $query = $query->whereYear('start_date','=' ,$filter['selectedYear']);
+        if (!empty($filter['selectedYear'])) {
+            $query = $query->whereYear('start_date', $filter['selectedYear']);
         }
 
-        if (isset($filter['users'])) {
-
-            $query = $query->where('user_id', $filter['users']) ;
+        if (!empty($filter['users'])) {
+            $query = $query->where('user_id', $filter['users']);
         }
 
+        // Lấy danh sách
         $list = $query->orderBy('id', 'desc')->get();
 
-        $summary = $query->selectRaw('COUNT(*) as total')
+        // Tạo truy vấn riêng cho summary
+        $summary = $this->model
+            ->whereYear('start_date', $filter['selectedYear'] ?? date('Y'))
+            ->where('user_id', $filter['users'] ?? null)
+            ->selectRaw('COUNT(*) as total')
             ->selectRaw('SUM(goals = 1) as goals_1')
             ->selectRaw('SUM(goals = 2) as goals_2')
             ->first();
@@ -54,6 +59,8 @@ class TechnicalCertificateRepository implements TechnicalCertificateInterface {
             ],
         ];
     }
+
+
 
     public function getAll(){
         $query = $this->model;

@@ -30,6 +30,7 @@ class FPDetailsCollection extends ResourceCollection
                     'price_sell' => $page->price_sell,
                     'price_sell_customer' => $page->price_sell_customer,
                     'profit' => $page->profit,
+                    'profit_customer' => $page->profit_customer,
                     'total_sell' => $page->total_sell,
                     'total_price_sell_customer' => $page->total_price_sell_customer,
                     'total_buy' => $page->total_buy,

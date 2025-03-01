@@ -29,6 +29,8 @@ class FPResource extends JsonResource
             'interest_percent' => $this->interest_percent,
             'commission' => $this->commission,
             'commission_percent' => $this->commission_percent,
+            'commission_customer' => $this->commission_customer,
+            'commission_customer_percent' => $this->commission_customer_percent,
             'tax' => $this->tax,
             'bids_cost' => $this->bids_cost,
             'bids_cost_percent' => $this->bids_cost_percent,

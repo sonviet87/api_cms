@@ -11,11 +11,15 @@ class KpiSettingTechnicalResource extends JsonResource
     {
 
         $staffManagers = $this->staffManagers->groupBy('type');
+       // dd($staffManagers);
         $date = Carbon::create($this->year, 1, 1, 0, 0, 0, 'UTC');
         return [
             'name' => $this->name,
             'user_id' => $this->user_id,
             'year' => $date,
+            'certificate_percent' => $this->certificate_percent,
+            'project_percent' => $this->project_percent,
+            'review_percent' => $this->review_percent,
             'certificate_conditions' => $this->certificate_conditions,
             'project_conditions' => $this->project_conditions,
             'review_conditions' => $this->review_conditions,
@@ -28,17 +32,7 @@ class KpiSettingTechnicalResource extends JsonResource
         return $staffManagers->map(function ($manager) {
             return [
                 'user_id' => $manager->user_id,
-                'staff_conditions' => $manager->staffConditions
-                    ->sortBy('number')
-                    ->map(function ($condition) {
-                        return [
-                            'number' => $condition->number,
-                            'percentage' => $condition->percentage,
-                            'type' => $condition->type,
-                            'points' => $condition->points,
-                        ];
-                    })
-                    ->values(),
+                'percent' =>$manager->percent
             ];
         });
     }

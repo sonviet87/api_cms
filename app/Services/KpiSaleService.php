@@ -46,10 +46,12 @@ class KpiSaleService extends BaseService
         $arrListKpi = [];
         $listKpiArray = explode(',', $filter['listKpi']);
         foreach ($listKpiArray as $item){
+
             $filterKpi = $filter;
             $filterKpi['groupMember'] = $item;
 
-             $rs =  $this->getKpisales($filterKpi);
+            $rs =  $this->getKpisales($filterKpi);
+
             $arrParams = [
                 'total_selling'=>$rs->get('total_selling'),
                 'sale_achievements' => $rs->get('sale_achievements'),
@@ -67,7 +69,7 @@ class KpiSaleService extends BaseService
                 'total_selling_year' => $rs->get('total_selling_year'),
                 'total_points' => $rs->get('total_points'),
                 'target_kpi_company' => $rs->get('target_kpi_company'),
-                'min_bonus_setting_progress' =>$rs->get('min_bonus_setting_progress'),
+
                 'total_all_bouns' => $rs->get('total_all_bouns'),
                 'user_name' => $rs->get('user_name'),
                 'bg_color1' => $rs->get('bg_color1'),
@@ -86,9 +88,8 @@ class KpiSaleService extends BaseService
 
             $typeKpi = $filter['type'] ?? DebtsConst::MONTHS_1;
             $kpiSetUpUser = $this->kpiSetUpUser->getByID($filter['groupMember']);
-
-            if($kpiSetUpUser!=null){
-
+           // dd($kpiSetUpUser);
+            if($kpiSetUpUser==null)  return $this->_result(false, 'Không thể tạo kpi');
                 $salesTargetMonths = $kpiSetUpUser->sales_months;
                 $salesTargetMonths3 = $kpiSetUpUser->sales_3_months;
                 $salesTargetMonths12 = $kpiSetUpUser->sales_12_months;
@@ -115,7 +116,7 @@ class KpiSaleService extends BaseService
 
                 $userID = $kpiSetUpUser->user_id;
                 $filter['users'] = [$userID];
-
+                //dd($filter);
                 $rs = $this->fp->getListbyUsers($filter);
                 $totalSelling = $rs->sum('selling');
 
@@ -145,19 +146,16 @@ class KpiSaleService extends BaseService
                 $total_achievement_staff = 0;
 
                 $staff_manager = $this->getStaffManager($kpiSetUpUser,$filter);
+                //dd($staff_manager);
                 if(count($staff_manager)>0){
 
-                    $total_percent_staff = collect($staff_manager)->sum(function ($item) {
-                        return $item['kpi']['percentage'];
-                    });
-
                     $total_points_staff = collect($staff_manager)->sum(function ($item) {
-                        return $item['kpi']['points'];
+                        return $item['total_points'];
                     });
 
                     $total_achievement_staff = collect($staff_manager)->sum(function ($item) {
-                        $percentage = $item['kpi']['percentage'];
-                        $points = $item['kpi']['points'];
+                        $percentage = $item['percent'];
+                        $points = $item['total_points'];
                         return ($percentage * $points) / 100;
                     });
                 }
@@ -194,9 +192,9 @@ class KpiSaleService extends BaseService
                     $totalSellingYear = $rsListYear->sum('selling');
                     $rs->put('total_selling_year', $totalSellingYear);
                     //percent year
-                    $percent_year = round(($totalSellingYear/$tagretKpiYear)*100,);
+                    //$percent_year = round(($totalSellingYear/$tagretKpiYear)*100,);
 
-                    $settingCompany = $this->getKpiSettingsYear($percent_year, $filter);
+                    $settingCompany = $this->getKpiSettingsYear($totalSellingYear, $filter);
                     $filter['parent_id'] = $settingCompany->id;
                     if($settingCompany != null)  $rs->put('kpi_company', (object)[
                         'bonus' => $settingCompany['bonus'] ?? 0,
@@ -209,9 +207,9 @@ class KpiSaleService extends BaseService
 
                 $total_points = $sale->points+ $current_sale->points+ $debts_kpi->points+$total_points_staff;
                 $total_achievements= round($sale_achievements + $current_achievements + $debts_achievements+$total_achievement_staff,2);
-                $total_percentage = $sale->percentage + $current_sale->percentage +$debts_kpi->percentage + $total_percent_staff;
+               // $total_percentage = $sale->percentage + $current_sale->percentage +$debts_kpi->percentage + $total_percent_staff;
 
-                $settingRs = $this->getKpiSettings($total_percentage,$filter);
+                $settingRs = $this->getKpiSettings($total_achievements,$filter,$kpiSetUpUser);
 
                 $salary = $kpiSetUpUser->user->salary->salary;
                 $totalAllBouns = 0;
@@ -235,14 +233,20 @@ class KpiSaleService extends BaseService
                     'total_debts' => $totalDebts
                 ];
                 //get min setting total
-                ['min_kpi_grogress' =>$minGrogressSetting ,'min_kpi_setting' =>$minConditionsSetting]= $this->getMinSettingBouns($total_percentage,$typeKpi);
+
+                $salesMonths = (float) $kpiSetUpUser->sales_months;
+                $totalSelling = (float) $totalSelling;
+                $total_percentage = $totalSelling != 0 ? round(( $totalSelling/$salesMonths) * 100, 2) : 0;
+
+                //dd($total_percentage);
+               // ['min_kpi_grogress' =>$minGrogressSetting ,'min_kpi_setting' =>$minConditionsSetting]= $this->getMinSettingBouns($total_percentage,$typeKpi);
 
                 //get color label
                 $bgcorlor1 = "green";
                 $bgcorlor2 = "#a09c9c";
                 $currentDate = now();
                 $dayOfMonth = $currentDate->day;
-                if($dayOfMonth > 20 && $total_percentage< $minConditionsSetting->min) $bgcorlor1 = "red";
+                if($dayOfMonth > 20 && $kpiSetUpUser->sales_months < $totalSelling) $bgcorlor1 = "red";
                 if($dayOfMonth > 20 && $total_percentage == 0) $bgcorlor2 = "red";
 
 
@@ -251,7 +255,7 @@ class KpiSaleService extends BaseService
                 $rs->put('total_achievements', $total_achievements);
                 $rs->put('total_percentage', $total_percentage);
                 $rs->put('total_selling', $totalSelling);
-                $rs->put('min_bonus_setting_progress', $minGrogressSetting->min);
+
 
                 $rs->put('sale_achievements', $sale);
                 $rs->put('current_sale_achievements', $current_sale);
@@ -269,17 +273,39 @@ class KpiSaleService extends BaseService
                 $rs->put('percent_sale', $perSale);
                 $rs->put('percent_current_sale', $perCurrentSale);
                 $rs->put('percent_debts', $perDebts);
+                $rs->put('sale_text', $kpiSetUpUser->sale_text);
+                $rs->put('current_sale_text', $kpiSetUpUser->current_sale_text);
+                $rs->put('debts_text', $kpiSetUpUser->debts_text);
 
-
+                return $rs;
             }
-            return $rs;
-        }
+
+
         return $this->_result(false, 'Không thể tạo kpi');
     }
     protected  function getTotalKPIUser($kpiSetUpUser,$filter){
         if(isset($filter['groupMember']) && $filter['groupMember'] !=''){
 
             if($kpiSetUpUser!=null){
+                $typeKpi = $filter['type'] ?? DebtsConst::MONTHS_1;
+                if($typeKpi== DebtsConst::MONTHS_1){
+                    $perSale = $kpiSetUpUser->sales_months_percent;
+                    $perCurrentSale = $kpiSetUpUser->current_sale_months_percent;
+                    $perDebts  = $kpiSetUpUser->debts_1_percent;
+                }
+                elseif($typeKpi== DebtsConst::MONTHS_3) {
+                    $perSale = $kpiSetUpUser->sales_3_months_percent;
+                    $perCurrentSale = $kpiSetUpUser->current_sale_3_months_percent;
+                    $perDebts  = $kpiSetUpUser->debts_3_percent;
+
+                }
+                else {
+                    $perSale = $kpiSetUpUser->sales_12_months_percent;
+                    $perCurrentSale = $kpiSetUpUser->current_sale_12_months_percent;
+                    $perDebts  = $kpiSetUpUser->debts_12_percent;
+                }
+
+
                 $userID = $kpiSetUpUser->user_id;
                 $filter['users'] = [$userID];
 
@@ -291,7 +317,7 @@ class KpiSaleService extends BaseService
 
                 ['debts_kpi' => $debts_kpi] = $this->getDebts($kpiSetUpUser,$filter);
 
-               return $sale->percentage + $current_sale->percentage +$debts_kpi->percentage??0;
+               return (($perSale/100) * $sale->points) + (($perCurrentSale/100) * $current_sale->points) +(($perDebts/100) * $debts_kpi->points)??0;
             }
 
         }
@@ -337,10 +363,31 @@ class KpiSaleService extends BaseService
     {
         $type = $filter['type'] ?? DebtsConst::MONTHS_1;
 
+
         $resultData = [];
 
         if ($kpiSetUpUser) {
             $filteredStaffManagers = $kpiSetUpUser->staffManagers->filter(function ($manager) use ($type) {
+
+                    return $manager->type === $type . 'months'  && $manager->kpi_type == 'sale';
+
+            });
+            foreach ($filteredStaffManagers as $manager) {
+                if($manager->user_id == null) continue;
+                $user_name = $manager->user->name;
+                $filterStaff = $filter;
+                $filterStaff['users'] = [$manager->user_id];
+                $kpiUser = $this->kpiSetUpUser->getByUserID($manager->user_id)->first();
+                $totalPointsSale = $this->getTotalKPIUser($kpiUser, $filterStaff);
+                $resultData[] = [
+                    'user_id' => $manager->user_id,
+                    'percent' => $manager->percent,
+                    'user_name' => $user_name,
+                    'total_points' =>$totalPointsSale,
+
+                ];
+            }
+            /*$filteredStaffManagers = $kpiSetUpUser->staffManagers->filter(function ($manager) use ($type) {
                 $manager->staffConditions = $manager->staffConditions->filter(function ($condition) use ($type) {
                     return $condition->type === $type . 'months';
                 });
@@ -378,7 +425,7 @@ class KpiSaleService extends BaseService
                     'total_percent' =>$totalPercentSale,
                     'kpi' => $result
                 ];
-            }
+            }*/
         }
         return $resultData;
     }
@@ -432,7 +479,7 @@ class KpiSaleService extends BaseService
         return  $resultCondition;
 
     }
-    private function getKpiSettings($totalGoals,$filter){
+    /*private function getKpiSettings($totalGoals,$filter){
        $totalGoals = round($totalGoals);// total percentage
 
         $typeKpi = $filter['type'] ?? DebtsConst::MONTHS_1;
@@ -477,7 +524,54 @@ class KpiSaleService extends BaseService
 
         return  (object)['bonus' => 0, 'points' => 0,'name' => 'Không đạt','color'=>'red'];
 
+    }*/
+    private function getKpiSettings($totalGoals, $filter,$kpiSetUpUser) {
+
+        if ($totalGoals == 0) {
+            return (object)['bonus' => 0, 'points' => 0, 'name' => 'Không đạt', 'color' => 'red'];
+        }
+        $countUser = count($kpiSetUpUser->user->subordinates()->get());
+        $typeText =  $countUser> 0 ? 'manager':'sale';
+
+        $totalGoals = floor($totalGoals);
+        $typeKpi = $filter['type'] ?? DebtsConst::MONTHS_1;
+        $conditionsSettings = $this->settingTotal->getList();
+
+
+
+        $conditionsSettingsType = $conditionsSettings->filter(function ($item) use ($typeKpi,$typeText) {
+            return $item['type'] === $typeKpi . 'months' && $item['type_kpi'] === $typeText;
+        });
+
+        // Sắp xếp danh sách theo points để tìm giá trị lớn nhất
+        $sortedConditions = $conditionsSettingsType->sortByDesc('points');
+
+        // Tìm kiếm dòng có points khớp với totalGoals
+        $matchedCondition = $sortedConditions->first(function ($item) use ($totalGoals) {
+            return (float)$item['points'] == $totalGoals;
+        });
+
+        if ($matchedCondition) {
+            return (object)[
+                'bonus' => $matchedCondition['bonus'] ?? 0,
+                'points' => $matchedCondition['points'] ?? 0,
+                'name' => $matchedCondition['name'] ?? 'Không đạt',
+            ];
+        }
+
+        // Nếu tổng điểm lớn hơn tất cả, trả về dòng có points lớn nhất
+        $maxCondition = $sortedConditions->first();
+        if ($maxCondition && $totalGoals > (float)$maxCondition['points']) {
+            return (object)[
+                'bonus' => $maxCondition['bonus'] ?? 0,
+                'points' => $maxCondition['points'] ?? 0,
+                'name' => $maxCondition['name'] ?? 'Không đạt',
+            ];
+        }
+
+        return (object)['bonus' => 0, 'points' => 0, 'name' => 'Không đạt', 'color' => 'red'];
     }
+
 
     private function getMinSettingBouns($total_percentage, $typeKpi)
     {
@@ -530,12 +624,10 @@ class KpiSaleService extends BaseService
 
     private function getKpiSettingsYear($totalGoals,$filter){
 
-        $totalGoals = round($totalGoals);// total percentage
-
         $typeKpi = $filter['type'] ?? DebtsConst::MONTHS_1;
         $conditionsSettings = $this->settingTotal->getList();
         $conditionsSettingsType = $conditionsSettings->filter(function ($item) use ($typeKpi){
-            return $item['type'] === $typeKpi.'months' && $item['type_kpi'] ==='sale';
+            return $item['type'] === $typeKpi.'months' && $item['type_kpi'] ==='company';
         });
 
         // find condtion
@@ -556,7 +648,7 @@ class KpiSaleService extends BaseService
         if ($minCondition && $totalGoals < (float)$minCondition['min']) {
             return  (object)['bonus' => 0, 'points' => 0,'name' => 'Không đạt','color'=>'red'];
         }
-
+       // dd($conditionsSettingsType);
         if ($maxCondition && $totalGoals > (float)$maxCondition['max']) {
             return $maxCondition;
         }

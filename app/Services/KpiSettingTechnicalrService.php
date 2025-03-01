@@ -51,6 +51,9 @@ class KpiSettingTechnicalrService extends BaseService
             'certificate_conditions' => $data['certificate_conditions'],
             'project_conditions' => $data['project_conditions'],
             'review_conditions' => $data['review_conditions'],
+            'review_percent' => $data['review_percent'],
+            'project_percent' => $data['project_percent'],
+            'certificate_percent' => $data['certificate_percent'],
 
         ];
 
@@ -78,6 +81,7 @@ class KpiSettingTechnicalrService extends BaseService
                         'user_id' => $staffData['user_id'],
                         'kpi_setting_sale_id' => $id,
                         'type' => '12months',
+                        'percent' => $staffData['percent'],
                         'created_at' => now(),
                         'updated_at' => now(),
                         'kpi_type' =>'technical'
@@ -90,7 +94,7 @@ class KpiSettingTechnicalrService extends BaseService
         $this->kpiSettingStaffManager->create($staffManagers);
 
         // 2.save to table kpi_setting_staff_manager_item
-        $staffItems = [];
+        /*$staffItems = [];
         foreach (['kpi_condition_staff_year'] as $conditionKey) {
             if (!empty($data[$conditionKey])) {
                 foreach ($data[$conditionKey] as $staffData) {
@@ -117,7 +121,7 @@ class KpiSettingTechnicalrService extends BaseService
         }
        // dd($staffItems);
         // Bulk Insert to table kpi_setting_staff_manager_item
-        $this->kpiSettingStaffManagerItem->create($staffItems);
+        $this->kpiSettingStaffManagerItem->create($staffItems);*/
     }
 
 
@@ -138,7 +142,7 @@ class KpiSettingTechnicalrService extends BaseService
         DB::beginTransaction();
         try {
             // Lấy đối tượng KpiSettingSale cần cập nhật
-            $kpiSettingSale = $this->kpiSettingTechnical->getByID($id);
+            $kpiSettingTechnica = $this->kpiSettingTechnical->getByID($id);
             $arrSetting =  [
                 'name' => $data['name'],
                 'user_id' => $data['user_id'],
@@ -146,10 +150,13 @@ class KpiSettingTechnicalrService extends BaseService
                 'certificate_conditions' => $data['certificate_conditions'],
                 'project_conditions' => $data['project_conditions'],
                 'review_conditions' => $data['review_conditions'],
+                'review_percent' => $data['review_percent'],
+                'project_percent' => $data['project_percent'],
+                'certificate_percent' => $data['certificate_percent'],
 
             ];
             $this->kpiSettingTechnical->update($id,$arrSetting);
-            $this->syncStaffManagers($kpiSettingSale, $data);
+            $this->syncStaffManagers($kpiSettingTechnica, $data);
 
 
             DB::commit();
@@ -161,9 +168,35 @@ class KpiSettingTechnicalrService extends BaseService
     }
 
 
-    private function syncStaffManagers($kpiSettingSale, $data)
+    private function syncStaffManagers($kpiSettingTechnical, $data)
     {
-        $staffManagerGroups = [
+        $existingStaffManagers = $kpiSettingTechnical->staffManagers()->pluck('user_id')->toArray();
+        $newStaffManagers = isset($data['kpi_condition_staff_year']) ? $data['kpi_condition_staff_year'] : [];
+
+        $newStaffManagerIds = array_column($newStaffManagers, 'user_id');
+
+        // Xóa những staffManagers không có trong dữ liệu mới
+        $kpiSettingTechnical->staffManagers()->whereNotIn('user_id', $newStaffManagerIds)->delete();
+
+        foreach ($newStaffManagers as $staffManager) {
+            if (isset($staffManager['user_id']) && in_array($staffManager['user_id'], $existingStaffManagers)) {
+                // Cập nhật staffManager nếu đã tồn tại
+                $kpiSettingTechnical->staffManagers()->where('user_id', $staffManager['user_id'])->update([
+                    'percent' => $staffManager['percent'],
+                    'type' => $staffManager['type'] ?? '12months',
+                    'kpi_type' => $staffManager['kpi_type'] ?? 'technical',
+                ]);
+            } else {
+                // Thêm mới staffManager nếu chưa có
+                $kpiSettingTechnical->staffManagers()->create([
+                    'user_id' => $staffManager['user_id'],
+                    'percent' => $staffManager['percent'],
+                    'type' => $staffManager['type'] ?? '12months',
+                    'kpi_type' => $staffManager['kpi_type'] ?? 'technical',
+                ]);
+            }
+        }
+       /* $staffManagerGroups = [
             '12months' => $data['kpi_condition_staff_year'] ?? [],
         ];
 
@@ -199,7 +232,7 @@ class KpiSettingTechnicalrService extends BaseService
         $existingManagers->each(function ($manager) {
             $manager->staffConditions()->delete();
             $manager->delete();
-        });
+        });*/
     }
 
     private function syncStaffConditions($staffManager, $conditions)

@@ -59,11 +59,11 @@ class KpiSetUpUserRepository implements KpiSetUpUserInterface {
     }
 
     public function getByID($id){
-        return $this->model->with(['staffManagers.staffConditions','debtItems','saleItems'])->find($id);
+        return $this->model->with(['staffManagers','debtItems','saleItems'])->find($id);
     }
 
     public function getByUserID($id){
-        return $this->model->with(['staffManagers.staffConditions','debtItems','saleItems'])->where('user_id',$id);
+        return $this->model->with(['staffManagers','debtItems','saleItems'])->where('user_id',$id);
     }
 
     public function update($id, $data){

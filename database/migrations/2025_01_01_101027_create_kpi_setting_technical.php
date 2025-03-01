@@ -21,6 +21,10 @@ return new class extends Migration
             $table->json('certificate_conditions')->nullable();
             $table->json('project_conditions')->nullable();
             $table->json('review_conditions')->nullable();
+            $table->string('review_percent')->nullable();
+            $table->string('project_percent')->nullable();
+            $table->string('certificate_percent')->nullable();
+
             $table->timestamps();
         });
     }

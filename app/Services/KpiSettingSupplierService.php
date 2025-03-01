@@ -42,6 +42,8 @@ class KpiSettingSupplierService extends BaseService
             'new_supplier_target' => $data['new_supplier_target'],
             'old_supplier_conditions' => $data['old_supplier_conditions'],
             'old_supplier_target' => $data['old_supplier_target'],
+            'old_supplier_percent' => $data['old_supplier_percent'],
+            'new_supplier_percent' => $data['new_supplier_percent'],
 
         ];
 
@@ -82,6 +84,8 @@ class KpiSettingSupplierService extends BaseService
                 'new_supplier_target' => $data['new_supplier_target'],
                 'old_supplier_conditions' => $data['old_supplier_conditions'],
                 'old_supplier_target' => $data['old_supplier_target'],
+                'old_supplier_percent' => $data['old_supplier_percent'],
+                'new_supplier_percent' => $data['new_supplier_percent'],
 
             ];
             $this->kpiSettingSupplier->update($id,$arrSetting);

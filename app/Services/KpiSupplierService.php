@@ -47,14 +47,14 @@ class KpiSupplierService extends BaseService
 
             $oldSupplierIncrease = $this->getOldSupplierIncreamDebts($filter,$kpiSettingSupplier);
 
-            $total_achievement_new_supplier = ($newSupplier['new_supplier_conditions']['percentage']*$newSupplier['new_supplier_conditions']['points'])/100;
-            $total_achievement_old_supplier = ($oldSupplierIncrease['old_increase_supplier_conditions']['percentage']*$oldSupplierIncrease['old_increase_supplier_conditions']['points'])/100;
+            $total_achievement_new_supplier = ($kpiSettingSupplier->new_supplier_percent/100)*$newSupplier['new_supplier_conditions']['points'];
+            $total_achievement_old_supplier = ($kpiSettingSupplier->old_supplier_percent/100)*$oldSupplierIncrease['old_increase_supplier_conditions']['points'];
             $total_achievement= $total_achievement_new_supplier + $total_achievement_old_supplier;
 
-            $total_percent = $newSupplier['new_supplier_conditions']['percentage'] + $oldSupplierIncrease['old_increase_supplier_conditions']['percentage'];
+            //$total_percent = $newSupplier['new_supplier_conditions']['percentage'] + $oldSupplierIncrease['old_increase_supplier_conditions']['percentage'];
             $total_points = $newSupplier['new_supplier_conditions']['points'] + $oldSupplierIncrease['old_increase_supplier_conditions']['points'];
            //get kpi personal
-            $personalKPI = $this->getKpiSettingsYear($total_percent, $filter,'buy_goods');
+            $personalKPI = $this->getKpiSettingsTotal($total_achievement, $filter,'buy_goods');
             //get kpi company
             $rsYear = $this->sysKpi->getByID(1);
             $targetKpiYear = $rsYear->kpi_company;
@@ -79,7 +79,7 @@ class KpiSupplierService extends BaseService
                 'old_increase_supplier' => $oldSupplierIncrease['old_increase_supplier'],
                 'old_increase_supplier_conditions' => $oldSupplierIncrease['old_increase_supplier_conditions'],
                 'total_achievement' => $total_achievement,
-                'total_percent' => $total_percent,
+
                 'total_points' => $total_points,
                 'total_bouns' => $totalAllBouns,
                 'kpi_personnal' =>  collect($personalKPI),
@@ -88,7 +88,9 @@ class KpiSupplierService extends BaseService
                 'new_supplier_target' => $kpiSettingSupplier->new_supplier_target,
                 'old_supplier_target' => $kpiSettingSupplier->old_supplier_target,
                 'salary' => $salary,
-                'total_selling_year' => $total_selling_year
+                'total_selling_year' => $total_selling_year,
+                'new_supplier_percent' => $kpiSettingSupplier->new_supplier_percent,
+                'old_supplier_percent' => $kpiSettingSupplier->old_supplier_percent,
 
             ];
         }
@@ -104,9 +106,9 @@ class KpiSupplierService extends BaseService
 
         $rsListYear = $this->fp->getListbyUsers($filteryear);
         $totalSellingYear = $rsListYear->sum('selling');
-        $percent_year = round(($totalSellingYear/$targetKpiYear)*100,);
+        //$percent_year = round(($totalSellingYear/$targetKpiYear)*100,);
         //dd($percent_year);
-        $rs =  $this->getKpiSettingsYear($percent_year, $filter,'company');
+        $rs =  $this->getKpiSettingsYear($totalSellingYear, $filter,'company');
 
         return [
             'kpi_company' => $rs,
@@ -152,6 +154,7 @@ class KpiSupplierService extends BaseService
     private function getKpiSettingsTotal($totalGoals, $filter,$type)
     {
         //dd($totalGoals);
+        $totalGoals = floor($totalGoals);
         $typeKpi = $filter['type'] ?? DebtsConst::MONTHS_12;
         $conditionsSettings = $this->settingTotal->getList();
         $conditionsSettingsType = $conditionsSettings->filter(function ($item) use ($typeKpi,$type) {
@@ -162,7 +165,7 @@ class KpiSupplierService extends BaseService
             return ['bonus' => 0, 'points' => 0, 'name' => 'Không đạt'];
         }
 
-        $sortedConditions = $conditionsSettingsType->sortBy('bonus');
+        $sortedConditions = $conditionsSettingsType->sortBy('points');
 
         $minCondition = $sortedConditions->first();
         $maxCondition = $sortedConditions->last();
@@ -171,14 +174,14 @@ class KpiSupplierService extends BaseService
             return ['bonus' => 0, 'points' => 0, 'name' => 'Không đạt'];
         }
 
-        if ($totalGoals > $maxCondition['bonus']) {
+        if ($totalGoals > $maxCondition['points']) {
             return $maxCondition;
         }
 
-        return $sortedConditions->firstWhere('bonus', $totalGoals)
+        return $sortedConditions->firstWhere('points', $totalGoals)
             ?: $sortedConditions
                 ->where('bonus', '<', $totalGoals)
-                ->sortByDesc('bonus')
+                ->sortByDesc('points')
                 ->first();
     }
     public function getNewSupplier($filter, $kpiSettingTechnical)

@@ -53,10 +53,13 @@ class KpiSaleController extends RestfulController
             'target_kpi_company' => $rs->get('target_kpi_company'),
 
             'total_all_bouns' => $rs->get('total_all_bouns'),
-            'min_bonus_setting_progress' => $rs->get('min_bonus_setting_progress'),
+
             'percent_sale' => $rs->get('percent_sale'),
             'percent_current_sale' => $rs->get('percent_current_sale'),
             'percent_debts' => $rs->get('percent_debts'),
+            'sale_text' => $rs->get('sale_text'),
+            'current_sale_text' => $rs->get('current_sale_text'),
+            'debts_text' => $rs->get('debts_text'),
 
         ];
 

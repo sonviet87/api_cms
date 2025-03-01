@@ -50,20 +50,17 @@ class KpiTechnicalService extends BaseService
                 $filter['users'] = $userID;
 
                 $technical_staff = $this->getStaffManager($filter,$kpiSettingTechnical);
-
+                //dd($technical_staff);
                 if(count($technical_staff)>0){
 
-                    $total_percent_staff = collect($technical_staff)->sum(function ($item) {
-                        return $item['kpi']['percentage'];
-                    });
 
                     $total_points_staff = collect($technical_staff)->sum(function ($item) {
-                        return $item['kpi']['points'];
+                        return $item['total_points'];
                     });
 
                     $total_achievement_staff = collect($technical_staff)->sum(function ($item) {
-                        $percentage = $item['kpi']['percentage'];
-                        $points = $item['kpi']['points'];
+                        $percentage = $item['percent'];
+                        $points = $item['total_points'];
                         return ($percentage * $points) / 100;
                     });
                 }
@@ -75,16 +72,16 @@ class KpiTechnicalService extends BaseService
                 $total_points = $technical_certificate['technical_certificate_condition']['points'] + $technical_project['project_certificate_condition']['points'] + $technical_review['review_certificate_condition']['points'] + $total_points_staff;
 
 
-                $total_achievement_certificate = ($technical_certificate['technical_certificate_condition']['percentage']*$technical_certificate['technical_certificate_condition']['points'])/100;
+                $total_achievement_certificate = ($kpiSettingTechnical->certificate_percent/100)*$technical_certificate['technical_certificate_condition']['points'];
 
-                $total_achievement_project = ($technical_project['project_certificate_condition']['percentage']*$technical_project['project_certificate_condition']['points'])/100;
+                $total_achievement_project = ($kpiSettingTechnical->project_percent/100)*$technical_project['project_certificate_condition']['points'];
 
-                $total_achievement_review = ($technical_review['review_certificate_condition']['percentage']*$technical_review['review_certificate_condition']['points'])/100;
+                $total_achievement_review = ($kpiSettingTechnical->review_percent/100)*$technical_review['review_certificate_condition']['points'];
 
                 $total_achievement = $total_achievement_certificate + $total_achievement_project+$total_achievement_review+$total_achievement_staff;
                 //dd($technical_project);
 
-                $kpiTotalPersonal = $this->getKpiSettingsCompany($total_percent,$filter,'technical');
+                $kpiTotalPersonal = $this->getKpiSettingsYear($total_achievement,$filter,'technical');
 
                 //get kpi company
 
@@ -123,7 +120,10 @@ class KpiTechnicalService extends BaseService
                     'kpi_personnal' =>  collect($kpiTotalPersonal)->only(['name', 'points', 'bonus']),
                     'target_company' =>  $targetKpiYear,
                     'kpi_company' => collect($settingCompany)->only(['name', 'points', 'bonus']),
-                    'totalBouns' => $totalAllBouns
+                    'totalBouns' => $totalAllBouns,
+                    'certificate_percent' => $kpiSettingTechnical->certificate_percent,
+                    'project_percent' => $kpiSettingTechnical->project_percent,
+                    'review_percent' => $kpiSettingTechnical->review_percent,
 
                 ];
             }
@@ -142,13 +142,28 @@ class KpiTechnicalService extends BaseService
 
         if ($kpiSetUpUser) {
             $filteredStaffManagers = $kpiSetUpUser->staffManagers->filter(function ($manager) use ($type) {
-                $manager->staffConditions = $manager->staffConditions->filter(function ($condition) use ($type) {
-                    return $condition->type === $type . 'months';
-                });
-                return $manager->type === $type . 'months' && $manager->staffConditions->isNotEmpty();
-            });
 
+                return $manager->type === $type . 'months' && $manager->kpi_type == 'technical' ;
+
+            });
+           // dd($filteredStaffManagers);
             foreach ($filteredStaffManagers as $manager) {
+                if($manager->user_id == null) continue;
+                $user_name = $manager->user->name;
+                $filterStaff = $filter;
+                $filterStaff['users'] = $manager->user_id;
+                $kpiUser = $this->kpiSettingTechnical->getByUserID($manager->user_id)->first();
+
+                $total = $this->getAchievementUser($kpiUser,$filterStaff);
+                $resultData[] = [
+                    'user_id' => $manager->user_id,
+                    'percent' => $manager->percent,
+                    'user_name' => $user_name,
+                    'total_points' =>$total,
+
+                ];
+            }
+            /*foreach ($filteredStaffManagers as $manager) {
                 if($manager->user_id == null) continue;
                 $user_name = $manager->user->name;
                 $filterStaff = $filter;
@@ -180,29 +195,30 @@ class KpiTechnicalService extends BaseService
                     'total_points' =>$total['points'],
                     'kpi' => $result
                 ];
-            }
+            }*/
         }
         return $resultData;
     }
 
     protected function getAchievementUser($kpi,$filter){
-
+        if($kpi == null) return 0;
         $technical_certificate = $this->getCertificateKpi($filter,$kpi);
         $technical_project = $this->getProjectKPI($filter,$kpi);
         $technical_review = $this->getReviewKPI($filter,$kpi);
 
-        $achievement_cer = ($technical_certificate['technical_certificate_condition']['percentage']*$technical_certificate['technical_certificate_condition']['points'])/100;
-        $achievement_project = ($technical_project['project_certificate_condition']['percentage']*$technical_project['project_certificate_condition']['points'])/100;
-        $achievement_review = ($technical_review['review_certificate_condition']['percentage']*$technical_review['review_certificate_condition']['points'])/100;
+        $achievement_cer = ($kpi->certificate_percent/100) * $technical_certificate['technical_certificate_condition']['points'];
+        $achievement_project = ($kpi->project_percent/100) *$technical_project['project_certificate_condition']['points'];
+        $achievement_review = ($kpi->review_percent/100)*$technical_review['review_certificate_condition']['points'];
         $totalAchivement =  $achievement_cer+$achievement_project+$achievement_review;
 
         $kpiTotal = $this->getKpiSettingsYear($totalAchivement,$filter,'technical');
 
-        return $kpiTotal;
+        return $kpiTotal['points'];
     }
 
     private function getKpiSettingsYear($totalGoals, $filter,$type)
     {
+        $totalGoals = floor($totalGoals);
         $typeKpi = $filter['type'] ?? DebtsConst::MONTHS_12;
         $conditionsSettings = $this->settingTotal->getList();
         $conditionsSettingsType = $conditionsSettings->filter(function ($item) use ($typeKpi,$type) {
@@ -213,22 +229,22 @@ class KpiTechnicalService extends BaseService
             return ['bonus' => 0, 'points' => 0, 'name' => 'Không đạt'];
         }
 
-        $sortedConditions = $conditionsSettingsType->sortBy('bonus');
+        $sortedConditions = $conditionsSettingsType->sortBy('points');
 
         $minCondition = $sortedConditions->first();
         $maxCondition = $sortedConditions->last();
 
-        if ($totalGoals <= 0 || $totalGoals < $minCondition['bonus']) {
+        if ($totalGoals <= 0 || $totalGoals < $minCondition['points']) {
             return ['bonus' => 0, 'points' => 0, 'name' => 'Không đạt'];
         }
 
-        if ($totalGoals > $maxCondition['bonus']) {
+        if ($totalGoals > $maxCondition['points']) {
             return $maxCondition;
         }
 
-        return $sortedConditions->firstWhere('bonus', $totalGoals)
+        return $sortedConditions->firstWhere('points', $totalGoals)
             ?: $sortedConditions
-                ->where('bonus', '<', $totalGoals)
+                ->where('points', '<', $totalGoals)
                 ->sortByDesc('bonus')
                 ->first();
     }
@@ -375,5 +391,7 @@ class KpiTechnicalService extends BaseService
         return  ['bonus' => 0, 'points' => 0,'name' => 'Không đạt'];
 
     }
+
+
 
 }

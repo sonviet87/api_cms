@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('new_supplier_target')->nullable();
             $table->json('old_supplier_conditions')->nullable();
             $table->string('old_supplier_target')->nullable();
+            $table->string('new_supplier_percent')->nullable();
+            $table->string('old_supplier_percent')->nullable();
             $table->timestamps();
         });
     }

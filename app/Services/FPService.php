@@ -82,11 +82,13 @@ class FPService extends BaseService
             $arrFP['deployment_costs']= Str::replace(",","",$arrFP["deployment_costs"]);
             $arrFP['bids_cost']= Str::replace(",","",$arrFP["bids_cost"]);
             $arrFP['commission']= Str::replace(",","",$arrFP["commission"]);
+            $arrFP['commission_customer']= Str::replace(",","",$arrFP["commission_customer"]);
             $arrFP['interest']= Str::replace(",","",$arrFP["interest"]);
             $arrFP['tax']= Str::replace(",","",$arrFP["tax"]);
 
             $arrFP['bids_cost_percent']= Str::replace("%","",$arrFP["bids_cost_percent"]);
             $arrFP['commission_percent']= Str::replace("%","",$arrFP["commission_percent"]);
+            $arrFP['commission_customer_percent']= Str::replace("%","",$arrFP["commission_customer_percent"]);
             $arrFP['file_customer_invoice']= isset($arrFP["file_customer_invoice"])?  $arrFP["file_customer_invoice"]: "" ;
             $arrFP['file_company_receipt']= isset($arrFP["file_company_receipt"])?  $arrFP["file_company_receipt"]: "" ;
             $arrFP['notes']=  $arrFP["notes"] ?? "" ;
@@ -114,6 +116,7 @@ class FPService extends BaseService
                 $arrFPDetail[$key]["price_sell_customer"] = Str::replace(",","",$detail["price_sell_customer"]);
                 $arrFPDetail[$key]["total_price_sell_customer"] = Str::replace(",","",$detail["total_price_sell_customer"]);
                 $arrFPDetail[$key]["profit"] = Str::replace("%","",$detail["profit"]);
+                $arrFPDetail[$key]["profit_customer"] = Str::replace("%","",$detail["profit_customer"]);
                 $arrFPDetail[$key]["qty"] = $detail["qty"];
                 $arrFPDetail[$key]["category_id"] = $detail["category_id"];
                 $arrFPDetail[$key]["supplier_id"] = $detail["supplier_id"];
@@ -162,10 +165,12 @@ class FPService extends BaseService
             $arrFP['deployment_costs']= Str::replace(",","",$arrFP["deployment_costs"]);
             $arrFP['bids_cost']= Str::replace(",","",$arrFP["bids_cost"]);
             $arrFP['commission']= Str::replace(",","",$arrFP["commission"]);
+            $arrFP['commission_customer']= Str::replace(",","",$arrFP["commission_customer"]);
             $arrFP['interest']= Str::replace(",","",$arrFP["interest"]);
             $arrFP['tax']= Str::replace(",","",$arrFP["tax"]);
             $arrFP['bids_cost_percent']= Str::replace("%","",$arrFP["bids_cost_percent"]);
             $arrFP['commission_percent']= Str::replace("%","",$arrFP["commission_percent"]);
+            $arrFP['commission_customer_percent']= Str::replace("%","",$arrFP["commission_customer_percent"]);
             $arrFP['file_customer_invoice']= isset($arrFP["file_customer_invoice"])?  $arrFP["file_customer_invoice"]: "" ;
             $arrFP['file_company_receipt']= isset($arrFP["file_company_receipt"])?  $arrFP["file_company_receipt"]: "" ;
             $arrFP['notes']=  $arrFP["notes"] ?? "" ;
@@ -196,6 +201,7 @@ class FPService extends BaseService
                 $arrFPDetail[$key]["total_buy"] = Str::replace(",","",$detail["total_buy"]);
                 $arrFPDetail[$key]["total_sell"] = Str::replace(",","",$detail["total_sell"]);
                 $arrFPDetail[$key]["profit"] = Str::replace("%","",$detail["profit"]);
+                $arrFPDetail[$key]["profit_customer"] = Str::replace("%","",$detail["profit_customer"]);
                 $arrFPDetail[$key]["qty"] = $detail["qty"];
                 $arrFPDetail[$key]["category_id"] = $detail["category_id"];
                 $arrFPDetail[$key]["supplier_id"] = $detail["supplier_id"];
