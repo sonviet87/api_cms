@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Constants\PermissionConst;
 use App\Constants\RolePermissionConst;
 use App\Constants\UserConst;
 use App\Interfaces\UserInterface;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserService extends BaseService
@@ -18,7 +20,16 @@ class UserService extends BaseService
 
     public function getList()
     {
-        return $this->user->getList();
+        $filter = [];
+       /* $user = Auth::user();
+        if ($user->hasPermissionTo(PermissionConst::IS_SALE)) {
+            $filter['user_id'] = $user->id;
+            $staffs = $user->subordinates()->get();
+            if ($staffs) {
+                $filter['staffs'] = $staffs->pluck('id')->toArray();;
+            }
+        }*/
+        return $this->user->getList($filter);
     }
 
     public function getUserByEmail($email)
@@ -29,6 +40,11 @@ class UserService extends BaseService
     public function getUserByPhone($phone)
     {
         return $this->user->getUserByPhone($phone);
+    }
+
+    public function checkPassword($password){
+
+        return Hash::check($password, Auth::user()->password);
     }
 
     public function getUserByFacebookID($facebook_id)
@@ -53,7 +69,7 @@ class UserService extends BaseService
             }
         } */
 
-        $data['role_id'] = RolePermissionConst::ROLE_CLIENT;
+        $data['role_id'] = RolePermissionConst::ROLE_SALE;
         $data['status'] = UserConst::STATUS_ACTIVE;
         $user = $this->user->createNewUserByEmail($data);
         return $user;
@@ -135,9 +151,17 @@ class UserService extends BaseService
         return $user;
     }
 
-    public function getListPaginate($perPage = 20)
+    public function getListPaginate($perPage = 20, $filter = [])
     {
-        return $this->user->getListPaginate($perPage);
+        $user = Auth::user();
+        if ($user->hasPermissionTo(PermissionConst::IS_SALE)) {
+            $filter['user_id'] = $user->id;
+            $staffs = $user->subordinates()->get();
+            if ($staffs) {
+                $filter['staffs'] = $staffs->pluck('id')->toArray();;
+            }
+        }
+        return $this->user->getListPaginate($perPage,$filter);
     }
 
     public function createNewUser($data)
@@ -182,6 +206,16 @@ class UserService extends BaseService
         return $this->_result(true, 'Updated successfully');
     }
 
+    public function changePassword($oldPass,$password){
+        $isDulicate = $this->checkPassword($oldPass);
+        if(!$isDulicate) return $this->_result(false, 'Mật khẩu không đúng');
+        $password= Hash::make($password);
+        $result = $this->user->updatePassword(Auth::user()->id, $password);
+        if (!$result) {
+            return $this->_result(false, 'Cập nhật không thành công');
+        }
+        return $this->_result(true, 'Cập nhật thành công');
+    }
     public function destroyUsersByIDs($ids)
     {
         $check = $this->user->destroyUsersByIDs($ids);
@@ -189,6 +223,15 @@ class UserService extends BaseService
             return $this->_result(false, 'Delete failed!');
         }
         return $this->_result(true, 'Delete successfuly');
+    }
+
+    public function updateConfigKpi($config){
+        $result = $this->user->updateConfigKpi($config);
+        if (!$result) {
+            return $this->_result(false, 'Updated failed');
+        }
+        return $this->_result(true, 'Updated successfully');
+
     }
 
 }

@@ -6,7 +6,7 @@ interface UserInterface {
      * Get all
      * @return mixed
      */
-    public function getList();
+    public function getList($filter=[]);
 
     /**
      * Get a user by email
@@ -33,7 +33,7 @@ interface UserInterface {
      * @param interger $perPage
      * @return mixed
      */
-    public function getListPaginate($perPage = 20);
+    public function getListPaginate($perPage = 20,$filter = []);
 
     /**
      * Create new user
@@ -64,4 +64,11 @@ interface UserInterface {
     public function destroyUsersByIDs($ids);
 
     public function getBySimilarPhone($phone);
+
+
+    /**
+     * updateConfigKPI
+     * @return mixed
+     */
+    public function updateConfigKpi($config);
 }

@@ -25,6 +25,7 @@ class UserFactory extends Factory
             'password' => Hash::make('123456'), // password
             'remember_token' => Str::random(10),
         ];
+        
     }
 
     /**

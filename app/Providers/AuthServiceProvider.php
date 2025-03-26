@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
-use App\Models\Permission;
+
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
 
@@ -33,22 +33,25 @@ class AuthServiceProvider extends ServiceProvider
             'admin' => 'full permission',
         ];
         try{
-            foreach (Permission::all() as $per) {
-                $actions = $per->action;
-                if (!empty($actions)) {
-                    $actions = json_decode($actions, 1);
-                    if (!empty($actions)) {
-                        foreach ($actions as $act) {
-                            // use scopes to overwrite duplicated data
-                            $scopes[$per->controller . ':' . $act] = 1;
-                        }
-                    }
-                }
+            foreach (\Spatie\Permission\Models\Permission::all() as $per) {
+              
+                $scopes[$per->name] = $per->name;
+                // $actions = $per->action;
+                // if (!empty($actions)) {
+                //     $actions = json_decode($actions, 1);
+                //     if (!empty($actions)) {
+                //         foreach ($actions as $act) {
+                //             // use scopes to overwrite duplicated data
+                //             $scopes[$per->controller . ':' . $act] = 1;
+                //         }
+                //     }
+                // }
+
             }
         }catch(\Exception $e){
 
         }
-
+      
         Passport::tokensCan($scopes);
     }
 }

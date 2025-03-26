@@ -60,6 +60,7 @@ class LoginController extends RestfulController
             if (Auth::attempt(['username'=>$username,'password'=>$password, 'status'=>UserConst::STATUS_ACTIVE])) {
                 $user = Auth::user();
                 $this->_customUserData($user, 'JWT-VBA-USERNAME');
+              
                 return $this->_response($user, 'Login success');
             }else{
                 return $this->_error('Login failed');
@@ -71,7 +72,8 @@ class LoginController extends RestfulController
 
     private function _customUserData(&$user, $token_name = 'JWT-VBA-EMAIL'){
         $user->scopes = $this->roleService->getScopesByUser($user);
-        $user->accessToken = $user->createToken($token_name, explode(' ', $user->scopes))->accessToken;
+        //explode(' ', $user->scopes)
+        $user->accessToken = $user->createToken($token_name,  $user->scopes)->accessToken;
 
     }
 }
